@@ -9,8 +9,7 @@ def base_cfg(**overrides):
         "general": {
             "image_dir": "/im",
             "analysis_name": "A",
-            "local_analysis_dir": "/work/local",
-            "remote_analysis_dir": "/work/remote",
+            "analysis_dir": "/work/analysis",
         },
         "core_detection": {
             "detection_image": "I0",
@@ -50,17 +49,17 @@ def base_cfg(**overrides):
     return cfg
 
 
-def test_resolves_paths_and_defaults_local(tmp_path, monkeypatch):
+def test_resolves_paths_and_defaults(tmp_path, monkeypatch):
     """
     Verifies the 'after' model_validator computes derived paths and defaults
-    for the local workflow (critical for reproducible file layout).
+    (critical for reproducible file layout).
     """
     from plex_pipe.utils.config_schema import AnalysisConfig
 
     cfg = base_cfg()
-    model = AnalysisConfig.model_validate(cfg, context={"remote_analysis": False})
+    model = AnalysisConfig.model_validate(cfg)
 
-    base = Path(cfg["general"]["local_analysis_dir"]) / cfg["general"]["analysis_name"]
+    base = Path(cfg["general"]["analysis_dir"]) / cfg["general"]["analysis_name"]
 
     assert Path(model.analysis_dir) == base
     assert Path(model.log_dir_path) == base / "logs"
@@ -93,7 +92,7 @@ def test_validate_pipeline_detects_missing_inputs():
         ]
     )
 
-    model = AnalysisConfig.model_validate(cfg, context={"remote_analysis": False})
+    model = AnalysisConfig.model_validate(cfg)
     with pytest.raises(ValueError) as ei:
         model.validate_pipeline(SDataStub())
 

@@ -13,7 +13,7 @@ from sam2.build_sam import build_sam2
 from plex_pipe.utils.im_utils import prepare_rgb_image
 
 
-def set_cuda(model_path):
+def set_cuda(model_path):  # pragma: no cover
     """Configure CUDA settings for SAM2 segmentation.
 
     Args:
@@ -38,7 +38,7 @@ def sam2_segment(
     device,
     sam2_checkpoint,
     model_cfg,
-):
+):  # pragma: no cover
     """Segment an RGB image using the SAM2 model.
 
     Args:
@@ -87,7 +87,7 @@ def sam2_segment(
     return masks
 
 
-def main():
+def main():  # pragma: no cover
 
     # Create the argument parser
     parser = argparse.ArgumentParser()

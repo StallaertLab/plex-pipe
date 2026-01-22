@@ -1,6 +1,6 @@
 # Usage
 
-This pipeline supports both command-line execution and interactive analysis via Jupyter notebooks.
+PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow)).
 
 ---
 

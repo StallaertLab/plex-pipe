@@ -15,7 +15,6 @@ from typing import (
 from pydantic import (
     BaseModel,
     Field,
-    ValidationInfo,
     create_model,
     model_validator,
 )
@@ -35,8 +34,7 @@ from loguru import logger
 class GeneralSettings(BaseModel):
     image_dir: str
     analysis_name: str
-    local_analysis_dir: str
-    remote_analysis_dir: str
+    analysis_dir: str
     log_dir: Optional[Path] = None
 
 
@@ -142,18 +140,11 @@ class AnalysisConfig(BaseModel):
     cores_dir_output_path: Path = Path(".")
 
     @model_validator(mode="after")
-    def _resolve_paths(self, info: ValidationInfo) -> AnalysisConfig:
+    def _resolve_paths(self) -> AnalysisConfig:
         """
         This validator resolves paths and sets defaults.
         """
-        remote = info.context.get("remote_analysis", False)
-
-        # Determine base analysis directory
-        base_dir_str = (
-            self.general.remote_analysis_dir
-            if remote
-            else self.general.local_analysis_dir
-        )
+        base_dir_str = self.general.analysis_dir
         analysis_dir = Path(base_dir_str) / self.general.analysis_name
         self.analysis_dir = analysis_dir
 

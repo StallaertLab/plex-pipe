@@ -32,7 +32,7 @@ def load_workstation_config(config_path=None):
         raise KeyError("'workstations' key not found in the configuration file.")
 
 
-def load_analysis_settings(settings_path, remote_analysis=False):
+def load_analysis_settings(settings_path):
     """
     Load analysis settings from a YAML file.
 
@@ -48,9 +48,7 @@ def load_analysis_settings(settings_path, remote_analysis=False):
     settings = expand_pipeline(settings)
 
     # Validate and get the "blueprint" object
-    config = AnalysisConfig.model_validate(
-        settings, context={"remote_analysis": remote_analysis}
-    )
+    config = AnalysisConfig.model_validate(settings)
 
     # create dirs necessary for the analysis
     for p in [

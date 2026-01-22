@@ -67,16 +67,16 @@ def main():
 
         table_name = quant.name
         masks_keys = quant.masks
-        connect_to_mask = quant.layer_connection
+        mask_to_annotate = quant.layer_connection
 
         logger.info(
-            f"Setting up quantification controller for '{table_name}' table with masks {masks_keys} and connection to '{connect_to_mask}' mask"
+            f"Setting up quantification controller for '{table_name}' table with masks {masks_keys} and connection to '{mask_to_annotate}' mask"
         )
 
         controller = QuantificationController(
             table_name=table_name,
             mask_keys=masks_keys,
-            connect_to_mask=connect_to_mask,
+            mask_to_annotate=mask_to_annotate,
             overwrite=True,
             quantify_qc=True,
             qc_prefix=qc_prefix,

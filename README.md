@@ -4,7 +4,7 @@
 [![Docs](https://img.shields.io/badge/docs-online-blue)](https://stallaertlab.github.io/plex_pipe/)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/images/PlexPipe_logo_small_dark.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/images/PlexPipe_logo_small_dark_transparent.png">
   <source media="(prefers-color-scheme: light)" srcset="./docs/images/PlexPipe_logo_small.png">
   <img alt="Logo" src="./docs/images/PlexPipe_logo_small.png">
 </picture>
@@ -13,3 +13,5 @@
 ## Documentation
 
 Full documentation is available at:  [![Docs](https://img.shields.io/badge/docs-online-blue)](https://stallaertlab.github.io/plex_pipe/)
+
+## Similar Projects
