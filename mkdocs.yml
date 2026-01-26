@@ -16,6 +16,9 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 
+hooks:
+  - docs/hooks.py
+
 extra:
   version:
     provider: mike

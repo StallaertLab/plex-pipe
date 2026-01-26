@@ -90,8 +90,8 @@ def generate_docs() -> str:
     return "\n".join(output)
 
 
-if __name__ == "__main__":
-    # Write directly to the file
+def main() -> None:
+    """Generates and writes the documentation to the default path."""
     # ensures UTF-8 encoding and avoids shell redirection issues
     output_path = Path(__file__).parents[3] / "docs" / "configuration" / "processors.md"
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -101,3 +101,7 @@ if __name__ == "__main__":
         f.write(content)
 
     print(f"Generated documentation at: {output_path}")
+
+
+if __name__ == "__main__":
+    main()
