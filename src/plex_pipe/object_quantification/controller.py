@@ -9,9 +9,12 @@ from loguru import logger
 from skimage.measure import regionprops_table
 from spatialdata.models import TableModel
 
+from plex_pipe.object_quantification.metrics import METRIC_REGISTRY
 from plex_pipe.object_quantification.qc_shape_masker import QcShapeMasker
-from plex_pipe.utils.config_schema import DEFAULT_MORPHOLOGICAL_FEATURES
-from plex_pipe.utils.im_utils import calculate_median
+from plex_pipe.utils.config_schema import (
+    DEFAULT_INTENSITY_METRICS,
+    DEFAULT_MORPHOLOGICAL_FEATURES,
+)
 
 
 class QuantificationController:
@@ -48,6 +51,7 @@ class QuantificationController:
         qc_prefix: Optional[str] = "qc_exclude",
         overwrite: bool = False,
         morphological_features: Optional[List[str]] = None,
+        intensity_metrics: Optional[List[str]] = None,
     ) -> None:
 
         # this requirement is independent of specific sdata instance
@@ -66,9 +70,17 @@ class QuantificationController:
         self.morphological_features = (
             morphological_features or DEFAULT_MORPHOLOGICAL_FEATURES
         )
+        self.intensity_metrics = intensity_metrics or DEFAULT_INTENSITY_METRICS
 
         if "label" not in self.morphological_features:
             raise ValueError("The 'morphological_features' list must contain 'label'.")
+
+        # Validate intensity metrics
+        for m in self.intensity_metrics:
+            if m not in METRIC_REGISTRY:
+                raise ValueError(
+                    f"Unknown intensity metric: '{m}'. Available: {list(METRIC_REGISTRY.keys())}"
+                )
 
     ############################################################################
     # Validate inputs
@@ -353,6 +365,21 @@ class QuantificationController:
         """
 
         quant_dfs = []
+
+        # Prepare properties for regionprops
+        props = ["label"]
+        extra_props = []
+        rename_map = {}  # Maps regionprops output name -> user friendly name
+
+        for m_name in self.intensity_metrics:
+            metric = METRIC_REGISTRY[m_name]
+            if metric.is_extra:
+                extra_props.append(metric.func)
+            else:
+                props.append(metric.func)
+
+            rename_map[metric.regionprops_name] = metric.name
+
         for channel_key in self.channels:
             img = self.get_channel(sdata, channel_key)
             for mask_suffix, mask in masks.items():
@@ -362,13 +389,13 @@ class QuantificationController:
                 props = regionprops_table(
                     mask,
                     intensity_image=img,
-                    properties=["label", "mean_intensity"],
-                    extra_properties=[calculate_median],
+                    properties=props,
+                    extra_properties=extra_props,
                 )
                 df = pd.DataFrame(props)
                 df = df.rename(
                     columns={
-                        c: f"{channel_key}_{c.replace('mean_intensity', 'mean').replace('calculate_median', 'median')}_{mask_suffix}"
+                        c: f"{channel_key}_{rename_map[c]}_{mask_suffix}"
                         for c in df.columns
                         if c != "label"
                     }

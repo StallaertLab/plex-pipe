@@ -84,12 +84,15 @@ DEFAULT_MORPHOLOGICAL_FEATURES = [
     "euler_number",
 ]
 
+DEFAULT_INTENSITY_METRICS = ["mean", "median"]
+
 
 class QuantTask(BaseModel):
     name: str
     masks: Dict[str, str]
     layer_connection: str | None = None
     morphological_features: List[str] = DEFAULT_MORPHOLOGICAL_FEATURES
+    intensity_metrics: List[str] = DEFAULT_INTENSITY_METRICS
 
     @field_validator("morphological_features")
     @classmethod
