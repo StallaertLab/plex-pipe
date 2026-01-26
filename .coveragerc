@@ -1,0 +1,6 @@
+[run]
+source = src
+omit =
+    tests/*
+    */conftest.py
+    */docs_generator.py
