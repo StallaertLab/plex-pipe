@@ -64,7 +64,7 @@ class BaseOp(ABC):
     `run` methods.
 
     Attributes:
-        kind: A string that identifies the kind of operation ("image_transformer",
+        kind: A string that identifies the kind of operation ("image_filter",
             "mask_builder" or "object_segmenter"). Assigned by the registry.
         type_name: A string that specifies the type of the operation (e.g.,
             "normalize", "instanseg"). Assigned by the registry.

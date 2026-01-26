@@ -24,6 +24,7 @@ from plex_pipe.processors.registry import register
 
 @register("object_segmenter", "instanseg")
 class InstansegSegmenter(BaseOp):
+    """Uses the InstanSeg deep learning model for segmentation."""
 
     OUTPUT_TYPE = OutputType.LABELS
 
@@ -101,6 +102,7 @@ class InstansegSegmenter(BaseOp):
 
 @register("object_segmenter", "cellpose")
 class Cellpose4Segmenter(BaseOp):
+    """Uses the Cellpose deep learning model for segmentation."""
 
     EXPECTED_OUTPUTS = 1
     OUTPUT_TYPE = OutputType.LABELS

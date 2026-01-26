@@ -38,9 +38,7 @@ class GeneralSettings(BaseModel):
     log_dir: Optional[Path] = None
 
 
-class CoreDetectionSettings(BaseModel):
-    detection_image: str
-    core_info_file_path: Optional[str] = None
+class SamSettings(BaseModel):
     im_level: int
     min_area: int
     max_area: int
@@ -50,6 +48,14 @@ class CoreDetectionSettings(BaseModel):
     frame: int
 
 
+class CoreDetectionSettings(BaseModel):
+    detection_image: str
+    core_info_file_path: Optional[str] = None
+    # If 'sam' is missing, it defaults to None.
+    # If 'sam' is provided, it must match the SamSettings schema.
+    sam: Optional[SamSettings] = None
+
+
 class CoreCuttingSettings(BaseModel):
     cores_dir_tif: Optional[str] = None
     cores_dir_output: Optional[str] = None
@@ -57,10 +63,10 @@ class CoreCuttingSettings(BaseModel):
     exclude_channels: Optional[Union[str, List[str]]] = None
     use_markers: Optional[Union[str, List[str]]] = None
     ignore_markers: Optional[Union[str, List[str]]] = None
-    margin: int
-    mask_value: int
-    transfer_cleanup_enabled: bool
-    core_cleanup_enabled: bool
+    margin: Optional[int] = 0
+    mask_value: Optional[int] = 0
+    transfer_cleanup_enabled: Optional[bool] = False
+    core_cleanup_enabled: Optional[bool] = False
 
 
 class QcSettings(BaseModel):
@@ -71,12 +77,21 @@ class QuantTask(BaseModel):
     name: str
     masks: Dict[str, str]
     layer_connection: str | None = None
+    morphological_features: List[str] = [
+        "label",
+        "area",
+        "eccentricity",
+        "solidity",
+        "perimeter",
+        "centroid",
+        "euler_number",
+    ]
 
 
 class StorageSettings(BaseModel):
-    chunk_size: List[int]
-    max_pyramid_level: int
-    downscale: int
+    chunk_size: Optional[List[int]] = [1, 512, 512]
+    max_pyramid_level: Optional[int] = 4
+    downscale: Optional[int] = 2
 
 
 ###################################################################

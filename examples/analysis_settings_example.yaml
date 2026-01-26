@@ -69,8 +69,8 @@ ignore_markers:
 
 additional_elements:
 
-# add pre-processed images (category: 'image_transformer')
-  - category: 'image_transformer'
+# add pre-processed images (category: 'image_filter')
+  - category: 'image_filter'
     type: "normalize"
     input: "DAPI"
     output: "DAPI_norm"

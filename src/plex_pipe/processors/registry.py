@@ -17,13 +17,13 @@ class RegistryEntry:
 Kind = Literal[
     "mask_builder",
     "object_segmenter",
-    "image_transformer",
+    "image_filter",
 ]
 
 REGISTRY: Dict[Kind, Dict[str, Type[BaseOp]]] = {
     "mask_builder": {},
     "object_segmenter": {},
-    "image_transformer": {},
+    "image_filter": {},
 }
 
 

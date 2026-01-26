@@ -7,12 +7,12 @@ import plex_pipe.utils.config_loaders as config_loaders
 def normalization_config():
     """
     Creates a configuration dictionary mirroring the user's specific
-    image_transformer normalization scenario.
+    image_filter normalization scenario.
     """
     return {
         "additional_elements": [
             {
-                "category": "image_transformer",
+                "category": "image_filter",
                 "type": "normalize",
                 # The list of channels to process
                 "input": ["DAPI", "CD45", "HLA1"],
@@ -25,9 +25,9 @@ def normalization_config():
     }
 
 
-def test_expand_image_transformer_normalization(normalization_config):
+def test_expand_image_filter_normalization(normalization_config):
     """
-    Verifies the expansion logic for the specific image_transformer case.
+    Verifies the expansion logic for the specific image_filter case.
 
     Scenario:
     - Input is a list of 3 channels.
@@ -47,7 +47,7 @@ def test_expand_image_transformer_normalization(normalization_config):
     # Crucial: Check if ${input} in 'output' was replaced
     assert first_step["output"] == "DAPI_norm"
     # Check if static metadata is preserved
-    assert first_step["category"] == "image_transformer"
+    assert first_step["category"] == "image_filter"
     assert first_step["parameters"]["low"] == 1
 
     # 3. Check a middle element (CD45)

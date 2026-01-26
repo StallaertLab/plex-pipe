@@ -20,8 +20,9 @@ from plex_pipe.processors.registry import register
 ################################################################################
 
 
-@register("image_transformer", "normalize")
+@register("image_filter", "normalize")
 class Normalize(BaseOp):
+    """Performs percentile-based normalization on the image."""
 
     EXPECTED_INPUTS = 1
     EXPECTED_OUTPUTS = 1
@@ -80,8 +81,9 @@ class Normalize(BaseOp):
         return out
 
 
-@register("image_transformer", "denoise_with_median")
+@register("image_filter", "denoise_with_median")
 class DenoiseWithMedian(BaseOp):
+    """Applies a median filter to the image to remove noise."""
 
     EXPECTED_INPUTS = 1
     EXPECTED_OUTPUTS = 1
@@ -113,7 +115,7 @@ class DenoiseWithMedian(BaseOp):
         return med
 
 
-@register("image_transformer", "mean_of_images")
+@register("image_filter", "mean_of_images")
 class MeanOfImages(BaseOp):
     """Compute the mean of multiple image arrays."""
 

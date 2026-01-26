@@ -20,6 +20,7 @@ from plex_pipe.processors.registry import register
 
 @register("mask_builder", "subtract")
 class SubtractionBuilder(BaseOp):
+    """Subtracts one mask from another (mask1 - mask2)."""
 
     EXPECTED_INPUTS = 2
     EXPECTED_OUTPUTS = 1
@@ -39,6 +40,7 @@ class SubtractionBuilder(BaseOp):
 
 @register("mask_builder", "multiply")
 class MultiplicationBuilder(BaseOp):
+    """Multiplies two masks (intersection)."""
 
     EXPECTED_INPUTS = 2
     EXPECTED_OUTPUTS = 1
@@ -55,6 +57,7 @@ class MultiplicationBuilder(BaseOp):
 ###############################################################################
 @register("mask_builder", "ring")
 class RingBuilder(BaseOp):
+    """Creates a ring-shaped mask around objects."""
 
     EXPECTED_INPUTS = 1
     EXPECTED_OUTPUTS = 1
@@ -97,6 +100,7 @@ class RingBuilder(BaseOp):
 ###############################################################################
 @register("mask_builder", "blob")
 class BlobBuilder(BaseOp):
+    """Processes a mask to create blob-like shapes using morphological operations."""
 
     EXPECTED_INPUTS = 1
     EXPECTED_OUTPUTS = 1

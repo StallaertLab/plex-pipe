@@ -19,16 +19,20 @@ theme:
 extra:
   version:
     provider: mike
+extra_css:
+  - stylesheets/extra.css
 
 nav:
   - Home: index.md
   - What is PlexPipe?: what_is_plexpipe.md
   - How To Use:
-    - Overview: usage/usage.md
+    - Analysis Steps:
+      - Overview: usage/analysis_steps.md
+      - Processors: usage/processors.md
+    - Execution Modes: usage/execution_modes.md
     - Input Data: usage/input_data.md
     - Config File:
-      - Overview: configuration/index.md
-      - Core cutting: configuration/core-cutting.md
+      - Overview: configuration/config_overview.md
       - Channel Selection: configuration/channel-selection.md
   - API Reference: api.md
 
