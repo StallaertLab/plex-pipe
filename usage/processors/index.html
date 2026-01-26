@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/configuration/channel-selection/">
+        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/usage/processors/">
       
       
-        <link rel="prev" href="../config_overview/">
+        <link rel="prev" href="../analysis_steps/">
       
       
-        <link rel="next" href="../../api/">
+        <link rel="next" href="../execution_modes/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Channel Selection - PlexPipe</title>
+        <title>Processors - PlexPipe</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#channel-selection-logic" class="md-skip">
+        <a href="#available-processors" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Channel Selection
+              Processors
             
           </span>
         </div>
@@ -366,18 +366,20 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
         
           
           <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
@@ -398,7 +400,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -416,176 +418,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/analysis_steps/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/processors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Processors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/execution_modes/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Execution Modes
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/input_data/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Input Data
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Config File
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_4">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Config File
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../config_overview/" class="md-nav__link">
+      <a href="../analysis_steps/" class="md-nav__link">
         
   
   
@@ -629,7 +462,7 @@
   <span class="md-ellipsis">
     
   
-    Channel Selection
+    Processors
   
 
     
@@ -647,7 +480,7 @@
   <span class="md-ellipsis">
     
   
-    Channel Selection
+    Processors
   
 
     
@@ -673,22 +506,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#terminology" class="md-nav__link">
+  <a href="#image-filter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Terminology
+        Image Filter
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Terminology">
+    <nav class="md-nav" aria-label="Image Filter">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-default-behavior-if-no-overrides" class="md-nav__link">
+  <a href="#denoise_with_median" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Default Behavior (if no overrides)
+        denoise_with_median
       
     </span>
   </a>
@@ -696,10 +529,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-using-include_channels" class="md-nav__link">
+  <a href="#mean_of_images" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Using include_channels
+        mean_of_images
       
     </span>
   </a>
@@ -707,32 +540,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-using-exclude_channels" class="md-nav__link">
+  <a href="#normalize" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Using exclude_channels
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-using-use_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Using use_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-using-ignore_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Using ignore_markers
+        normalize
       
     </span>
   </a>
@@ -745,22 +556,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#mask-builder" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Examples
+        Mask Builder
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Examples">
+    <nav class="md-nav" aria-label="Mask Builder">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example-1-default-automatic-selection" class="md-nav__link">
+  <a href="#blob" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 1: Default automatic selection
+        blob
       
     </span>
   </a>
@@ -768,10 +579,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-force-earlier-prb-round-to-be-used" class="md-nav__link">
+  <a href="#multiply" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Force earlier pRB round to be used
+        multiply
       
     </span>
   </a>
@@ -779,10 +590,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-3-exclude-a-problematic-round" class="md-nav__link">
+  <a href="#ring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 3: Exclude a problematic round
+        ring
       
     </span>
   </a>
@@ -790,10 +601,38 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-4-only-process-dapi-and-cd44" class="md-nav__link">
+  <a href="#subtract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 4: Only process DAPI and CD44
+        subtract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#object-segmenter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Object Segmenter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Segmenter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cellpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cellpose
       
     </span>
   </a>
@@ -801,10 +640,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#conflicts-and-priority" class="md-nav__link">
+  <a href="#instanseg" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conflicts and Priority
+        instanseg
       
     </span>
   </a>
@@ -820,6 +659,173 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../input_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config File
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Config File
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/config_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/channel-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Channel Selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -894,22 +900,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#terminology" class="md-nav__link">
+  <a href="#image-filter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Terminology
+        Image Filter
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Terminology">
+    <nav class="md-nav" aria-label="Image Filter">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-default-behavior-if-no-overrides" class="md-nav__link">
+  <a href="#denoise_with_median" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Default Behavior (if no overrides)
+        denoise_with_median
       
     </span>
   </a>
@@ -917,10 +923,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-using-include_channels" class="md-nav__link">
+  <a href="#mean_of_images" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Using include_channels
+        mean_of_images
       
     </span>
   </a>
@@ -928,32 +934,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-using-exclude_channels" class="md-nav__link">
+  <a href="#normalize" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Using exclude_channels
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-using-use_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Using use_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-using-ignore_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Using ignore_markers
+        normalize
       
     </span>
   </a>
@@ -966,22 +950,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#mask-builder" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Examples
+        Mask Builder
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Examples">
+    <nav class="md-nav" aria-label="Mask Builder">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example-1-default-automatic-selection" class="md-nav__link">
+  <a href="#blob" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 1: Default automatic selection
+        blob
       
     </span>
   </a>
@@ -989,10 +973,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-force-earlier-prb-round-to-be-used" class="md-nav__link">
+  <a href="#multiply" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Force earlier pRB round to be used
+        multiply
       
     </span>
   </a>
@@ -1000,10 +984,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-3-exclude-a-problematic-round" class="md-nav__link">
+  <a href="#ring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 3: Exclude a problematic round
+        ring
       
     </span>
   </a>
@@ -1011,10 +995,38 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-4-only-process-dapi-and-cd44" class="md-nav__link">
+  <a href="#subtract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 4: Only process DAPI and CD44
+        subtract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#object-segmenter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Object Segmenter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Object Segmenter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cellpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cellpose
       
     </span>
   </a>
@@ -1022,10 +1034,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#conflicts-and-priority" class="md-nav__link">
+  <a href="#instanseg" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conflicts and Priority
+        instanseg
       
     </span>
   </a>
@@ -1057,86 +1069,102 @@
   
 
 
-<h1 id="channel-selection-logic">🎯 Channel Selection Logic</h1>
-<h2 id="terminology">Terminology</h2>
-<p>To understand how channels are selected, it is important to distinguish between:</p>
+<h1 id="available-processors">Available Processors</h1>
+<h2 id="image-filter">Image Filter</h2>
+<h3 id="denoise_with_median"><code>denoise_with_median</code></h3>
+<p>Applies a median filter to the image to remove noise.</p>
 <ul>
-<li><strong>Marker Name</strong>: The biological target being imaged (e.g., <code>DAPI</code>, <code>CD44</code>, <code>pRB</code>). This is derived from the filename.</li>
-<li><strong>Channel Name</strong>: The unique identifier for a specific image acquisition, combining the <strong>round number</strong> and the <strong>marker name</strong> (e.g., <code>001_DAPI</code>, <code>002_CD44</code>). This format (<code>{round:03d}_{marker}</code>) allows the pipeline to distinguish between the same marker imaged in different rounds.</li>
+<li><strong>Inputs</strong>: 1</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>:<ul>
+<li><code>disk_radius</code> (<class 'int'>, default=<code>3</code>): The radius of the disk-shaped kernel for the median filter.</li>
 </ul>
-<hr />
-<p>The pipeline supports fine-grained control over which imaging channels are included in processing. This is essential because:</p>
-<ul>
-<li>The same marker may be imaged multiple times across rounds (e.g., re-staining or optimization).</li>
-<li>DAPI is typically acquired in every round for registration but usually only one version should be kept for the analysis.</li>
+</li>
 </ul>
-<p>The selection process follows this logic:</p>
-<h3 id="1-default-behavior-if-no-overrides">1. <strong>Default Behavior (if no overrides)</strong></h3>
+<h3 id="mean_of_images"><code>mean_of_images</code></h3>
+<p>Compute the mean of multiple image arrays.</p>
 <ul>
-<li>For each marker imaged in multiple rounds, the <strong>latest round</strong> is used by default.</li>
-<li>For DAPI, only <code>001_DAPI</code> is included unless specified otherwise.</li>
+<li><strong>Inputs</strong>: Variable</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>: None.</li>
 </ul>
-<h3 id="2-using-include_channels">2. <strong>Using <code>include_channels</code></strong></h3>
+<h3 id="normalize"><code>normalize</code></h3>
+<p>Performs percentile-based normalization on the image.</p>
 <ul>
-<li>This is a list of channel names like <code>002_CD44</code>, <code>001_DAPI</code>.</li>
-<li>If set, only these channels are included for a given marker — <strong>they override automatic selection</strong>.</li>
-<li>Use this to <strong>force inclusion of earlier rounds</strong> or <strong>include duplicates</strong> for comparison.</li>
+<li><strong>Inputs</strong>: 1</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>:<ul>
+<li><code>low</code> (<class 'float'>, default=<code>1.0</code>): Lower percentile bound (0-100).</li>
+<li><code>high</code> (<class 'float'>, default=<code>99.0</code>): Upper percentile bound (0-100).</li>
 </ul>
-<h3 id="3-using-exclude_channels">3. <strong>Using <code>exclude_channels</code></strong></h3>
-<ul>
-<li>This is a list of channel names to skip.</li>
-<li>If <code>include_channels</code> is not set, <code>exclude_channels</code> can be used to <strong>remove undesired versions</strong>.</li>
-<li>Example: to exclude <code>003_pRB</code> in favor of earlier versions (or none).</li>
+</li>
 </ul>
-<h3 id="4-using-use_markers">4. <strong>Using <code>use_markers</code></strong></h3>
+<h2 id="mask-builder">Mask Builder</h2>
+<h3 id="blob"><code>blob</code></h3>
+<p>Processes a mask to create blob-like shapes using morphological operations.</p>
 <ul>
-<li>This is a list of <strong>base marker names</strong> (like <code>DAPI</code>, <code>pRB</code>, <code>CD44</code>) <strong>after stripping the round prefix</strong>.</li>
-<li>After all other filtering, <code>use_markers</code> is applied as a final filter.</li>
-<li>Use it to <strong>narrow the final channel set to specific markers</strong>, regardless of which round was selected.</li>
+<li><strong>Inputs</strong>: 1</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>:<ul>
+<li><code>work_shape</code> (Tuple[int, int], default=<code>(250, 250)</code>): No description.</li>
+<li><code>radius</code> (<class 'int'>, default=<code>5</code>): No description.</li>
 </ul>
-<h3 id="5-using-ignore_markers">5. <strong>Using <code>ignore_markers</code></strong></h3>
-<ul>
-<li>This is a list of <strong>base marker names</strong> to exclude from the final set.</li>
-<li>It is applied after <code>use_markers</code>.</li>
-<li>Use it to <strong>discard specific markers</strong> entirely (e.g. if a marker failed quality control across all rounds).</li>
+</li>
 </ul>
-<hr />
-<h2 id="examples">Examples</h2>
-<h3 id="example-1-default-automatic-selection">Example 1: Default automatic selection</h3>
-<pre><code class="language-yaml">include_channels: []
-exclude_channels: []
-use_markers: []
-</code></pre>
+<h3 id="multiply"><code>multiply</code></h3>
+<p>Multiplies two masks (intersection).</p>
 <ul>
-<li>Keeps only the <strong>latest round per marker</strong>, and <code>001_DAPI</code>.</li>
+<li><strong>Inputs</strong>: 2</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>: None.</li>
 </ul>
-<hr />
-<h3 id="example-2-force-earlier-prb-round-to-be-used">Example 2: Force earlier pRB round to be used</h3>
-<pre><code class="language-yaml">include_channels: [&quot;001_pRB&quot;]
-use_markers: []
-</code></pre>
+<h3 id="ring"><code>ring</code></h3>
+<p>Creates a ring-shaped mask around objects.</p>
 <ul>
-<li><code>001_pRB</code> is used even if <code>003_pRB</code> exists.</li>
+<li><strong>Inputs</strong>: 1</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>:<ul>
+<li><code>outer</code> (<class 'int'>, default=<code>7</code>): The outer radius of the ring in pixels.</li>
+<li><code>inner</code> (<class 'int'>, default=<code>2</code>): The inner radius of the ring in pixels.</li>
 </ul>
-<hr />
-<h3 id="example-3-exclude-a-problematic-round">Example 3: Exclude a problematic round</h3>
-<pre><code class="language-yaml">exclude_channels: [&quot;003_CD44&quot;]
-</code></pre>
-<ul>
-<li>Automatically selects an earlier round (if available) for CD44.</li>
+</li>
 </ul>
-<hr />
-<h3 id="example-4-only-process-dapi-and-cd44">Example 4: Only process DAPI and CD44</h3>
-<pre><code class="language-yaml">use_markers: [&quot;DAPI&quot;, &quot;CD44&quot;]
-</code></pre>
+<h3 id="subtract"><code>subtract</code></h3>
+<p>Subtracts one mask from another (mask1 - mask2).</p>
 <ul>
-<li>Filters final output to only include these two base markers.</li>
+<li><strong>Inputs</strong>: 2</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>: None.</li>
 </ul>
-<hr />
-<h3 id="conflicts-and-priority">Conflicts and Priority</h3>
+<h2 id="object-segmenter">Object Segmenter</h2>
+<h3 id="cellpose"><code>cellpose</code></h3>
+<p>Uses the Cellpose deep learning model for segmentation.</p>
 <ul>
-<li>If a channel is listed in both <code>include_channels</code> and <code>exclude_channels</code>, a <code>ValueError</code> is raised.</li>
-<li><code>use_channels</code> is applied <strong>last</strong>, on the base names after channel selection.</li>
+<li><strong>Inputs</strong>: Variable</li>
+<li><strong>Outputs</strong>: 1</li>
+<li><strong>Parameters</strong>:<ul>
+<li><code>diameter</code> (Optional[float], default=<code>30</code>): From Cellpose documentation: Scaling factor for the segmentation. Default size of cells 30 - segments well objects of size 10 -120.</li>
+<li><code>flow_threshold</code> (Optional[float], default=<code>0.4</code>): From Cellpose documentation: Maximum allowed flow error per mask (flow_threshold, default = 0.4). Increase it if too few ROIs are detected; decrease it if too many poor-quality ROIs appear.</li>
+<li><code>cellprob_threshold</code> (Optional[float], default=<code>0</code>): From Cellpose documentation: Pixel threshold to define ROIs. Lower the threshold if too few ROIs are detected; raise it if too many—especially from dim regions.</li>
+<li><code>niter</code> (Optional[int], default=<code>0</code>): From Cellpose documentation: If niter is None or 0, it scales with ROI size—use larger values (e.g., niter=2000) for longer ROIs.</li>
+</ul>
+</li>
+</ul>
+<h3 id="instanseg"><code>instanseg</code></h3>
+<p>Uses the InstanSeg deep learning model for segmentation.</p>
+<ul>
+<li><strong>Inputs</strong>: Variable</li>
+<li><strong>Outputs</strong>: Variable</li>
+<li><strong>Parameters</strong>:<ul>
+<li><code>model</code> (Literal['fluorescence_nuclei_and_cells', 'brightfield_nuclei'], default=<code>fluorescence_nuclei_and_cells</code>): No description.</li>
+<li><code>pixel_size</code> (<class 'float'>, default=<code>0.3</code>): Scaling factor for the segmentation.</li>
+<li><code>resolve_cell_and_nucleus</code> (<class 'bool'>, default=<code>True</code>): No description.</li>
+<li><code>cleanup_fragments</code> (<class 'bool'>, default=<code>True</code>): No description.</li>
+<li><code>clean_cache</code> (<class 'bool'>, default=<code>False</code>): No description.</li>
+<li><code>normalise</code> (<class 'bool'>, default=<code>True</code>): No description.</li>
+<li><code>overlap</code> (<class 'int'>, default=<code>80</code>): No description.</li>
+</ul>
+</li>
 </ul>
 
 
