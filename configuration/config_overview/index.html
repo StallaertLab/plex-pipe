@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/configuration/config_overview/">
       
       
-        <link rel="prev" href="../../usage/input_data/">
+        <link rel="prev" href="../../usage/globus/">
       
       
         <link rel="next" href="../channel-selection/">
@@ -273,7 +273,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    What is PlexPipe?
   
 
     
@@ -300,7 +300,7 @@
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Analysis Steps
   
 
     
@@ -368,117 +368,6 @@
   
   
   
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Analysis Steps
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_1">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Analysis Steps
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/analysis_steps/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../usage/processors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Processors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../usage/execution_modes/" class="md-nav__link">
         
@@ -516,6 +405,34 @@
     
   
     Input Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/globus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Globus Integration
   
 
     
@@ -811,6 +728,34 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/processors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Processors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1370,8 +1315,8 @@ qc:
 </tbody>
 </table>
 <h2 id="quantification">Quantification</h2>
-<p>The <code>quant</code> section allows you to define one or more quantification tasks. 
-Each entry in the list corresponds to a separate AnnData table that will be generated and stored in the SpatialData object. 
+<p>The <code>quant</code> section allows you to define one or more quantification tasks.
+Each entry in the list corresponds to a separate AnnData table that will be generated and stored in the SpatialData object.
 This is useful if you have multiple segmentation results (e.g., cells and nuclei, or different cell segmentation models) and want to quantify them independently.
 Example below specifies only a single AnnData table to be created ('instanseg_table').</p>
 <pre><code class="language-yaml">######################################################
@@ -1379,7 +1324,7 @@ Example below specifies only a single AnnData table to be created ('instanseg_ta
 ######################################################
 quant:
   - name: instanseg_table
-    masks: 
+    masks:
       nucleus: instanseg_nucleus
       cell: instanseg_cell
       ring: ring
