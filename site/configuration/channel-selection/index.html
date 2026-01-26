@@ -8,8 +8,10 @@
 
 
 
+        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/configuration/channel-selection/">
 
-        <link rel="prev" href="../core-cutting/">
+
+        <link rel="prev" href="../config_overview/">
 
 
         <link rel="next" href="../../api/">
@@ -23,11 +25,14 @@
 
 
 
-        <title>Channel Selection - Multiplex Pipeline</title>
+        <title>Channel Selection - PlexPipe</title>
 
 
 
       <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+
+
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
 
 
 
@@ -48,6 +53,8 @@
 
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
 
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 
 
@@ -57,7 +64,14 @@
   </head>
 
 
-    <body dir="ltr">
+
+
+
+
+
+
+
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
 
 
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -75,6 +89,10 @@
 
     </div>
 
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+
+      </div>
+
 
 
 
@@ -82,7 +100,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Multiplex Pipeline" class="md-header__button md-logo" aria-label="Multiplex Pipeline" data-md-component="logo">
+    <a href="../.." title="PlexPipe" class="md-header__button md-logo" aria-label="PlexPipe" data-md-component="logo">
 
 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -96,7 +114,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Multiplex Pipeline
+            PlexPipe
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -108,6 +126,32 @@
         </div>
       </div>
     </div>
+
+
+        <form class="md-header__option" data-md-component="palette">
+
+
+
+
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+
+
+
+
+
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+
+
+</form>
+
 
 
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
@@ -155,6 +199,18 @@
 
 
 
+      <div class="md-header__source">
+        <a href="https://github.com/StallaertLab/plex-pipe" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    StallaertLab/plex-pipe
+  </div>
+</a>
+      </div>
+
   </nav>
 
 </header>
@@ -180,14 +236,26 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Multiplex Pipeline" class="md-nav__button md-logo" aria-label="Multiplex Pipeline" data-md-component="logo">
+    <a href="../.." title="PlexPipe" class="md-nav__button md-logo" aria-label="PlexPipe" data-md-component="logo">
 
 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    Multiplex Pipeline
+    PlexPipe
   </label>
+
+    <div class="md-nav__source">
+      <a href="https://github.com/StallaertLab/plex-pipe" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    StallaertLab/plex-pipe
+  </div>
+</a>
+    </div>
 
   <ul class="md-nav__list" data-md-scrollfix>
 
@@ -225,14 +293,14 @@
 
 
     <li class="md-nav__item">
-      <a href="../../usage/" class="md-nav__link">
+      <a href="../../what_is_plexpipe/" class="md-nav__link">
 
 
 
   <span class="md-ellipsis">
 
 
-    Usage
+    What is PlexPipe?
 
 
 
@@ -272,7 +340,7 @@
   <span class="md-ellipsis">
 
 
-    Configuration
+    How To Use
 
 
 
@@ -288,7 +356,54 @@
             <span class="md-nav__icon md-icon"></span>
 
 
-    Configuration
+    How To Use
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+
+
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Analysis Steps
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Analysis Steps
 
 
           </label>
@@ -301,7 +416,7 @@
 
 
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../usage/analysis_steps/" class="md-nav__link">
 
 
 
@@ -329,14 +444,155 @@
 
 
     <li class="md-nav__item">
-      <a href="../core-cutting/" class="md-nav__link">
+      <a href="../../usage/processors/" class="md-nav__link">
 
 
 
   <span class="md-ellipsis">
 
 
-    Core cutting
+    Processors
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../../usage/execution_modes/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Execution Modes
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../../usage/input_data/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Input Data
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+
+
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Config File
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Config File
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../config_overview/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Overview
 
 
 
@@ -417,6 +673,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
 
         <li class="md-nav__item">
+  <a href="#terminology" class="md-nav__link">
+    <span class="md-ellipsis">
+
+        Terminology
+
+    </span>
+  </a>
+
+    <nav class="md-nav" aria-label="Terminology">
+      <ul class="md-nav__list">
+
+          <li class="md-nav__item">
   <a href="#1-default-behavior-if-no-overrides" class="md-nav__link">
     <span class="md-ellipsis">
 
@@ -427,7 +695,7 @@
 
 </li>
 
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#2-using-include_channels" class="md-nav__link">
     <span class="md-ellipsis">
 
@@ -438,7 +706,7 @@
 
 </li>
 
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#3-using-exclude_channels" class="md-nav__link">
     <span class="md-ellipsis">
 
@@ -449,14 +717,30 @@
 
 </li>
 
-        <li class="md-nav__item">
-  <a href="#4-using-use_channels" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#4-using-use_markers" class="md-nav__link">
     <span class="md-ellipsis">
 
-        4. Using use_channels
+        4. Using use_markers
 
     </span>
   </a>
+
+</li>
+
+          <li class="md-nav__item">
+  <a href="#5-using-ignore_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+
+        5. Using ignore_markers
+
+    </span>
+  </a>
+
+</li>
+
+      </ul>
+    </nav>
 
 </li>
 
@@ -549,6 +833,14 @@
 
 
 
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+
 
 
 
@@ -602,6 +894,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
 
         <li class="md-nav__item">
+  <a href="#terminology" class="md-nav__link">
+    <span class="md-ellipsis">
+
+        Terminology
+
+    </span>
+  </a>
+
+    <nav class="md-nav" aria-label="Terminology">
+      <ul class="md-nav__list">
+
+          <li class="md-nav__item">
   <a href="#1-default-behavior-if-no-overrides" class="md-nav__link">
     <span class="md-ellipsis">
 
@@ -612,7 +916,7 @@
 
 </li>
 
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#2-using-include_channels" class="md-nav__link">
     <span class="md-ellipsis">
 
@@ -623,7 +927,7 @@
 
 </li>
 
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#3-using-exclude_channels" class="md-nav__link">
     <span class="md-ellipsis">
 
@@ -634,14 +938,30 @@
 
 </li>
 
-        <li class="md-nav__item">
-  <a href="#4-using-use_channels" class="md-nav__link">
+          <li class="md-nav__item">
+  <a href="#4-using-use_markers" class="md-nav__link">
     <span class="md-ellipsis">
 
-        4. Using use_channels
+        4. Using use_markers
 
     </span>
   </a>
+
+</li>
+
+          <li class="md-nav__item">
+  <a href="#5-using-ignore_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+
+        5. Using ignore_markers
+
+    </span>
+  </a>
+
+</li>
+
+      </ul>
+    </nav>
 
 </li>
 
@@ -734,11 +1054,21 @@
 
 
 
+
+
+
 <h1 id="channel-selection-logic">🎯 Channel Selection Logic</h1>
+<h2 id="terminology">Terminology</h2>
+<p>To understand how channels are selected, it is important to distinguish between:</p>
+<ul>
+<li><strong>Marker Name</strong>: The biological target being imaged (e.g., <code>DAPI</code>, <code>CD44</code>, <code>pRB</code>). This is derived from the filename.</li>
+<li><strong>Channel Name</strong>: The unique identifier for a specific image acquisition, combining the <strong>round number</strong> and the <strong>marker name</strong> (e.g., <code>001_DAPI</code>, <code>002_CD44</code>). This format (<code>{round:03d}_{marker}</code>) allows the pipeline to distinguish between the same marker imaged in different rounds.</li>
+</ul>
+<hr />
 <p>The pipeline supports fine-grained control over which imaging channels are included in processing. This is essential because:</p>
 <ul>
 <li>The same marker may be imaged multiple times across rounds (e.g., re-staining or optimization).</li>
-<li>DAPI is typically acquired in every round for registration but usually only one version is needed.</li>
+<li>DAPI is typically acquired in every round for registration but usually only one version should be kept for the analysis.</li>
 </ul>
 <p>The selection process follows this logic:</p>
 <h3 id="1-default-behavior-if-no-overrides">1. <strong>Default Behavior (if no overrides)</strong></h3>
@@ -748,28 +1078,34 @@
 </ul>
 <h3 id="2-using-include_channels">2. <strong>Using <code>include_channels</code></strong></h3>
 <ul>
-<li>This is a list of fully qualified channel names like <code>002_CD44</code>, <code>001_DAPI</code>.</li>
+<li>This is a list of channel names like <code>002_CD44</code>, <code>001_DAPI</code>.</li>
 <li>If set, only these channels are included for a given marker — <strong>they override automatic selection</strong>.</li>
 <li>Use this to <strong>force inclusion of earlier rounds</strong> or <strong>include duplicates</strong> for comparison.</li>
 </ul>
 <h3 id="3-using-exclude_channels">3. <strong>Using <code>exclude_channels</code></strong></h3>
 <ul>
-<li>This is a list of full channel names to skip.</li>
+<li>This is a list of channel names to skip.</li>
 <li>If <code>include_channels</code> is not set, <code>exclude_channels</code> can be used to <strong>remove undesired versions</strong>.</li>
 <li>Example: to exclude <code>003_pRB</code> in favor of earlier versions (or none).</li>
 </ul>
-<h3 id="4-using-use_channels">4. <strong>Using <code>use_channels</code></strong></h3>
+<h3 id="4-using-use_markers">4. <strong>Using <code>use_markers</code></strong></h3>
 <ul>
 <li>This is a list of <strong>base marker names</strong> (like <code>DAPI</code>, <code>pRB</code>, <code>CD44</code>) <strong>after stripping the round prefix</strong>.</li>
-<li>After all other filtering, <code>use_channels</code> is applied as a final filter.</li>
+<li>After all other filtering, <code>use_markers</code> is applied as a final filter.</li>
 <li>Use it to <strong>narrow the final channel set to specific markers</strong>, regardless of which round was selected.</li>
+</ul>
+<h3 id="5-using-ignore_markers">5. <strong>Using <code>ignore_markers</code></strong></h3>
+<ul>
+<li>This is a list of <strong>base marker names</strong> to exclude from the final set.</li>
+<li>It is applied after <code>use_markers</code>.</li>
+<li>Use it to <strong>discard specific markers</strong> entirely (e.g. if a marker failed quality control across all rounds).</li>
 </ul>
 <hr />
 <h2 id="examples">Examples</h2>
 <h3 id="example-1-default-automatic-selection">Example 1: Default automatic selection</h3>
 <pre><code class="language-yaml">include_channels: []
 exclude_channels: []
-use_channels: []
+use_markers: []
 </code></pre>
 <ul>
 <li>Keeps only the <strong>latest round per marker</strong>, and <code>001_DAPI</code>.</li>
@@ -777,7 +1113,7 @@ use_channels: []
 <hr />
 <h3 id="example-2-force-earlier-prb-round-to-be-used">Example 2: Force earlier pRB round to be used</h3>
 <pre><code class="language-yaml">include_channels: [&quot;001_pRB&quot;]
-use_channels: []
+use_markers: []
 </code></pre>
 <ul>
 <li><code>001_pRB</code> is used even if <code>003_pRB</code> exists.</li>
@@ -791,7 +1127,7 @@ use_channels: []
 </ul>
 <hr />
 <h3 id="example-4-only-process-dapi-and-cd44">Example 4: Only process DAPI and CD44</h3>
-<pre><code class="language-yaml">use_channels: [&quot;DAPI&quot;, &quot;CD44&quot;]
+<pre><code class="language-yaml">use_markers: [&quot;DAPI&quot;, &quot;CD44&quot;]
 </code></pre>
 <ul>
 <li>Filters final output to only include these two base markers.</li>
@@ -851,7 +1187,7 @@ use_channels: []
 
 
 
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
 
 
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

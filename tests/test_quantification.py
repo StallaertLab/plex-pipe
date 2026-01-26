@@ -39,20 +39,20 @@ def test_validate_inputs_raises_on_missing_mask_or_channel(sdata_read):
     sdata = sdata_read
 
     qc = QuantificationController(
-        mask_keys={"cell": "instanseg_cell"}, to_quantify=["DAPI"]
+        mask_keys={"cell": "instanseg_cell"}, markers_to_quantify=["DAPI"]
     )
     qc.validate_sdata_as_input(sdata)
 
     ch = "ch1"
     qc = QuantificationController(
-        mask_keys={"cell": "instanseg_cell"}, to_quantify=[ch]
+        mask_keys={"cell": "instanseg_cell"}, markers_to_quantify=[ch]
     )
     with pytest.raises(ValueError) as er:
         qc.validate_sdata_as_input(sdata)
     assert f"Channel '{ch}' not found in sdata" in str(er.value)
 
     mask = "x"
-    qc = QuantificationController(mask_keys={"cell": mask}, to_quantify=[ch])
+    qc = QuantificationController(mask_keys={"cell": mask}, markers_to_quantify=[ch])
 
     with pytest.raises(ValueError) as er:
         qc.validate_sdata_as_input(sdata)
@@ -75,7 +75,7 @@ def test_overwrite_semantics_respected_on_existing_table(sdata_read):
     # overwrite=False -> error
     qc_no_over = QuantificationController(
         mask_keys={"cell": mask},
-        to_quantify=[ch],
+        markers_to_quantify=[ch],
         table_name=table_name,
         overwrite=False,
     )
@@ -86,7 +86,7 @@ def test_overwrite_semantics_respected_on_existing_table(sdata_read):
     # overwrite=True -> should succeed
     qc_over = QuantificationController(
         mask_keys={"cell": mask},
-        to_quantify=[ch],
+        markers_to_quantify=[ch],
         table_name=table_name,
         overwrite=True,
     )
@@ -109,7 +109,7 @@ def test_run_writes_new_table_and_aligns_vars_obs(sdata_read):
 
     qc = QuantificationController(
         mask_keys={"cell": mask_key},
-        to_quantify=[ch_key],
+        markers_to_quantify=[ch_key],
         table_name=new_table,
         mask_to_annotate=mask_key,
         overwrite=False,
@@ -154,7 +154,7 @@ def test_run_logs_error_on_write_failure(sdata_read, caplog):
 
     qc = QuantificationController(
         mask_keys={"cell": mask_key},
-        to_quantify=[ch_key],
+        markers_to_quantify=[ch_key],
         table_name=new_table,
         overwrite=False,
     )
@@ -193,7 +193,7 @@ def test_quantify_all_channels_if_none_specified(sdata_read):
     sdata = sdata_read
     mask_key = "instanseg_cell"
 
-    # Do not specify `to_quantify`
+    # Do not specify `markers_to_quantify`
     qc = QuantificationController(
         mask_keys={"cell": mask_key},
         table_name="test_table",
@@ -313,7 +313,7 @@ def test_get_channel_squeezes_singleton_dimensions(sdata_read):
 
 def test_run_calls_qc_masker_if_enabled(sdata_read):
     """
-    Verifies that the QcShapeMasker is run during quantification if quantify_qc is True.
+    Verifies that the QcShapeMasker is run during quantification if add_qc_masks is True.
     """
     sdata = sdata_read
     mask_key, ch_key = "instanseg_cell", "DAPI"
@@ -324,9 +324,9 @@ def test_run_calls_qc_masker_if_enabled(sdata_read):
     ) as mock_qc_masker:
         qc = QuantificationController(
             mask_keys={"cell": mask_key},
-            to_quantify=[ch_key],
+            markers_to_quantify=[ch_key],
             table_name=new_table,
-            quantify_qc=True,
+            add_qc_masks=True,
             qc_prefix="test_qc",
             overwrite=True,
         )
@@ -335,6 +335,7 @@ def test_run_calls_qc_masker_if_enabled(sdata_read):
         mock_qc_masker.assert_called_once_with(
             table_name=new_table,
             qc_prefix="test_qc",
+            object_name="cell",
             write_to_disk=False,
         )
         mock_qc_masker.return_value.run.assert_called_once_with(sdata)
@@ -342,7 +343,7 @@ def test_run_calls_qc_masker_if_enabled(sdata_read):
 
 def test_run_does_not_call_qc_masker_if_disabled(sdata_read):
     """
-    Verifies that the QcShapeMasker is NOT run if quantify_qc is False.
+    Verifies that the QcShapeMasker is NOT run if add_qc_masks is False.
     """
     sdata = sdata_read
     mask_key, ch_key = "instanseg_cell", "DAPI"
@@ -353,9 +354,9 @@ def test_run_does_not_call_qc_masker_if_disabled(sdata_read):
     ) as mock_qc_masker:
         qc = QuantificationController(
             mask_keys={"cell": mask_key},
-            to_quantify=[ch_key],
+            markers_to_quantify=[ch_key],
             table_name=new_table,
-            quantify_qc=False,
+            add_qc_masks=False,
             overwrite=True,
         )
         qc.run(sdata)

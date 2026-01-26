@@ -74,27 +74,29 @@ class QcSettings(BaseModel):
     prefix: str
 
 
-DEFAULT_MORPHOLOGICAL_FEATURES = [
+DEFAULT_morphological_properties = [
     "label",
+    "centroid",
     "area",
     "eccentricity",
     "solidity",
     "perimeter",
-    "centroid",
     "euler_number",
 ]
 
-DEFAULT_INTENSITY_METRICS = ["mean", "median"]
+DEFAULT_intensity_properties = ["mean", "median"]
 
 
 class QuantTask(BaseModel):
     name: str
     masks: Dict[str, str]
     layer_connection: str | None = None
-    morphological_features: List[str] = DEFAULT_MORPHOLOGICAL_FEATURES
-    intensity_metrics: List[str] = DEFAULT_INTENSITY_METRICS
+    morphological_properties: List[str] = DEFAULT_morphological_properties
+    intensity_properties: List[str] = DEFAULT_intensity_properties
+    markers_to_quantify: Optional[List[str]] = None
+    add_qc_masks: bool = False
 
-    @field_validator("morphological_features")
+    @field_validator("morphological_properties")
     @classmethod
     def ensure_label_in_features(cls, v: List[str]) -> List[str]:
         if "label" not in v:

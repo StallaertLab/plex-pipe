@@ -97,6 +97,11 @@ def main() -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     content = generate_docs()
+    if output_path.exists():
+        with open(output_path, encoding="utf-8") as f:
+            if f.read() == content:
+                return
+
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(content)
 

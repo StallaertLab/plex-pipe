@@ -77,8 +77,9 @@ def main():
             table_name=table_name,
             mask_keys=masks_keys,
             mask_to_annotate=mask_to_annotate,
+            markers_to_quantify=quant.markers_to_quantify,
             overwrite=True,
-            quantify_qc=True,
+            add_qc_masks=quant.add_qc_masks,
             qc_prefix=qc_prefix,
         )
 

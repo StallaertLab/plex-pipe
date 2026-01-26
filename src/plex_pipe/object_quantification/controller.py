@@ -12,8 +12,8 @@ from spatialdata.models import TableModel
 from plex_pipe.object_quantification.metrics import METRIC_REGISTRY
 from plex_pipe.object_quantification.qc_shape_masker import QcShapeMasker
 from plex_pipe.utils.config_schema import (
-    DEFAULT_INTENSITY_METRICS,
-    DEFAULT_MORPHOLOGICAL_FEATURES,
+    DEFAULT_intensity_properties,
+    DEFAULT_morphological_properties,
 )
 
 
@@ -36,7 +36,7 @@ class QuantificationController:
             table should be connected.
         channels: A list of image channel keys to quantify. If None, all images
             in the SpatialData object are quantified.
-        quantify_qc: If True, runs quality control masking after quantification.
+        add_qc_masks: If True, runs quality control masking after quantification.
         qc_prefix: Prefix for the quality control exclusion columns.
         overwrite: If True, allows overwriting an existing table of the same name.
     """
@@ -46,12 +46,12 @@ class QuantificationController:
         mask_keys: Dict[str, str],
         table_name: str = "quantification",
         mask_to_annotate: Optional[str] = None,
-        to_quantify: Optional[List[str]] = None,
-        quantify_qc=False,
+        markers_to_quantify: Optional[List[str]] = None,
+        add_qc_masks=False,
         qc_prefix: Optional[str] = "qc_exclude",
         overwrite: bool = False,
-        morphological_features: Optional[List[str]] = None,
-        intensity_metrics: Optional[List[str]] = None,
+        morphological_properties: Optional[List[str]] = None,
+        intensity_properties: Optional[List[str]] = None,
     ) -> None:
 
         # this requirement is independent of specific sdata instance
@@ -62,21 +62,23 @@ class QuantificationController:
 
         self.mask_keys = mask_keys.copy()
         self.mask_to_annotate = mask_to_annotate
-        self.channels = to_quantify
+        self.channels = markers_to_quantify
         self.table_name = table_name
-        self.quantify_qc = quantify_qc
+        self.add_qc_masks = add_qc_masks
         self.qc_prefix = qc_prefix
         self.overwrite = overwrite
-        self.morphological_features = (
-            morphological_features or DEFAULT_MORPHOLOGICAL_FEATURES
+        self.morphological_properties = (
+            morphological_properties or DEFAULT_morphological_properties
         )
-        self.intensity_metrics = intensity_metrics or DEFAULT_INTENSITY_METRICS
+        self.intensity_properties = intensity_properties or DEFAULT_intensity_properties
 
-        if "label" not in self.morphological_features:
-            raise ValueError("The 'morphological_features' list must contain 'label'.")
+        if "label" not in self.morphological_properties:
+            raise ValueError(
+                "The 'morphological_properties' list must contain 'label'."
+            )
 
         # Validate intensity metrics
-        for m in self.intensity_metrics:
+        for m in self.intensity_properties:
             if m not in METRIC_REGISTRY:
                 raise ValueError(
                     f"Unknown intensity metric: '{m}'. Available: {list(METRIC_REGISTRY.keys())}"
@@ -198,7 +200,7 @@ class QuantificationController:
             logger.info(f"Quantifying morphology features for mask '{mask_suffix}'")
             morph_props = regionprops_table(
                 mask,
-                properties=self.morphological_features,
+                properties=self.morphological_properties,
             )
             morph_df = pd.DataFrame(morph_props)
             morph_df = morph_df.rename(
@@ -371,7 +373,7 @@ class QuantificationController:
         extra_props = []
         rename_map = {}  # Maps regionprops output name -> user friendly name
 
-        for m_name in self.intensity_metrics:
+        for m_name in self.intensity_properties:
             metric = METRIC_REGISTRY[m_name]
             if metric.is_extra:
                 extra_props.append(metric.func)
@@ -515,10 +517,20 @@ class QuantificationController:
         sdata[self.table_name] = adata
 
         # add quantification of qc if requested
-        if self.quantify_qc:
+        if self.add_qc_masks:
+            # Determine the object suffix used for centroids based on the annotated mask
+            # Default to 'cell' if mask_to_annotate is not set or not found
+            object_suffix = "cell"
+            if self.mask_to_annotate:
+                for suffix, mask_name in self.mask_keys.items():
+                    if mask_name == self.mask_to_annotate:
+                        object_suffix = suffix
+                        break
+
             qc_masker = QcShapeMasker(
                 table_name=self.table_name,
                 qc_prefix=self.qc_prefix,
+                object_name=object_suffix,
                 write_to_disk=False,
             )
             qc_masker.run(sdata)

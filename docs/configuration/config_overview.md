@@ -3,6 +3,8 @@
 The configuration file serves as the central blueprint for the PlexPipe analysis.
 It provides parameters for all stages of the pipeline divided into sections corresponding to the [analysis steps](../what_is_plexpipe.md).
 
+This configuration is defined in a YAML file; you can find a deep dive into the syntax at [YAML official website](https://yaml.org/about/), but the description and examples below should be more than enough to get you started.
+
 ---
 ### Config Validation
 
@@ -35,9 +37,13 @@ Full example configuration files can be found in the [examples folder](https://g
 
 ---
 
+---
+
+The following sections detail the configuration parameters for each step of the pipeline.
+
 ## General Settings
 
-Global paths and analysis naming.
+This section defines the fundamental paths and naming conventions for the analysis run, including the source image directory and the output location.
 
 ```yaml
 # -----------------------------------------------------------------------------
@@ -58,6 +64,8 @@ general:
 | `log_dir`                  | `Path` (optional)       | Custom log directory. Defaults to `analysis_dir/logs`.   |
 
 ## Core Detection
+
+This section configures the automatic detection of tissue cores. It specifies the image used for detection and the parameters for the Segment Anything Model (SAM2) to accurately identify core boundaries.
 
 ```yaml
 ######################################################
@@ -93,6 +101,8 @@ core_detection:
 For detailed examples of how to configure SAM2 using various parameter settings, please refer to the official [SAM2 repository](https://github.com/facebookresearch/sam2).
 
 ## Core Cutting
+
+This section controls the extraction of individual cores from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.
 
 ```yaml
 ######################################################
@@ -193,16 +203,75 @@ For a complete list of available operations and their parameters, see [Processor
 
 ## Quality Control
 
-## Quantification
+This section manages quality control parameters, specifically defining prefixes for exclusion masks. These masks are used to filter out artifacts or unwanted regions from downstream analysis.
 
 ```yaml
-
-
+######################################################
+# qc
+######################################################
+qc:
+  prefix: qc_exclude
 ```
+
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `prefix` | `str` (optional) | Prefix for shapes used for quality control exclusion. Shapes named `{prefix}_{marker}` will be used to mask out objects for specific markers. |
+
+## Quantification
+
+The `quant` section allows you to define one or more quantification tasks.
+Each entry in the list corresponds to a separate AnnData table that will be generated and stored in the SpatialData object.
+This is useful if you have multiple segmentation results (e.g., cells and nuclei, or different cell segmentation models) and want to quantify them independently.
+Example below specifies only a single AnnData table to be created ('instanseg_table').
+
+```yaml
+######################################################
+# quantification
+######################################################
+quant:
+  - name: instanseg_table
+    masks:
+      nucleus: instanseg_nucleus
+      cell: instanseg_cell
+      ring: ring
+      cyto: cytoplasm
+    layer_connection: instanseg_cell
+    morphological_properties:
+      - label
+      - centroid
+      - area
+    intensity_properties:
+      - median
+    markers_to_quantify:
+      - DAPI
+      - HLA1
+    add_qc_masks: True
+```
+
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `str` | Name of the output AnnData table to be saved in the SpatialData object. |
+| `masks` | `dict[str, str]` | Dictionary mapping suffixes (e.g., nucleus, cell) to the actual mask layer names in the SpatialData object. |
+| `layer_connection` | `str` (optional) | The mask layer name to which the table should be linked (e.g. for visualization in Napari Spatialdata plugin). |
+| `morphological_properties` | `list[str]` (optional) | List of morphological features to calculate. 'Label' is added automatically if absent from the custom list to identify objects. Defaults to ["label", "centroid", "area", "eccentricity", "solidity", "perimeter", "euler_number"].|
+| `intensity_properties` | `list[str]` (optional) | List of intensity metrics to calculate. Defaults to ['mean', 'median']. |
+| `markers_to_quantify` | `list[str]` (optional) | List of specific markers to quantify itensity properties. If omitted, all available channels are quantified. |
+| `add_qc_masks` | `bool` (optional) | If True, uses polygons defined in the QC step to create a mask layer in the AnnData table indicating which objects are from the accepted regions. Defaults to False. |
+
+For `morphological_properties`, any property supported by skimage.measure.regionprops can be used.
+
+For `intensity_properties`, currently implemented metrics include `mean`, `median` `min`, `max`, `std` and `sum`. If you require other metrics, please open an issue on [GitHub](https://github.com/StallaertLab/plex-pipe/issues).
+
+
 
 ## Storage Settings
 
+This section defines the storage parameters for the resulting SpatialData objects (Zarr files). It controls performance-related settings such as chunk sizes and the generation of multi-scale image pyramids.
+
 ```yaml
+######################################################
+# storage settings
+######################################################
 sdata_storage:
   chunk_size: [1, 512, 512]
   max_pyramid_level: 3

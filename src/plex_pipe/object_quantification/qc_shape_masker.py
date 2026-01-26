@@ -104,6 +104,7 @@ class QcShapeMasker:
             x.split("_")[0] for x in self.sdata[self.table_name].var.index.tolist()
         ]
 
+        found_any_qc = False
         # group by marker
         for marker, group in groupby(enumerate(markers), key=lambda t: t[1]):
             # collect the contiguous indices for this marker
@@ -113,11 +114,17 @@ class QcShapeMasker:
             shapes_key = f"{self.qc_prefix}_{marker}"
             if shapes_key not in self.sdata:
                 # no QC shapes for this marker
+                logger.debug(
+                    f"No QC shapes found for marker '{marker}' (key: {shapes_key})."
+                )
                 continue
 
             shapes_gdf = self.sdata[shapes_key]
             polys = list(shapes_gdf.geometry.values)
             if not polys:
+                logger.debug(
+                    f"QC shape element '{shapes_key}' exists but contains no polygons."
+                )
                 continue
 
             # compute per-observation pass mask once for the marker
@@ -125,6 +132,16 @@ class QcShapeMasker:
 
             # broadcast to the whole contiguous block of columns
             mask[:, start:end] = mask_column[:, None]
+
+            logger.info(
+                f"Applied QC exclusion for marker '{marker}' using shapes '{shapes_key}'."
+            )
+            found_any_qc = True
+
+        if not found_any_qc:
+            logger.warning(
+                f"QC quantification was requested, but no exclusion shapes were found matching prefix '{self.qc_prefix}_' for any marker in the table."
+            )
 
         return mask
 
