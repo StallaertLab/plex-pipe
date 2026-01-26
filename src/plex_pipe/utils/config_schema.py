@@ -16,6 +16,7 @@ from pydantic import (
     BaseModel,
     Field,
     create_model,
+    field_validator,
     model_validator,
 )
 
@@ -73,19 +74,29 @@ class QcSettings(BaseModel):
     prefix: str
 
 
+DEFAULT_MORPHOLOGICAL_FEATURES = [
+    "label",
+    "area",
+    "eccentricity",
+    "solidity",
+    "perimeter",
+    "centroid",
+    "euler_number",
+]
+
+
 class QuantTask(BaseModel):
     name: str
     masks: Dict[str, str]
     layer_connection: str | None = None
-    morphological_features: List[str] = [
-        "label",
-        "area",
-        "eccentricity",
-        "solidity",
-        "perimeter",
-        "centroid",
-        "euler_number",
-    ]
+    morphological_features: List[str] = DEFAULT_MORPHOLOGICAL_FEATURES
+
+    @field_validator("morphological_features")
+    @classmethod
+    def ensure_label_in_features(cls, v: List[str]) -> List[str]:
+        if "label" not in v:
+            v.append("label")
+        return v
 
 
 class StorageSettings(BaseModel):

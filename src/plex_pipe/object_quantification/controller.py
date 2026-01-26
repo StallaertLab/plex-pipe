@@ -10,6 +10,7 @@ from skimage.measure import regionprops_table
 from spatialdata.models import TableModel
 
 from plex_pipe.object_quantification.qc_shape_masker import QcShapeMasker
+from plex_pipe.utils.config_schema import DEFAULT_MORPHOLOGICAL_FEATURES
 from plex_pipe.utils.im_utils import calculate_median
 
 
@@ -46,6 +47,7 @@ class QuantificationController:
         quantify_qc=False,
         qc_prefix: Optional[str] = "qc_exclude",
         overwrite: bool = False,
+        morphological_features: Optional[List[str]] = None,
     ) -> None:
 
         # this requirement is independent of specific sdata instance
@@ -61,6 +63,12 @@ class QuantificationController:
         self.quantify_qc = quantify_qc
         self.qc_prefix = qc_prefix
         self.overwrite = overwrite
+        self.morphological_features = (
+            morphological_features or DEFAULT_MORPHOLOGICAL_FEATURES
+        )
+
+        if "label" not in self.morphological_features:
+            raise ValueError("The 'morphological_features' list must contain 'label'.")
 
     ############################################################################
     # Validate inputs
@@ -178,15 +186,7 @@ class QuantificationController:
             logger.info(f"Quantifying morphology features for mask '{mask_suffix}'")
             morph_props = regionprops_table(
                 mask,
-                properties=[
-                    "label",
-                    "area",
-                    "eccentricity",
-                    "solidity",
-                    "perimeter",
-                    "centroid",
-                    "euler_number",
-                ],
+                properties=self.morphological_features,
             )
             morph_df = pd.DataFrame(morph_props)
             morph_df = morph_df.rename(
