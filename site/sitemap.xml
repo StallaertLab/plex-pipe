@@ -2,42 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
+    </url>
+    <url>
+         <loc>https://stallaertlab.github.io/plex_pipe/analysis_steps/</loc>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/api/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/what_is_plexpipe/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/configuration/channel-selection/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/configuration/config_overview/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex_pipe/configuration/processors/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <loc>https://stallaertlab.github.io/plex_pipe/configuration/reference/</loc>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/usage/execution_modes/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/usage/globus/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/usage/input_data/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
+    </url>
+    <url>
+         <loc>https://stallaertlab.github.io/plex_pipe/usage/installation/</loc>
+         <lastmod>2026-01-28</lastmod>
     </url>
     <url>
          <loc>https://stallaertlab.github.io/plex_pipe/usage/processors/</loc>
-         <lastmod>2026-01-26</lastmod>
+         <lastmod>2026-01-28</lastmod>
     </url>
 </urlset>

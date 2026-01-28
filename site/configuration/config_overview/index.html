@@ -14,7 +14,7 @@
         <link rel="prev" href="../../usage/globus/">
 
 
-        <link rel="next" href="../channel-selection/">
+        <link rel="next" href="../reference/">
 
 
 
@@ -266,7 +266,7 @@
 
 
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../what_is_plexpipe/" class="md-nav__link">
 
 
 
@@ -293,7 +293,7 @@
 
 
     <li class="md-nav__item">
-      <a href="../../what_is_plexpipe/" class="md-nav__link">
+      <a href="../../analysis_steps/" class="md-nav__link">
 
 
 
@@ -361,6 +361,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../../usage/installation/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Installation
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
 
 
 
@@ -463,10 +491,10 @@
 
 
 
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
 
 
-          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
 
 
 
@@ -484,8 +512,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
 
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_4">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
             <span class="md-nav__icon md-icon"></span>
 
 
@@ -692,6 +720,34 @@
 
 </nav>
 
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Reference
+
+
+
+  </span>
+
+
+
+      </a>
     </li>
 
 
@@ -998,14 +1054,10 @@ The backslash (\) is a "special character" in YAML. Using it can cause errors or
 <h2 id="examples">Examples</h2>
 <p>Full example configuration files can be found in the <a href="https://github.com/StallaertLab/plex-pipe/tree/main/examples">examples folder</a>.</p>
 <hr />
-<hr />
 <p>The following sections detail the configuration parameters for each step of the pipeline.</p>
 <h2 id="general-settings">General Settings</h2>
 <p>This section defines the fundamental paths and naming conventions for the analysis run, including the source image directory and the output location.</p>
-<pre><code class="language-yaml"># -----------------------------------------------------------------------------
-# 1. General Settings
-# -----------------------------------------------------------------------------
-general:
+<pre><code class="language-yaml">general:
   image_dir: C:/path/to/images
   analysis_name: experiment_01
   analysis_root_dir: C:/analysis_out
@@ -1044,10 +1096,7 @@ general:
 </table>
 <h2 id="core-detection">Core Detection</h2>
 <p>This section configures the automatic detection of tissue cores. It specifies the image used for detection and the parameters for the Segment Anything Model (SAM2) to accurately identify core boundaries.</p>
-<pre><code class="language-yaml">######################################################
-# core detection
-######################################################
-core_detection:
+<pre><code class="language-yaml">core_detection:
   detection_image: &quot;BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif&quot;
   core_info_file_path: null
 
@@ -1124,12 +1173,9 @@ core_detection:
 <p>For detailed examples of how to configure SAM2 using various parameter settings, please refer to the official <a href="https://github.com/facebookresearch/sam2">SAM2 repository</a>.</p>
 <h2 id="core-cutting">Core Cutting</h2>
 <p>This section controls the extraction of individual cores from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.</p>
-<pre><code class="language-yaml">######################################################
-# core cutting
-######################################################
-core_cutting:
-  cores_dir_tif: null # =&gt; ${analysis_dir}/cores
-  cores_dir_output: null # =&gt; ${analysis_dir}/temp
+<pre><code class="language-yaml">core_cutting:
+  cores_dir_tif: null
+  cores_dir_output: null
 
   include_channels:
   exclude_channels:
@@ -1205,10 +1251,7 @@ core_cutting:
 </table>
 <p>Parameters <code>include_channels</code>, <code>exclude_channels</code>, <code>use_markers</code> and <code>ignore_markers</code> provide a fine-grained control over which imaging channels are included in processing. See <a href="../channel-selection/">Channel Selection Logic</a> for details.</p>
 <h2 id="image-processing">Image Processing</h2>
-<pre><code class="language-yaml"># -----------------------------------------------------------------------------
-# 4. Image Processing (Filtering, Segmentation, Buiding Derivative Masks etc.)
-# -----------------------------------------------------------------------------
-additional_elements:
+<pre><code class="language-yaml">additional_elements:
 
   - category: image_filter
     type: normalize
@@ -1246,7 +1289,7 @@ additional_elements:
       inner: 2
     keep: true
 </code></pre>
-<p>The pipeline allows for flexible image processing steps defined in the <a href="..">Processors</a> list. Each entry in this list is a processing unit that takes inputs (images or labels), performs an operation, and produces outputs.</p>
+<p>The pipeline allows for flexible image processing steps defined in the <a href="../../usage/processors/">Processors</a> list. Each entry in this list is a processing unit that takes inputs (images or labels), performs an operation, and produces outputs.</p>
 <h3 id="structure-of-an-element">Structure of an Element</h3>
 <table>
 <thead>
@@ -1292,10 +1335,7 @@ additional_elements:
 <p>For a complete list of available operations and their parameters, see <a href="../../usage/processors/">Processors</a>.</p>
 <h2 id="quality-control">Quality Control</h2>
 <p>This section manages quality control parameters, specifically defining prefixes for exclusion masks. These masks are used to filter out artifacts or unwanted regions from downstream analysis.</p>
-<pre><code class="language-yaml">######################################################
-# qc
-######################################################
-qc:
+<pre><code class="language-yaml">qc:
   prefix: qc_exclude
 </code></pre>
 <table>
@@ -1319,10 +1359,7 @@ qc:
 Each entry in the list corresponds to a separate AnnData table that will be generated and stored in the SpatialData object.
 This is useful if you have multiple segmentation results (e.g., cells and nuclei, or different cell segmentation models) and want to quantify them independently.
 Example below specifies only a single AnnData table to be created ('instanseg_table').</p>
-<pre><code class="language-yaml">######################################################
-# quantification
-######################################################
-quant:
+<pre><code class="language-yaml">quant:
   - name: instanseg_table
     masks:
       nucleus: instanseg_nucleus
@@ -1391,10 +1428,7 @@ quant:
 <p>For <code>intensity_properties</code>, currently implemented metrics include <code>mean</code>, <code>median</code> <code>min</code>, <code>max</code>, <code>std</code> and <code>sum</code>. If you require other metrics, please open an issue on <a href="https://github.com/StallaertLab/plex-pipe/issues">GitHub</a>.</p>
 <h2 id="storage-settings">Storage Settings</h2>
 <p>This section defines the storage parameters for the resulting SpatialData objects (Zarr files). It controls performance-related settings such as chunk sizes and the generation of multi-scale image pyramids.</p>
-<pre><code class="language-yaml">######################################################
-# storage settings
-######################################################
-sdata_storage:
+<pre><code class="language-yaml">sdata_storage:
   chunk_size: [1, 512, 512]
   max_pyramid_level: 3
   downscale: 2
