@@ -1,56 +1,27 @@
-# Analysis Steps
+# PlexPipe - Multiplexed Image Analysis Pipeline
 
-PlexPipe processes multiplexed images through a series of modular steps, transforming raw whole-slide images into quantitative single-cell data.
+<style>
+  .logo-dark { display: none; }
+  [data-md-color-scheme="slate"] .logo-light { display: none; }
+  [data-md-color-scheme="slate"] .logo-dark { display: inline; }
+</style>
 
-## 1. Core Detection
+![Logo](images/PlexPipe_logo_small.png){ .logo-light }
+![Logo](images/PlexPipe_logo_small_dark_transparent.png){ .logo-dark }
 
-**Goal:** Identify and define the boundaries of tissue cores within a whole-slide image.
+[![Tests](https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg)](https://github.com/StallaertLab/plex-pipe/actions)
+[![codecov](https://codecov.io/github/StallaertLab/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/StallaertLab/plex-pipe)
+![Python Versions](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-green)
 
-This step uses the **Segment Anything Model 2 (SAM2)** to automatically detect tissue cores on a specified detection image (e.g., DAPI). The pipeline analyzes the image pyramid to find regions of interest, filtering them based on area, intensity, and stability scores.
+## Overview
 
-*   **Input:** A representative whole-slide image (usually DAPI).
-*   **Output:** A list of core coordinates and masks.
+**PlexPipe** processes multiplexed images through a series of [modular steps](analysis_steps.md), transforming raw whole-slide TIFF images into quantitative single-cell data.
 
-## 2. Core Cutting
+## Key Features
 
-**Goal:** Extract individual cores into manageable, independent datasets.
-
-Once cores are defined, the pipeline extracts these regions from the original OME-TIFF files. This step handles complex **channel selection logic**, allowing you to merge markers from different imaging rounds, exclude specific channels, or select the best version of a repeated marker.
-
-*   **Input:** Raw OME-TIFF images and core coordinates.
-*   **Output:** Individual **SpatialData** (Zarr) objects for each core.
-
-## 3. Image Processing
-
-**Goal:** Enhance images and segment biological objects.
-
-This is a highly flexible stage defined by a list of processors in the configuration. It supports:
-
-*   **Image Filtering:** Operations like normalization, denoising, and computing means.
-*   **Object Segmentation:** Using deep learning models (e.g., **Cellpose**, **InstanSeg**) to identify nuclei and cells.
-*   **Mask Building:** Creating derivative masks, such as cytoplasmic rings or combining existing masks via boolean operations.
-
-*   **Input:** Core SpatialData objects.
-*   **Output:** Processed image layers and segmentation labels stored within the SpatialData object.
-
-## 4. Quality Control (QC)
-
-**Goal:** Exclude artifacts and ensure data quality.
-
-The pipeline integrates manual QC by recognizing exclusion shapes drawn by users (e.g., in Napari). Regions marked with specific prefixes (e.g., `qc_exclude`) are used to mask out cells or areas that should not be quantified, such as folded tissue or debris.
-
-*   **Input:** User-defined exclusion shapes.
-*   **Output:** Masked regions to be ignored during quantification.
-
-## 5. Quantification
-
-**Goal:** Generate single-cell quantitative data.
-
-The final step extracts features from the segmented objects. It calculates:
-*   **Morphological Properties:** Area, centroid, eccentricity, etc.
-*   **Intensity Properties:** Mean, median, min, max expression levels for specified markers.
-
-The results are stored as **AnnData** tables within the SpatialData object, linking spatial locations to quantitative profiles for downstream analysis.
-
-*   **Input:** Segmentation masks and intensity images.
-*   **Output:** AnnData tables containing single-cell feature matrices.
+* **Input Data:** The pipeline accepts sets of individual TIFF files. It follows the naming conventions used by the **Cell DIVE** system. For specific requirements regarding file naming, refer to [Input Data](usage/input_data.md).
+* **Remote Data Sourcing:** Seamlessly source and transfer large-scale imaging datasets from institutional endpoints or personal collections using [Globus](https://www.globus.org/). This ensures secure and reliable data movement directly into your processing environment (see: [Globus Integration](usage/globus.md)).
+* **Data Integration:** Outputs are stored as [SpatialData](https://spatialdata.scverse.org/en/latest/index.html) objects, making them ready for downstream analysis within the scverse ecosystem or interactive exploration via the [napari-spatialdata plugin](https://github.com/scverse/napari-spatialdata).
+* **Flexible Execution:** PlexPipe can be implemented in two ways based on your needs:
+    * **Local/Interactive:** Utilize the provided Python scripts or Jupyter Notebooks for smaller datasets or pipeline prototyping (see [Execution Modes](usage/execution_modes.md)).
+    * **High-Throughput:** For parallel processing and large-scale workflows, use the Nextflow-optimized version: [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow).

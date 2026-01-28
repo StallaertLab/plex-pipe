@@ -25,15 +25,20 @@ extra:
 extra_css:
   - stylesheets/extra.css
 
+markdown_extensions:
+  - attr_list
+
 nav:
-  - What is PlexPipe?: index.md
-  - Analysis Steps: what_is_plexpipe.md
+  - What is PlexPipe?: what_is_plexpipe.md
+  - Analysis Steps: analysis_steps.md
   - How To Use:
+    - Installation: usage/installation.md
     - Execution Modes: usage/execution_modes.md
     - Input Data: usage/input_data.md
     - Globus Integration: usage/globus.md
     - Config File:
       - Overview: configuration/config_overview.md
+      - Reference: configuration/reference.md
       - Channel Selection: configuration/channel-selection.md
     - Processors: usage/processors.md
   - API Reference: api.md

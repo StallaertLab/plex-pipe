@@ -93,7 +93,7 @@ def generate_docs() -> str:
 def main() -> None:
     """Generates and writes the documentation to the default path."""
     # ensures UTF-8 encoding and avoids shell redirection issues
-    output_path = Path(__file__).parents[3] / "docs" / "configuration" / "processors.md"
+    output_path = Path(__file__).parents[3] / "docs" / "usage" / "processors.md"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     content = generate_docs()

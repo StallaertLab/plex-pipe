@@ -37,8 +37,6 @@ Full example configuration files can be found in the [examples folder](https://g
 
 ---
 
----
-
 The following sections detail the configuration parameters for each step of the pipeline.
 
 ## General Settings
@@ -46,9 +44,6 @@ The following sections detail the configuration parameters for each step of the 
 This section defines the fundamental paths and naming conventions for the analysis run, including the source image directory and the output location.
 
 ```yaml
-# -----------------------------------------------------------------------------
-# 1. General Settings
-# -----------------------------------------------------------------------------
 general:
   image_dir: C:/path/to/images
   analysis_name: experiment_01
@@ -68,9 +63,6 @@ general:
 This section configures the automatic detection of tissue cores. It specifies the image used for detection and the parameters for the Segment Anything Model (SAM2) to accurately identify core boundaries.
 
 ```yaml
-######################################################
-# core detection
-######################################################
 core_detection:
   detection_image: "BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif"
   core_info_file_path: null
@@ -105,12 +97,9 @@ For detailed examples of how to configure SAM2 using various parameter settings,
 This section controls the extraction of individual cores from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.
 
 ```yaml
-######################################################
-# core cutting
-######################################################
 core_cutting:
-  cores_dir_tif: null # => ${analysis_dir}/cores
-  cores_dir_output: null # => ${analysis_dir}/temp
+  cores_dir_tif: null
+  cores_dir_output: null
 
   include_channels:
   exclude_channels:
@@ -144,9 +133,6 @@ Parameters `include_channels`, `exclude_channels`, `use_markers` and `ignore_mar
 ## Image Processing
 
 ```yaml
-# -----------------------------------------------------------------------------
-# 4. Image Processing (Filtering, Segmentation, Buiding Derivative Masks etc.)
-# -----------------------------------------------------------------------------
 additional_elements:
 
   - category: image_filter
@@ -186,7 +172,7 @@ additional_elements:
     keep: true
 ```
 
-The pipeline allows for flexible image processing steps defined in the [Processors](..) list. Each entry in this list is a processing unit that takes inputs (images or labels), performs an operation, and produces outputs.
+The pipeline allows for flexible image processing steps defined in the [Processors](../usage/processors.md) list. Each entry in this list is a processing unit that takes inputs (images or labels), performs an operation, and produces outputs.
 
 ### Structure of an Element
 
@@ -206,9 +192,6 @@ For a complete list of available operations and their parameters, see [Processor
 This section manages quality control parameters, specifically defining prefixes for exclusion masks. These masks are used to filter out artifacts or unwanted regions from downstream analysis.
 
 ```yaml
-######################################################
-# qc
-######################################################
 qc:
   prefix: qc_exclude
 ```
@@ -225,9 +208,6 @@ This is useful if you have multiple segmentation results (e.g., cells and nuclei
 Example below specifies only a single AnnData table to be created ('instanseg_table').
 
 ```yaml
-######################################################
-# quantification
-######################################################
 quant:
   - name: instanseg_table
     masks:
@@ -269,9 +249,6 @@ For `intensity_properties`, currently implemented metrics include `mean`, `media
 This section defines the storage parameters for the resulting SpatialData objects (Zarr files). It controls performance-related settings such as chunk sizes and the generation of multi-scale image pyramids.
 
 ```yaml
-######################################################
-# storage settings
-######################################################
 sdata_storage:
   chunk_size: [1, 512, 512]
   max_pyramid_level: 3
