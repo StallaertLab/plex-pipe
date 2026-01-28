@@ -71,11 +71,6 @@ src/track_gardener/_version.py
 *.log
 *.stackdump
 
-# Optional: Exclude data directories if they don't belong in the repo
-data/raw/
-data/processed/
-data/results/
-
 # Temporary files and directories
 *.temp
 *.tmp
@@ -86,3 +81,6 @@ data/results/
 
 # test notebooks
 **/sandbox.ipynb
+
+# MkDocs site directory
+site/
