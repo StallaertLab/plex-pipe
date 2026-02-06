@@ -227,24 +227,29 @@ def test_list_globus_files_filtering(mock_create_tc, mock_globus_config):
     assert "/remote/path/image1.ome.tif" in files[0]  # Checks full path construction
 
 
-@patch("plex_pipe.core_cutting.file_io.imread")
+@patch("plex_pipe.core_cutting.file_io.TiffFile")
 @patch("plex_pipe.core_cutting.file_io.da.from_zarr")
 @patch("plex_pipe.core_cutting.file_io.zarr.open")
-def test_read_ome_tiff(mock_zarr_open, mock_da, mock_imread):
+def test_read_ome_tiff(mock_zarr_open, mock_da, mock_tifffile):
     """
     Verifies that OME-TIFFs are opened as Zarr stores for lazy loading.
     """
     # Setup mocks
-    mock_group = MagicMock()
+    mock_group = MagicMock(spec=file_io.zarr.Group)
     mock_group.attrs.asdict.return_value = {
         "multiscales": [{"datasets": [{"path": "0"}]}]
     }
     mock_zarr_open.return_value = mock_group
 
+    # Setup TiffFile context manager
+    mock_tif_instance = MagicMock()
+    mock_tifffile.return_value.__enter__.return_value = mock_tif_instance
+
     # Call function
     arr, store = file_io.read_ome_tiff("path.ome.tif")
 
-    # Check that it opened with aszarr=True (Efficient reading)
-    mock_imread.assert_called_with("path.ome.tif", aszarr=True)
+    # Check that TiffFile was used
+    mock_tifffile.assert_called_with("path.ome.tif")
+    mock_tif_instance.aszarr.assert_called()
     # Check it accessed the correct Zarr path
     mock_group.__getitem__.assert_called_with("0")

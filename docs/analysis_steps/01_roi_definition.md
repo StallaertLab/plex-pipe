@@ -1,5 +1,7 @@
 # ROI Definition
 
+## Overview
+
 The initial stage of the plex-pipe pipeline involves defining the coordinates for Regions of Interest (ROIs). These regions are subsequently extracted and processed as individual SpatialData objects.
 
 *   **Input:** A representative whole-slide image (usually DAPI).

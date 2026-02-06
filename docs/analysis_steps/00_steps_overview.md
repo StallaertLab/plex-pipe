@@ -2,7 +2,9 @@
 
 PlexPipe processes multiplexed images through a series of modular steps, transforming raw whole-slide images into quantitative single-cell data.
 
-To run the pipeline, users must provide the path to a [configuration file](../configuration/reference.md) that contains all necessary parameters.
+To run the pipeline, users must prepare a [configuration file](../configuration/reference.md) that contains parameters for all the steps of the pipeline.
+
+
 Note that Step 1 (ROI Definition) and Step 3 (Quality Control) require manual interaction through the Napari viewer interface.d
 
 ---
@@ -18,10 +20,10 @@ Note that Step 1 (ROI Definition) and Step 3 (Quality Control) require manual in
 
 ## 2. [ROI Cutting](02_core_cutting.md)
 
-**Goal:** Extract individual cores into separate SpatialData objects.
+**Goal:** Extract individual ROIs into separate SpatialData objects.
 
-*   **Input:** Raw OME-TIFF images and core coordinates.
-*   **Output:** Individual **SpatialData** (Zarr) objects for each core (images only).
+*   **Input:** Raw OME-TIFF images and ROI coordinates.
+*   **Output:** Individual **SpatialData** (Zarr) objects for each ROI (images only).
 
 ---
 

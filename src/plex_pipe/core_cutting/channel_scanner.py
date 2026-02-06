@@ -48,7 +48,7 @@ def scan_channels_from_list(
     for filepath in files:
         fname = os.path.basename(filepath)
 
-        match = re.match(r"[^_]+_(\d+)\.0\.4_R000_([^_]+)_(.*)\.ome\.tif+", fname)
+        match = re.match(r"[^_]+_(\d+)\.0\.4_R000_([^_]+)_(.*)\.tif{1,2}", fname)
         if not match:
             continue
 
@@ -70,7 +70,7 @@ def scan_channels_from_list(
     image_dict = dict(sorted(image_dict.items()))
 
     if not image_dict:
-        msg = f"No valid .0.4 OME-TIFF files found in {files}"
+        msg = f"No valid .0.4 TIF(F) files found in {files}"
         raise ValueError(msg)
 
     logger.info(f"Discovered {len(image_dict)} channels:")

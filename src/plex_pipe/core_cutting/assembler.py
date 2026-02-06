@@ -109,7 +109,7 @@ class CoreAssembler:
             del sdata[channel_name]
 
         # log the info
-        logger.info(f"Core '{core_id}' assembled with channels: {used_channels}")
+        logger.info(f"ROI '{core_id}' assembled with channels: {used_channels}")
 
         if self.cleanup:
             self._cleanup_core_files(core_path, used_channels)

@@ -29,8 +29,8 @@ nav:
   - What is PlexPipe?: what_is_plexpipe.md
   - Analysis Steps:
     - Overview: analysis_steps/00_steps_overview.md
-    - 01_ROI Definition: analysis_steps/01_core_definition.md
-    - 02_Core Cutting: analysis_steps/02_core_cutting.md
+    - 01_ROI Definition: analysis_steps/01_roi_definition.md
+    - 02_ROI Cutting: analysis_steps/02_roi_cutting.md
   - How To Use:
     - Installation: usage/installation.md
     - Execution Modes: usage/execution_modes.md

@@ -90,7 +90,7 @@ class CorePreparationController:
                 core_img = self.cutter.extract_core(full_img, row)
                 write_temp_tiff(core_img, core_id, channel, self.temp_dir)
                 self.ready_cores.setdefault(core_id, set()).add(channel)
-                logger.debug(f"Cut and saved core {core_id}, channel {channel}.")
+                logger.debug(f"Cut and saved ROI {core_id}, channel {channel}.")
         finally:
             # Ensures file is closed even if something fails mid-cut
             if hasattr(store, "close"):
@@ -101,7 +101,7 @@ class CorePreparationController:
         """Assemble any cores whose channels are complete."""
         for core_id, channels_done in list(self.ready_cores.items()):
             if set(self.image_paths.keys()).issubset(channels_done):
-                logger.info(f"Assembling full core {core_id}")
+                logger.info(f"Assembling full ROI {core_id}")
                 self.assembler.assemble_core(core_id)
                 del self.ready_cores[core_id]
 

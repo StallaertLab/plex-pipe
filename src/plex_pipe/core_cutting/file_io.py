@@ -4,7 +4,7 @@ import ssl
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path, PurePosixPath
-from typing import Any, Union
+from typing import Any, Tuple, Union
 
 import dask.array as da
 import zarr
@@ -18,7 +18,7 @@ from loguru import logger
 from requests.exceptions import (
     RequestException,  # if requests is available/used
 )
-from tifffile import imread, imwrite
+from tifffile import TiffFile, imwrite
 
 from plex_pipe.utils.globus_utils import (
     GlobusConfig,
@@ -251,26 +251,36 @@ def write_temp_tiff(array, core_id: str, channel: str, temp_dir: str):
     imwrite(fname, array)
 
 
-def read_ome_tiff(path: str, level_num: int = 0) -> tuple[da.Array, Any]:
-    """Load an OME-TIFF as a Dask array.
+def read_ome_tiff(path: str, level_num: int = 0) -> Tuple[da.Array, Any]:
+    """Load an OME-TIFF (flat or pyramidal) as a Dask array.
 
     Args:
-        path (str): Path to the OME-TIFF file.
-        level_num (int, optional): Multiscale level to read.
+        path (str): Path to the TIFF file.
+        level_num (int, optional): Multiscale level to read. Defaults to 0 (highest res).
 
     Returns:
-        tuple[dask.array.Array, Any]: The image array and the underlying store.
+        tuple[da.Array, Any]: The image array and the underlying store.
     """
-    store = imread(path, aszarr=True)
-    group = zarr.open(store, mode="r")
-    zattrs = group.attrs.asdict()
-    path = zattrs["multiscales"][0]["datasets"][level_num]["path"]
+    with TiffFile(path) as tif:
 
-    return da.from_zarr(group[path]), store
+        store = tif.aszarr()
+        # Open the store - could be a Group or an Array
+        z_obj = zarr.open(store, mode="r")
+
+        # CASE 1: a single Array (Flat TIFF)
+        if isinstance(z_obj, zarr.Array):
+            im_da = da.from_zarr(z_obj)
+
+        # CASE 2: a Group (Pyramidal TIFF)
+        elif isinstance(z_obj, zarr.Group):
+            # Access the specific array within the group
+            im_da = da.from_zarr(z_obj[str(level_num)])
+
+    return im_da, store
 
 
 def list_local_files(image_dir: Union[str, Path]) -> list[str]:
-    """List ``*.ome.tif*`` files within a directory.
+    """List ``*.tif*`` files within a directory.
 
     Args:
         image_dir (str | Path): Directory to search.
@@ -279,11 +289,11 @@ def list_local_files(image_dir: Union[str, Path]) -> list[str]:
         list[str]: Sorted list of matching file paths.
     """
     image_dir = Path(image_dir)  # Ensures uniform behavior
-    return [str(p) for p in image_dir.glob("*.ome.tif*")]
+    return [str(p) for p in image_dir.glob("*.tif*")]
 
 
 def list_globus_files(gc: GlobusConfig, path: str) -> list[str]:
-    """List ``*.ome.tif*`` files from a Globus endpoint.
+    """List ``*.tif*`` files from a Globus endpoint.
 
     Args:
         gc (GlobusConfig): Globus configuration object.
@@ -299,7 +309,7 @@ def list_globus_files(gc: GlobusConfig, path: str) -> list[str]:
     files = []
     for entry in listing:
         name = entry["name"]
-        if name.endswith((".ome.tif", ".ome.tiff")):
+        if name.endswith((".tif", ".tiff")):
             files.append(str(PurePosixPath(path) / name))
 
     return files

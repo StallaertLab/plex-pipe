@@ -25,13 +25,13 @@ from plex_pipe.utils.globus_utils import (
 )
 
 
-def configure_logging(settings):
+def configure_logging(config):
     """
     Setup logging.
     """
 
     log_file = (
-        settings.log_dir_path / f"cores_cutting_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
+        config.log_dir_path / f"cores_cutting_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
 
     logger.remove()
@@ -46,11 +46,6 @@ def parse_args():
 
     parser.add_argument(
         "--exp_config", help="Path to experiment YAML config.", required=True
-    )
-    parser.add_argument(
-        "--remote_analysis",
-        action="store_true",
-        help="Use remote analysis directory as base.",
     )
     parser.add_argument("--globus_config", help="Path to Globus config.")
 
@@ -78,16 +73,14 @@ def main():
     args = parse_args()
 
     # read config file
-    settings = load_analysis_settings(
-        args.exp_config, remote_analysis=args.remote_analysis
-    )
+    config = load_analysis_settings(args.exp_config)
 
     # setup logging
-    configure_logging(settings)
+    configure_logging(config)
     logger.info("Starting core cutting script.")
 
     # set image path
-    image_path = settings.general.image_dir
+    image_path = config.general.image_dir
 
     # setup Globus if requested
     if args.globus_config:
@@ -110,20 +103,19 @@ def main():
 
     # map channels to image paths
     channel_map = discover_channels(
-        image_path,
-        include_channels=settings.core_cutting.include_channels,
-        exclude_channels=settings.core_cutting.exclude_channels,
-        use_markers=settings.core_cutting.use_markers,
-        ignore_markers=settings.core_cutting.ignore_markers,
-        gc=gc,
+        Path(config.general.image_dir),
+        include_channels=config.roi_cutting.include_channels,
+        exclude_channels=config.roi_cutting.exclude_channels,
+        use_markers=config.roi_cutting.use_markers,
+        ignore_markers=config.roi_cutting.ignore_markers,
     )
 
     # get cores coordinates
-    df_path = settings.core_info_file_path.with_suffix(".pkl")
+    df_path = config.roi_info_file_path
     df = pd.read_pickle(df_path)
 
     # build transfer map
-    transfer_cache_dir = settings.temp_dir
+    transfer_cache_dir = config.temp_dir
     transfer_map = build_transfer_map(channel_map, transfer_cache_dir)
 
     # define file access
@@ -146,14 +138,14 @@ def main():
     controller = CorePreparationController(
         metadata_df=df,  # df defines which cores to process
         image_paths=image_paths,
-        temp_dir=settings.cores_dir_tif,
-        output_dir=settings.cores_dir_output,
+        temp_dir=config.roi_dir_tif,
+        output_dir=config.roi_dir_output,
         file_strategy=strategy,
-        margin=settings.core_cutting.margin,
-        mask_value=settings.core_cutting.mask_value,
-        max_pyramid_levels=settings.sdata_storage.max_pyramid_level,
-        chunk_size=settings.sdata_storage.chunk_size,
-        downscale=settings.sdata_storage.chunk_size,
+        margin=config.roi_cutting.margin,
+        mask_value=config.roi_cutting.mask_value,
+        max_pyramid_levels=config.sdata_storage.max_pyramid_level,
+        chunk_size=config.sdata_storage.chunk_size,
+        downscale=config.sdata_storage.chunk_size,
     )
 
     # run core cutting
