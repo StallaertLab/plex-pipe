@@ -38,9 +38,9 @@ core_detection:
 | `roi_info_file_path` | `Path` (optional) | Custom path for core coordinates. Defaults to `analysis_dir/rois.pkl`. |
 | `im_level` | `float` (optional) | Pyramid level to read from the image for core definition. If not specified, all pyramid levels are read from the input image. |
 
-## Core Cutting
+## ROI Cutting
 
-This section controls the extraction of individual cores from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.
+This section controls the extraction of individual ROIs from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.
 
 ```yaml
 core_cutting:
@@ -74,6 +74,19 @@ core_cutting:
 
 Parameters `include_channels`, `exclude_channels`, `use_markers` and `ignore_markers` provide a fine-grained control over which imaging channels are included in processing. See [Channel Selection Logic](channel-selection.md) for details.
 
+## Quality Control
+
+This section manages quality control parameters, specifically defining prefixes for exclusion masks.
+These masks are used to filter out artifacts or unwanted regions from downstream analysis.
+
+```yaml
+qc:
+  prefix: qc_exclude
+```
+
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `prefix` | `str` (optional) | Prefix for shapes used for quality control exclusion. Shapes named `{prefix}_{marker}` will be used to mask out objects for specific markers. |
 
 
 ## Image Processing
@@ -132,19 +145,6 @@ The pipeline allows for flexible image processing steps defined in the [Processo
 | `keep` | `bool` (optional) | Whether to save the output to the final Zarr file (`true`) or keep it temporary (`false`). Defaults to `false`. |
 
 For a complete list of available operations and their parameters, see [Processors](../usage/processors.md).
-
-## Quality Control
-
-This section manages quality control parameters, specifically defining prefixes for exclusion masks. These masks are used to filter out artifacts or unwanted regions from downstream analysis.
-
-```yaml
-qc:
-  prefix: qc_exclude
-```
-
-| Key | Type | Description |
-| :--- | :--- | :--- |
-| `prefix` | `str` (optional) | Prefix for shapes used for quality control exclusion. Shapes named `{prefix}_{marker}` will be used to mask out objects for specific markers. |
 
 ## Quantification
 

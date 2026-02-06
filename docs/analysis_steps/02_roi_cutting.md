@@ -35,3 +35,7 @@ To complete the process, execute the following sections sequentially:
 * **Run ROI cutting**: Triggers the ROI extraction process utilizing the local file sourcing strategy.
 
 ## Script execution
+
+```bash
+python 02_cut_rois.py --exp_config ../examples/example_pipeline_config.yaml
+```

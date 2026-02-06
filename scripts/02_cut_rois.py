@@ -79,11 +79,10 @@ def main():
     configure_logging(config)
     logger.info("Starting core cutting script.")
 
-    # set image path
-    image_path = config.general.image_dir
-
     # setup Globus if requested
     if args.globus_config:
+
+        image_path = config.general.image_dir
 
         gc = GlobusConfig.from_config_files(
             args.globus_config,
@@ -138,14 +137,14 @@ def main():
     controller = CorePreparationController(
         metadata_df=df,  # df defines which cores to process
         image_paths=image_paths,
-        temp_dir=config.roi_dir_tif,
-        output_dir=config.roi_dir_output,
+        temp_dir=config.roi_dir_tif_path,
+        output_dir=config.roi_dir_output_path,
         file_strategy=strategy,
         margin=config.roi_cutting.margin,
         mask_value=config.roi_cutting.mask_value,
         max_pyramid_levels=config.sdata_storage.max_pyramid_level,
         chunk_size=config.sdata_storage.chunk_size,
-        downscale=config.sdata_storage.chunk_size,
+        downscale=config.sdata_storage.downscale,
     )
 
     # run core cutting

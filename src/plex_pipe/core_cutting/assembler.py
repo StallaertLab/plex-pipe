@@ -97,7 +97,7 @@ class CoreAssembler:
             image_model = Image2DModel.parse(
                 np.expand_dims(base_img, axis=0),
                 dims=("c", "y", "x"),
-                scale_factors=[2] * (self.max_pyramid_levels - 1),
+                scale_factors=[self.downscale] * (self.max_pyramid_levels - 1),
                 chunks=self.chunk_size,
             )
 
