@@ -39,27 +39,15 @@ class GeneralSettings(BaseModel):
     log_dir: Optional[Path] = None
 
 
-class SamSettings(BaseModel):
-    im_level: int
-    min_area: int
-    max_area: int
-    min_iou: float
-    min_st: float
-    min_int: int
-    frame: int
-
-
-class CoreDetectionSettings(BaseModel):
+class RoiDefinitionSettings(BaseModel):
     detection_image: str
-    core_info_file_path: Optional[str] = None
-    # If 'sam' is missing, it defaults to None.
-    # If 'sam' is provided, it must match the SamSettings schema.
-    sam: Optional[SamSettings] = None
+    roi_info_file_path: Optional[str] = None
+    im_level: Optional[float] = None
 
 
-class CoreCuttingSettings(BaseModel):
-    cores_dir_tif: Optional[str] = None
-    cores_dir_output: Optional[str] = None
+class RoiCuttingSettings(BaseModel):
+    roi_dir_tif: Optional[str] = None
+    roi_dir_output: Optional[str] = None
     include_channels: Optional[Union[str, List[str]]] = None
     exclude_channels: Optional[Union[str, List[str]]] = None
     use_markers: Optional[Union[str, List[str]]] = None
@@ -67,7 +55,7 @@ class CoreCuttingSettings(BaseModel):
     margin: Optional[int] = 0
     mask_value: Optional[int] = 0
     transfer_cleanup_enabled: Optional[bool] = False
-    core_cleanup_enabled: Optional[bool] = False
+    roi_cleanup_enabled: Optional[bool] = False
 
 
 class QcSettings(BaseModel):
@@ -156,8 +144,8 @@ class AnalysisConfig(BaseModel):
     """
 
     general: GeneralSettings
-    core_detection: CoreDetectionSettings
-    core_cutting: CoreCuttingSettings
+    roi_definition: RoiDefinitionSettings
+    roi_cutting: RoiCuttingSettings
     additional_elements: List[Annotated[PipelineStep, Field(discriminator="type")]]
     qc: QcSettings
     quant: List[QuantTask]
@@ -166,9 +154,9 @@ class AnalysisConfig(BaseModel):
     analysis_dir: Path = Path(".")
     temp_dir: Path = Path(".")
     log_dir_path: Path = Path(".")
-    core_info_file_path: Path = Path(".")
-    cores_dir_tif_path: Path = Path(".")
-    cores_dir_output_path: Path = Path(".")
+    roi_info_file_path: Path = Path(".")
+    roi_dir_tif_path: Path = Path(".")
+    roi_dir_output_path: Path = Path(".")
 
     @model_validator(mode="after")
     def _resolve_paths(self) -> AnalysisConfig:
@@ -182,25 +170,25 @@ class AnalysisConfig(BaseModel):
         # Define defaults
         defaults = {
             "log_dir": analysis_dir / "logs",
-            "core_info_file_path": analysis_dir / "cores.csv",
-            "cores_dir_tif": analysis_dir / "temp",
-            "cores_dir_output": analysis_dir / "cores",
+            "roi_info_file_path": analysis_dir / "rois.pkl",
+            "roi_dir_tif": analysis_dir / "temp",
+            "roi_dir_output": analysis_dir / "rois",
             "temp_dir": analysis_dir / "temp",
         }
 
         # Populate final Path objects
         self.log_dir_path = Path(self.general.log_dir or defaults["log_dir"])
 
-        self.core_info_file_path = Path(
-            self.core_detection.core_info_file_path or defaults["core_info_file_path"]
+        self.roi_info_file_path = Path(
+            self.roi_definition.roi_info_file_path or defaults["roi_info_file_path"]
         )
 
-        self.cores_dir_tif_path = Path(
-            self.core_cutting.cores_dir_tif or defaults["cores_dir_tif"]
+        self.roi_dir_tif_path = Path(
+            self.roi_cutting.roi_dir_tif or defaults["roi_dir_tif"]
         )
 
-        self.cores_dir_output_path = Path(
-            self.core_cutting.cores_dir_output or defaults["cores_dir_output"]
+        self.roi_dir_output_path = Path(
+            self.roi_cutting.roi_dir_output or defaults["roi_dir_output"]
         )
 
         self.temp_dir = defaults["temp_dir"]

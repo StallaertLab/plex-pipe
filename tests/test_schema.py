@@ -11,20 +11,14 @@ def base_cfg(**overrides):
             "analysis_name": "A",
             "analysis_dir": "/work/analysis",
         },
-        "core_detection": {
+        "roi_definition": {
             "detection_image": "I0",
-            "core_info_file_path": None,
+            "roi_info_file_path": None,
             "im_level": 0,
-            "min_area": 10,
-            "max_area": 1000,
-            "min_iou": 0.5,
-            "min_st": 0.5,
-            "min_int": 100,
-            "frame": 0,
         },
-        "core_cutting": {
-            "cores_dir_tif": None,
-            "cores_dir_output": None,
+        "roi_cutting": {
+            "roi_dir_tif": None,
+            "roi_dir_output": None,
             "include_channels": None,
             "exclude_channels": None,
             "use_markers": None,
@@ -32,7 +26,7 @@ def base_cfg(**overrides):
             "margin": 8,
             "mask_value": 1,
             "transfer_cleanup_enabled": False,
-            "core_cleanup_enabled": False,
+            "roi_cleanup_enabled": False,
         },
         "additional_elements": [],
         "qc": {"prefix": "Q"},
@@ -63,9 +57,9 @@ def test_resolves_paths_and_defaults(tmp_path, monkeypatch):
 
     assert Path(model.analysis_dir) == base
     assert Path(model.log_dir_path) == base / "logs"
-    assert Path(model.core_info_file_path) == base / "cores.csv"
-    assert Path(model.cores_dir_tif_path) == base / "temp"
-    assert Path(model.cores_dir_output_path) == base / "cores"
+    assert Path(model.roi_info_file_path) == base / "rois.pkl"
+    assert Path(model.roi_dir_tif_path) == base / "temp"
+    assert Path(model.roi_dir_output_path) == base / "rois"
 
 
 def test_validate_pipeline_detects_missing_inputs():

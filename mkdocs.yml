@@ -25,12 +25,12 @@ extra:
 extra_css:
   - stylesheets/extra.css
 
-markdown_extensions:
-  - attr_list
-
 nav:
   - What is PlexPipe?: what_is_plexpipe.md
-  - Analysis Steps: analysis_steps.md
+  - Analysis Steps:
+    - Overview: analysis_steps/00_steps_overview.md
+    - 01_ROI Definition: analysis_steps/01_core_definition.md
+    - 02_Core Cutting: analysis_steps/02_core_cutting.md
   - How To Use:
     - Installation: usage/installation.md
     - Execution Modes: usage/execution_modes.md
@@ -55,3 +55,9 @@ plugins:
             show_source: false
             extra:
               show_symbol_type: true
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - pymdownx.details  # Optional: allows for collapsible notes
+  - pymdownx.superfences # Optional: allows nesting code blocks in notes

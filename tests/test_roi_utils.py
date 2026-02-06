@@ -23,24 +23,34 @@ def sample_masks():
     Returns a list of mask dictionaries similar to Segment Anything (SAM) output.
     Format: bbox is [x, y, w, h]
     """
+
+    def make_seg(bbox, shape=(100, 100)):
+        mask = np.zeros(shape, dtype=bool)
+        x, y, w, h = bbox
+        mask[y : y + h, x : x + w] = True
+        return mask
+
     return [
         {
             "bbox": [10, 10, 10, 10],  # Area 100. Bright spot. High IoU.
             "predicted_iou": 0.95,
             "stability_score": 0.95,
             "id": "good_mask",
+            "segmentation": make_seg([10, 10, 10, 10]),
         },
         {
             "bbox": [50, 50, 5, 5],  # Area 25. Dark spot.
             "predicted_iou": 0.90,
             "stability_score": 0.90,
             "id": "small_mask",
+            "segmentation": make_seg([50, 50, 5, 5]),
         },
         {
             "bbox": [80, 80, 10, 10],  # Area 100. Dark spot. Low IoU.
             "predicted_iou": 0.50,  # Below threshold
             "stability_score": 0.90,
             "id": "bad_iou_mask",
+            "segmentation": make_seg([80, 80, 10, 10]),
         },
     ]
 
@@ -79,7 +89,16 @@ def test_pre_select_intensity_calculation(mock_image):
     mock_image[5:25, 5:25] = 100.0
 
     # Create a mask over the center of that bright spot
-    mask = [{"bbox": [10, 10, 10, 10], "predicted_iou": 1.0, "stability_score": 1.0}]
+    seg = np.zeros((100, 100), dtype=bool)
+    seg[10:20, 10:20] = True
+    mask = [
+        {
+            "bbox": [10, 10, 10, 10],
+            "predicted_iou": 1.0,
+            "stability_score": 1.0,
+            "segmentation": seg,
+        }
+    ]
 
     # Threshold slightly below 100
     filtered = roi_utils.pre_select_objects(mask, mock_image, 1, 1000, 0, 0, min_int=99)
@@ -220,8 +239,8 @@ def test_prepare_poly_df_for_saving_integration():
         poly_data, poly_types, req_level, org_shape
     )
 
-    assert "core_name" in df.columns
-    assert df.iloc[0]["core_name"] == "Core_000"
+    assert "roi_name" in df.columns
+    assert df.iloc[0]["roi_name"] == "ROI_000"
     assert df.iloc[0]["poly_type"] == "manual"
     # Check if bbox was calculated [xmin, xmax, ymin, ymax]
     # Poly x: 10-20, y: 10-20

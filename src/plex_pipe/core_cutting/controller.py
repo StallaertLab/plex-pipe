@@ -86,7 +86,7 @@ class CorePreparationController:
 
         try:
             for _, row in self.metadata_df.iterrows():
-                core_id = row["core_name"]
+                core_id = row["roi_name"]
                 core_img = self.cutter.extract_core(full_img, row)
                 write_temp_tiff(core_img, core_id, channel, self.temp_dir)
                 self.ready_cores.setdefault(core_id, set()).add(channel)

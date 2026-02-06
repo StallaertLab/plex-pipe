@@ -55,11 +55,9 @@ def test_prepare_rgb_image_math(mock_get_small):
     input_im = np.arange(100).reshape(10, 10)
     mock_get_small.return_value = input_im
 
-    # Request normalization ignoring the bottom 10% and top 10%
-    # 10th percentile of 0..99 is ~9.9
-    # 90th percentile of 0..99 is ~89.1
-    # Pixels < 10 become 0, Pixels > 89 become 255.
-    rgb = im_utils.prepare_rgb_image("dummy", perc_min=10, perc_max=90)
+    # Request normalization with explicit intensity limits
+    # Pixels < 10 become 0, Pixels > 90 become 255.
+    rgb = im_utils.prepare_rgb_image("dummy", int_min=10, int_max=90)
 
     # 1. Check Output Shape: Must be (H, W, 3)
     assert rgb.shape == (10, 10, 3)

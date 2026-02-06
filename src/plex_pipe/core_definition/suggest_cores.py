@@ -13,7 +13,7 @@ from sam2.build_sam import build_sam2
 from plex_pipe.utils.im_utils import prepare_rgb_image
 
 
-def set_cuda(model_path):  # pragma: no cover
+def set_cuda():  # pragma: no cover
     """Configure CUDA settings for SAM2 segmentation.
 
     Args:
@@ -25,7 +25,7 @@ def set_cuda(model_path):  # pragma: no cover
     assert torch.cuda.is_available()
 
     device = torch.device("cuda")
-    sam2_checkpoint = "./sam2/checkpoints/sam2.1_hiera_large.pt"
+    sam2_checkpoint = "./checkpoints/sam2.1_hiera_large.pt"
     model_cfg = "configs/sam2.1/sam2.1_hiera_l.yaml"
 
     return device, sam2_checkpoint, model_cfg
@@ -38,6 +38,7 @@ def sam2_segment(
     device,
     sam2_checkpoint,
     model_cfg,
+    points_per_side,
 ):  # pragma: no cover
     """Segment an RGB image using the SAM2 model.
 
@@ -48,6 +49,8 @@ def sam2_segment(
         device (torch.device): CUDA device used for inference.
         sam2_checkpoint (str): Path to the SAM2 checkpoint file.
         model_cfg (str): Path to the SAM2 configuration file.
+        points_per_side (int): Number of sampling points per side.
+
 
     Returns:
         list[dict]: Segmentation masks for the input image.
@@ -69,7 +72,7 @@ def sam2_segment(
 
     mask_generator = SAM2AutomaticMaskGenerator(
         sam2,
-        points_per_side=72,
+        points_per_side=points_per_side,
         stability_score_thresh=0.9,
         pred_iou_thresh=0.8,
         use_m2m=False,
@@ -93,29 +96,42 @@ def main():  # pragma: no cover
     parser = argparse.ArgumentParser()
 
     # Compulsory arguments
-    parser.add_argument("im", type=str, help="Path to the image for segmentation.")
     parser.add_argument(
-        "req_level", type=int, help="Requested resolution level of the image."
+        "--image_path", type=str, help="Path to the image for segmentation."
     )
-    parser.add_argument("model", type=str, help="Path to sam2 model.")
-    parser.add_argument("output", type=str, help="Path to the output file.")
+    parser.add_argument(
+        "--req_level", type=int, help="Requested resolution level of the image."
+    )
+    parser.add_argument("--int_min", type=float, help="Lower intensity threshold.")
+    parser.add_argument("--int_max", type=float, help="Upper intensity threshold.")
+
+    parser.add_argument("--model_path", type=str, help="Path to sam2 model.")
+    parser.add_argument("--output_file", type=str, help="Path to the output file.")
+    parser.add_argument(
+        "--points_per_side", type=int, help="Number of sampling points per side."
+    )
 
     # Parse the arguments
     args = parser.parse_args()
 
     # change the working directory to the model path
-    os.chdir(args.model)
+    os.chdir(args.model_path)
 
     # inform about the input and output pathways
-    print(f"Input image: {args.im}")
-    print(f"Results will be saved to: {args.output}\n")
+    print(f"Input image: {args.image_path}")
+    print(f"Results will be saved to: {args.output_file}\n")
 
     # preapare image for segmentation
     print("Preparing RGB image for segmentation...")
-    im_rgb = prepare_rgb_image(args.im, req_level=int(args.req_level))
+    im_rgb = prepare_rgb_image(
+        args.image_path,
+        int_min=args.int_min,
+        int_max=args.int_max,
+        req_level=int(args.req_level),
+    )
 
     # set the cuda environment
-    device, sam2_checkpoint, model_cfg = set_cuda(args.model)
+    device, sam2_checkpoint, model_cfg = set_cuda()
 
     # segment image
     print(
@@ -128,11 +144,12 @@ def main():  # pragma: no cover
         device,
         sam2_checkpoint,
         model_cfg,
+        args.points_per_side,
     )
 
     # save the masks
     print("Saving masks...")
-    with open(args.output, "wb") as f:
+    with open(args.output_file, "wb") as f:
         pkl.dump(masks, f)
 
 

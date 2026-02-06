@@ -17,7 +17,7 @@ from plex_pipe.core_cutting.file_io import FileAvailabilityStrategy
 def mock_metadata():
     """Creates a dummy metadata DataFrame with 2 cores."""
     return pd.DataFrame(
-        {"core_name": ["Core_01", "Core_02"], "geometry": ["poly1", "poly2"]}
+        {"roi_name": ["Core_01", "Core_02"], "geometry": ["poly1", "poly2"]}
     )
 
 

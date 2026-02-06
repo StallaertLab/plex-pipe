@@ -12,7 +12,7 @@ from plex_pipe.core_definition.roi_utils import (
 )
 
 
-def redo_cores_layer(viewer, data=None, shape_type="polygon"):
+def redo_cores_layer(viewer, data=None, edge_width=2, shape_type="polygon"):
     """Create or replace the ``cores`` layer in a viewer.
 
     Args:
@@ -24,8 +24,8 @@ def redo_cores_layer(viewer, data=None, shape_type="polygon"):
         None
     """
 
-    if "cores" in viewer.layers:
-        viewer.layers.remove("cores")
+    if "ROIs" in viewer.layers:
+        viewer.layers.remove("ROIs")
 
     # initialize data if None
     if data is None:
@@ -36,8 +36,8 @@ def redo_cores_layer(viewer, data=None, shape_type="polygon"):
         shape_type=shape_type,
         edge_color="green",
         face_color="transparent",
-        edge_width=2,
-        name="cores",
+        edge_width=edge_width,
+        name="ROIs",
     )
 
 
@@ -45,6 +45,7 @@ def redo_bbox_layer(
     viewer: napari.Viewer,
     data: list[list[float]],
     text: list[str],
+    edge_width: int = 2,
 ) -> None:
     """Create or replace the ``bounding_boxes`` layer in a viewer.
 
@@ -67,7 +68,7 @@ def redo_bbox_layer(
         shape_type="rectangle",
         edge_color="yellow",
         face_color="transparent",
-        edge_width=2,
+        edge_width=edge_width,
         name="bounding_boxes",
         text={
             "string": text,
@@ -76,9 +77,10 @@ def redo_bbox_layer(
             "anchor": "upper_left",
         },
     )
+    viewer.layers["bounding_boxes"].editable = False
 
 
-def display_saved_rois(viewer, IM_LEVEL, save_path=None):
+def display_saved_rois(viewer, IM_LEVEL, edge_width=2, save_path=None):
     """Load ROI annotations from disk and show them in the viewer.
 
     Args:
@@ -92,10 +94,14 @@ def display_saved_rois(viewer, IM_LEVEL, save_path=None):
     rect_list, poly_list, df = read_in_saved_rois(save_path, IM_LEVEL=IM_LEVEL)
 
     if len(rect_list) > 0:
-        redo_bbox_layer(viewer, rect_list, df["core_name"].tolist())
-        redo_cores_layer(viewer, poly_list, shape_type=df.poly_type.to_list())
+        redo_bbox_layer(
+            viewer, rect_list, edge_width=edge_width, text=df["roi_name"].tolist()
+        )
+        redo_cores_layer(
+            viewer, poly_list, edge_width=edge_width, shape_type=df.poly_type.to_list()
+        )
     else:
-        viewer.add_shapes(data=[], name="cores")
+        viewer.add_shapes(data=[], name="ROIs")
         viewer.status = "No previous rois found!"
 
 
@@ -112,26 +118,26 @@ def save_rois_from_viewer(viewer, org_im_shape, req_level, save_path=None):
         None
     """
 
-    if "cores" in viewer.layers:
+    if "ROIs" in viewer.layers:
 
         # get the saving path if not provided
         if save_path is None:
-            # open dialog for getting a dir to save csv file
-            save_path = QFileDialog.getSaveFileName(filter="CSV file (*.csv)")[0]
+            # open dialog for getting a dir to save pkl file
+            save_path = QFileDialog.getSaveFileName(filter="Pickle file (*.pkl)")[0]
 
         # wrap
         save_path = Path(save_path)
 
         # get the polygon data
-        poly_data = viewer.layers["cores"].data
-        poly_types = viewer.layers["cores"].shape_type
+        poly_data = viewer.layers["ROIs"].data
+        poly_types = viewer.layers["ROIs"].shape_type
 
         # prepare df for saving
         df = prepare_poly_df_for_saving(poly_data, poly_types, req_level, org_im_shape)
 
         # save the rois
         df.to_pickle(save_path.with_suffix(".pkl"))
-        df.to_csv(save_path, index=False)
+        df.to_csv(save_path.with_suffix(".csv"), index=False)
 
         # prepare the cores visual for saving
         rect_list = get_visual_rectangles(df, req_level)
@@ -141,8 +147,8 @@ def save_rois_from_viewer(viewer, org_im_shape, req_level, save_path=None):
         ]
 
         # change the visualization
+        redo_bbox_layer(viewer, rect_list, df["roi_name"].tolist())
         redo_cores_layer(viewer, poly_list, shape_type=df.poly_type.to_list())
-        redo_bbox_layer(viewer, rect_list, df["core_name"].tolist())
 
         # get a screenshot of the viewer
         screenshot_path = save_path.with_suffix(".png")
@@ -150,7 +156,9 @@ def save_rois_from_viewer(viewer, org_im_shape, req_level, save_path=None):
         viewer.reset_view()
         viewer.screenshot(screenshot_path, canvas_only=True)
 
-        viewer.status = f"Cores saved to {save_path}"
+        viewer.status = f"ROIs saved to {save_path}"
+
+        viewer.layers.selection.add(viewer.layers["ROIs"])
 
     else:
-        viewer.status = 'No layer called "cores" found!'
+        viewer.status = 'No layer called "ROIs" found!'

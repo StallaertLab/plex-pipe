@@ -38,7 +38,11 @@ def pre_select_objects(masks, im, min_area, max_area, min_iou, min_stability, mi
 
             rect = xywh_to_corners(item["bbox"]).astype(int)
 
-            mean_int = im[rect[0, 0] : rect[2, 0], rect[0, 1] : rect[1, 1]].mean()
+            crop_slice = (slice(rect[0, 0], rect[2, 0]), slice(rect[0, 1], rect[1, 1]))
+            im_crop = im[crop_slice]
+            mask_crop = item["segmentation"][crop_slice]
+
+            mean_int = np.average(im_crop, weights=mask_crop)
 
             if mean_int > min_int:
                 masks_filtered.append(item)
@@ -93,29 +97,28 @@ def remove_overlapping_objects(objects):
     return remaining_objects
 
 
-def xywh_to_corners(xywh, frame=4):
+def xywh_to_corners(xywh):
     """
     Function to convert xywh to corners.
 
     Args:
         xywh (np.array): The xywh coordinates.
-        frame (int): The frame to add to the corners.
     Returns:
         np.array: The corners of the bounding box.
     """
     x, y, w, h = xywh
     return np.array(
         [
-            [y - frame, x - frame],  # Top-left (swap x and y)
-            [y - frame, x + w + frame],  # Top-right (swap x and y)
-            [y + h + frame, x + w + frame],  # Bottom-right (swap x and y)
-            [y + h + frame, x - frame],  # Bottom-left (swap x and y)
+            [y, x],  # Top-left (swap x and y)
+            [y, x + w],  # Top-right (swap x and y)
+            [y + h, x + w],  # Bottom-right (swap x and y)
+            [y + h, x],  # Bottom-left (swap x and y)
         ]
     )
 
 
 def get_refined_rectangles(
-    masks, im, frame, min_area, max_area, min_iou, min_stability, min_int
+    masks, im, min_area, max_area, min_iou, min_stability, min_int
 ):
     """
     An envelope function to get refined rectangles.
@@ -132,9 +135,7 @@ def get_refined_rectangles(
 
     masks_non_overlapping = remove_overlapping_objects(masks_pre_selected)
 
-    rect_list = [
-        xywh_to_corners(mask["bbox"], frame=frame) for mask in masks_non_overlapping
-    ]
+    rect_list = [xywh_to_corners(mask["bbox"]) for mask in masks_non_overlapping]
 
     return rect_list
 
@@ -172,7 +173,7 @@ def prepare_polygons(poly_data, req_level, org_im_shape):
     """
 
     # get vertices for the original image
-    frame_vertices = xywh_to_corners([0, 0, org_im_shape[1], org_im_shape[0]], frame=0)
+    frame_vertices = xywh_to_corners([0, 0, org_im_shape[1], org_im_shape[0]])
     frame = Polygon(frame_vertices)
 
     trim_poly_list = []
@@ -239,7 +240,7 @@ def prepare_poly_df_for_saving(poly_data, poly_types, req_level, org_im_shape):
     # initialize the dataframe
     df = pd.DataFrame(
         columns=[
-            "core_name",
+            "roi_name",
             "row_start",
             "row_stop",
             "column_start",
@@ -249,7 +250,7 @@ def prepare_poly_df_for_saving(poly_data, poly_types, req_level, org_im_shape):
         ]
     ).astype(
         {
-            "core_name": "str",
+            "roi_name": "str",
             "row_start": "int",
             "row_stop": "int",
             "column_start": "int",
@@ -278,7 +279,7 @@ def prepare_poly_df_for_saving(poly_data, poly_types, req_level, org_im_shape):
     df = sort_cores(df)
 
     # add core names
-    df["core_name"] = [f"Core_{str(i).zfill(3)}" for i in range(len(df))]
+    df["roi_name"] = [f"ROI_{str(i).zfill(3)}" for i in range(len(df))]
 
     return df
 

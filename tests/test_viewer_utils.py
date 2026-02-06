@@ -36,6 +36,17 @@ def mock_viewer():
     # Allow us to inject layers into this dict during tests
     viewer._layers_store = layers_dict
 
+    # Configure add_shapes to update the dict
+    def add_shapes_side_effect(data=None, **kwargs):
+        name = kwargs.get("name", "Shapes")
+        layer = MagicMock()
+        layer.data = data
+        layer.shape_type = kwargs.get("shape_type", "polygon")
+        layers_dict[name] = layer
+        return layer
+
+    viewer.add_shapes.side_effect = add_shapes_side_effect
+
     return viewer
 
 
@@ -44,7 +55,7 @@ def mock_roi_data():
     """Returns a dummy DataFrame and lists for ROI mocking."""
     df = pd.DataFrame(
         {
-            "core_name": ["Core_01", "Core_02"],
+            "roi_name": ["Core_01", "Core_02"],
             "poly_type": ["polygon", "polygon"],
             "polygon_vertices": [np.zeros((4, 2)), np.zeros((4, 2))],
         }
@@ -60,7 +71,7 @@ def mock_roi_data():
 def test_redo_cores_layer_creation(mock_viewer):
     """Verifies adding a layer when it doesn't exist."""
     # Ensure 'cores' is not in layers
-    assert "cores" not in mock_viewer.layers
+    assert "ROIs" not in mock_viewer.layers
 
     data = [np.array([[0, 0], [10, 10]])]
     viewer_utils.redo_cores_layer(mock_viewer, data)
@@ -68,19 +79,19 @@ def test_redo_cores_layer_creation(mock_viewer):
     # Should call add_shapes
     mock_viewer.add_shapes.assert_called_once()
     args, kwargs = mock_viewer.add_shapes.call_args
-    assert kwargs["name"] == "cores"
+    assert kwargs["name"] == "ROIs"
     assert kwargs["edge_color"] == "green"
 
 
 def test_redo_cores_layer_replacement(mock_viewer):
     """Verifies removing the old layer before adding a new one."""
     # Inject an existing layer
-    mock_viewer._layers_store["cores"] = MagicMock()
+    mock_viewer._layers_store["ROIs"] = MagicMock()
 
     viewer_utils.redo_cores_layer(mock_viewer, [])
 
     # Should have attempted to remove it
-    mock_viewer.layers.remove.assert_called_with("cores")
+    mock_viewer.layers.remove.assert_called_with("ROIs")
     # Should add the new one
     mock_viewer.add_shapes.assert_called()
 
@@ -118,10 +129,10 @@ def test_display_saved_rois_found(
     viewer_utils.display_saved_rois(mock_viewer, IM_LEVEL=0, save_path="dummy.csv")
 
     mock_redo_bbox.assert_called_once_with(
-        mock_viewer, rect_list, df["core_name"].tolist()
+        mock_viewer, rect_list, edge_width=2, text=df["roi_name"].tolist()
     )
     mock_redo_cores.assert_called_once_with(
-        mock_viewer, poly_list, shape_type=df.poly_type.to_list()
+        mock_viewer, poly_list, edge_width=2, shape_type=df.poly_type.to_list()
     )
 
 
@@ -136,7 +147,7 @@ def test_display_saved_rois_empty(mock_read, mock_viewer):
 
     viewer_utils.display_saved_rois(mock_viewer, IM_LEVEL=0)
 
-    mock_viewer.add_shapes.assert_called_with(data=[], name="cores")
+    mock_viewer.add_shapes.assert_called_with(data=[], name="ROIs")
     assert "No previous rois found" in mock_viewer.status
 
 
@@ -159,7 +170,7 @@ def test_save_rois_from_viewer_workflow(
     mock_layer = MagicMock()
     mock_layer.data = ["poly_data"]
     mock_layer.shape_type = ["polygon"]
-    mock_viewer._layers_store["cores"] = mock_layer
+    mock_viewer._layers_store["ROIs"] = mock_layer
 
     # 2. Setup Mocks
     mock_dialog.return_value = ("path/to/save.csv", "filter")
@@ -171,7 +182,7 @@ def test_save_rois_from_viewer_workflow(
     mock_df.poly_type.to_list.return_value = ["polygon"]
     mock_df.__getitem__.return_value.tolist.return_value = [
         "Core_01"
-    ]  # for df['core_name']
+    ]  # for df['roi_name']
 
     mock_prep_df.return_value = mock_df
     mock_get_rects.return_value = ["rects"]
@@ -209,7 +220,7 @@ def test_save_rois_from_viewer_workflow(
     mock_viewer.screenshot.assert_called()
 
     # Check Status update
-    assert "Cores saved to" in mock_viewer.status
+    assert "ROIs saved to" in mock_viewer.status
 
 
 def test_save_rois_missing_layer(mock_viewer):

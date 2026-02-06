@@ -3,8 +3,7 @@
 import dask.array as da
 import numpy as np
 import zarr
-from skimage.transform import rescale
-from tifffile import imread
+from tifffile import TiffFile, imread
 
 
 def get_org_im_shape(im_path):
@@ -16,10 +15,12 @@ def get_org_im_shape(im_path):
     Returns:
         tuple: The size of the image.
     """
-    store = imread(im_path, aszarr=True)
-    d = da.from_zarr(store, 0)
+    with TiffFile(im_path) as tif:
 
-    return d.shape
+        width = tif.pages[0].imagewidth
+        height = tif.pages[0].imagelength
+
+    return (height, width)
 
 
 def get_zarr_levels_num(path):
@@ -38,43 +39,89 @@ def get_zarr_levels_num(path):
     return len(zattrs["multiscales"][0]["datasets"])
 
 
+def get_all_resolutions(im_path):
+
+    # Open the TIFF as a Zarr store (V3 compatible)
+    with TiffFile(im_path) as tif:
+
+        store = tif.aszarr()
+        # Open the store - could be a Group or an Array
+        z_obj = zarr.open(store, mode="r")
+
+        # CASE 1: a single Array (Flat TIFF)
+        if isinstance(z_obj, zarr.Array):
+            im_list = [da.from_zarr(z_obj)]
+
+        # CASE 2: a Group (Pyramidal TIFF)
+        elif isinstance(z_obj, zarr.Group):
+            # Find how many levels we actually have
+            # Pyramidal TIFFs via tifffile usually have keys '0', '1', '2'...
+            available_levels = len(tif.series[0].levels)
+
+            im_list = []
+            for level in range(available_levels):
+                im_list.append(da.from_zarr(z_obj[str(level)]))
+
+        else:
+            raise TypeError(f"Unknown TIFF object type: {type(z_obj)}")
+
+    return im_list
+
+
 def get_small_image(im_path, req_level):
     """
-    Function to get a small image from the zarr file.
+    Function to get a set resolution level from a tiff file.
+    If the file is flat, or the resolution level is not available it will be generated from the closest available level.
 
     Args:
-        im_path (str): Path to the zarr file.
+        im_path (str): Path to the tiff file.
         req_level (int): Requested level of the image.
     Returns:
         np.array: The image of requested level.
     """
-    store = imread(im_path, aszarr=True)
-    group = zarr.open(store, mode="r")
-    zattrs = group.attrs.asdict()
+    # Open the TIFF as a Zarr store (V3 compatible)
+    with TiffFile(im_path) as tif:
 
-    if store.is_multiscales:
-        level_num = np.min([req_level, get_zarr_levels_num(im_path)])
-    else:
-        level_num = 0
+        store = tif.aszarr()
+        # Open the store - could be a Group or an Array
+        z_obj = zarr.open(store, mode="r")
 
-    path = zattrs["multiscales"][0]["datasets"][level_num]["path"]
-    im = da.from_zarr(group[path]).compute()
+        # CASE 1: a single Array (Flat TIFF)
+        if isinstance(z_obj, zarr.Array):
+            im = z_obj[:]
+            level_loaded = 0
 
-    # additional resizing if requested level was not present
-    if level_num > req_level:
-        im = rescale(im, 1 / (2 ** (req_level - level_num)), anti_alias=True)
+        # CASE 2: a Group (Pyramidal TIFF)
+        elif isinstance(z_obj, zarr.Group):
+            # Find how many levels we actually have
+            # Pyramidal TIFFs via tifffile usually have keys '0', '1', '2'...
+            available_levels = len(tif.series[0].levels)
+            level_to_load = min(req_level, available_levels - 1)
+
+            # Access the specific array within the group
+            im = z_obj[str(level_to_load)][:]
+            level_loaded = level_to_load
+
+        else:
+            raise TypeError(f"Unknown TIFF object type: {type(z_obj)}")
+
+        # Final Step: downsample if necessary
+        if req_level > level_loaded:
+            # strided slicing for speed
+            skip = 2 ** (req_level - level_loaded)
+            im = im[..., ::skip, ::skip]
 
     return im
 
 
-def prepare_rgb_image(im_path, perc_min=0.01, perc_max=99, req_level=0):
+def prepare_rgb_image(im_path, int_min=None, int_max=None, req_level=0):
     """
     Function to change an image into RGB image of stretched intensity.
 
     Args:
         im_path (str): Path to the image.
-        perc_min (float): Lower percentile for stretching.
-        perc_max (float): Upper percentile for stretching.
+        int_min (float): Lower intensity threshold for stretching.
+        int_max (float): Upper intensity threshold for stretching.
     Returns:
         np.array: The RGB image.
     """
@@ -82,9 +129,13 @@ def prepare_rgb_image(im_path, perc_min=0.01, perc_max=99, req_level=0):
     # get the image of requested resolution
     im = get_small_image(im_path, req_level)
 
-    # rescale between given percentiles
-    im_min, im_max = np.percentile(im, [perc_min, perc_max])
-    im = (im - im_min) / (im_max - im_min)
+    # rescale between intensities
+    if int_min is None:
+        int_min = np.min(im)
+    if int_max is None:
+        int_max = np.max(im)
+
+    im = (im - int_min) / (int_max - int_min)
     im = np.clip(im, 0, 1)
 
     im = (im * 255).astype(np.uint8)  # change to 8 bit

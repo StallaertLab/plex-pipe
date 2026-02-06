@@ -84,3 +84,6 @@ src/track_gardener/_version.py
 
 # MkDocs site directory
 site/
+
+# Sample data directory
+examples/input

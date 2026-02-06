@@ -1,5 +1,3 @@
-# Default parameters for the pipeline
-
 # Configuration for different workstations
 workstations:
 
@@ -7,6 +5,6 @@ workstations:
     model_path: "" # path to the SAM2 model
     sam2_env: "" # path to the SAM2 environment
 
-  WORKSTATION_NAME_2:
-    model_path: ""
-    sam2_env: ""
+  DESKTOP-S71S74E:
+    model_path: "/mnt/d/sam2_test/sam2"
+    sam_env: "/home/kasia/miniforge3/envs/sam2-env/bin/python"

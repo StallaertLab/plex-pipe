@@ -54,9 +54,9 @@ def load_analysis_settings(settings_path):
     for p in [
         config.analysis_dir,
         config.log_dir_path,
-        config.core_info_file_path.parent,
-        config.cores_dir_tif_path,
-        config.cores_dir_output_path,
+        config.roi_info_file_path.parent,
+        config.roi_dir_tif_path,
+        config.roi_dir_output_path,
     ]:
         os.makedirs(p, exist_ok=True)
 
