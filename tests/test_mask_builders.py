@@ -89,17 +89,16 @@ def test_ring_builder_validation():
     """
     # Case: outer < inner
     with pytest.raises(ValueError, match="strictly greater"):
-        RingBuilder(outer=3, inner=5)
+        RingBuilder(rad_bigger=3, rad_smaller=5)
 
     # Case: outer == inner
     with pytest.raises(ValueError, match="strictly greater"):
-        RingBuilder(outer=5, inner=5)
-
+        RingBuilder(rad_bigger=5, rad_smaller=5)
     # Case: Valid
-    assert RingBuilder(outer=5, inner=3).params.outer == 5
+    assert RingBuilder(rad_bigger=5, rad_smaller=3).params.rad_bigger == 5
 
 
-def test_ring_builder_run_logic():
+def test_ring_builder_run_logic_dilation():
     """
     Verifies that a hole is created in the mask.
     We use a single pixel label and expand it.
@@ -109,7 +108,7 @@ def test_ring_builder_run_logic():
     # Expanded (outer=2) covers radius 2.
     # Expanded (inner=1) covers radius 1.
     # Result should have pixels at distance 2, but NOT at distance 0 or 1.
-    builder = RingBuilder(outer=2, inner=1)
+    builder = RingBuilder(rad_bigger=2, rad_smaller=1)
 
     mask = np.zeros((11, 11), dtype=int)
     mask[5, 5] = 1  # Center pixel
@@ -123,6 +122,33 @@ def test_ring_builder_run_logic():
     # 2. A pixel at distance 2 (e.g., 5,7) should be set
     # Distance from (5,5) to (5,7) is 2.
     assert result[5, 7] == 1
+
+
+def test_ring_builder_run_logic_erosion():
+    """
+    Verifies that a ring creation with erosion works as expected.
+    """
+
+    builder = RingBuilder(rad_bigger=-1, rad_smaller=-2)
+
+    # build mask
+    mask = np.ones((11, 11), dtype=int)
+    mask[0, :] = 0
+    mask[-1, :] = 0
+    mask[:, 0] = 0
+    mask[:, -1] = 0
+
+    # Using real skimage logic (no mock) to test geometry
+    result = builder.run(mask)
+
+    # 1. The center (original label) should be hollowed out
+    assert result[5, 5] == 0
+
+    # assert that the border is removed
+    assert result[1, 1] == 0
+
+    # 2. A pixel at distance 2 from the border (e.g., 2,2) should be set
+    assert result[2, 2] == 1
 
 
 # --- Tests for BlobBuilder ---

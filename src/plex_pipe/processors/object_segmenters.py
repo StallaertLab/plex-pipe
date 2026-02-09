@@ -31,17 +31,32 @@ class InstansegSegmenter(BaseOp):
     class Params(ProcessorParamsBase):
         """Parameters for the Instanseg segmenter."""
 
-        model: Literal["fluorescence_nuclei_and_cells", "brightfield_nuclei"] = (
-            "fluorescence_nuclei_and_cells"
+        model: Literal["fluorescence_nuclei_and_cells", "brightfield_nuclei"] = Field(
+            "fluorescence_nuclei_and_cells",
+            description="Choice of pre-trained InstanSeg model.",
         )
         pixel_size: float = Field(
             0.3, gt=0, description="Scaling factor for the segmentation."
         )
-        resolve_cell_and_nucleus: bool = True
-        cleanup_fragments: bool = True
-        clean_cache: bool = False
-        normalise: bool = True
-        overlap: int = 80
+        resolve_cell_and_nucleus: bool = Field(
+            default=True,
+            description="Internal InstanSeg parameter. If True, both cell and nucleus masks will be returned. If False, only the cell mask will be returned.",
+        )
+        cleanup_fragments: bool = Field(
+            default=True, description="Internal InstanSeg parameter."
+        )
+        clean_cache: bool = Field(
+            default=False,
+            description="If True, the CUDA cache is cleared after segmentation.",
+        )
+        normalise: bool = Field(
+            default=True,
+            description="Internal InstanSeg parameter. Controls whether the image is normalised.",
+        )
+        overlap: int = Field(
+            default=80,
+            description="Internal InstanSeg parameter. The overlap (in pixels) between tiles.",
+        )
 
         # warn the user about any unrecognized parameters
         model_config = ConfigDict(extra="forbid")

@@ -33,8 +33,8 @@ roi_cutting:
 
 additional_elements:
 
-# add pre-processed images (category: 'image_filter')
-  - category: image_filter
+# add pre-processed images (category: 'image_enhancer')
+  - category: image_enhancer
     type: normalize
     input: [DAPI, NaKATPase]
     output: "${input}_norm"
@@ -68,8 +68,8 @@ additional_elements:
         - instanseg_nucleus
     output: ring
     parameters:
-      outer: 8
-      inner: 2
+      rad_bigger: 8
+      rad_smaller: 2
     keep: true
 #----------------------------------------------
   - category: mask_builder

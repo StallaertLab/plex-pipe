@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 # Import classes under test
-from plex_pipe.processors.image_filters import (
+from plex_pipe.processors.image_enhancers import (
     DenoiseWithMedian,
     MeanOfImages,
     Normalize,

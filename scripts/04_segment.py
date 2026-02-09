@@ -39,11 +39,6 @@ def parse_args():
         action="store_true",
         help="Should the masks be overwritten.",
     )
-    parser.add_argument(
-        "--remote_analysis",
-        action="store_true",
-        help="Use remote analysis directory as base.",
-    )
 
     return parser.parse_args()
 
@@ -53,9 +48,7 @@ def main():
     args = parse_args()
 
     # read config file
-    settings = load_analysis_settings(
-        args.exp_config, remote_analysis=args.remote_analysis
-    )
+    settings = load_analysis_settings(args.exp_config)
 
     # setup logging
     configure_logging(settings)
@@ -79,14 +72,14 @@ def main():
                 input_names=builder_settings.input,
                 output_names=builder_settings.output,
                 keep=builder_settings.keep,
-                overwrite=True,
+                overwrite=args.overwrite,
                 pyramid_levels=settings.sdata_storage.max_pyramid_level,
                 downscale=settings.sdata_storage.downscale,
                 chunk_size=settings.sdata_storage.chunk_size,
             )
 
             logger.info(
-                f"Image transformer of type '{builder_settings.type}' for image '{builder_settings.input}' has been created."
+                f"Image processor of type '{builder_settings.type}' for image '{builder_settings.input}' has been created."
             )
 
             builders_list.append(builder_controller)
@@ -96,7 +89,7 @@ def main():
         logger.info("No resource builders specified.")
 
     # define the cores for the analysis
-    core_dir = settings.analysis_dir / "cores"
+    core_dir = settings.analysis_dir / "rois"
     path_list = [core_dir / f for f in os.listdir(core_dir)]
     path_list.sort()
 

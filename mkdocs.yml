@@ -34,15 +34,15 @@ nav:
     - 03_Quality_Control: analysis_steps/03_quality_control.md
     - 04_Image_Processing: analysis_steps/04_image_processing.md
     - 05_Quantification: analysis_steps/05_quantification.md
+  - Configuration:
+      - Overview: configuration/config_overview.md
+      - Reference: configuration/reference.md
+      - Channel Selection: configuration/channel-selection.md
   - How To Use:
     - Installation: usage/installation.md
     - Execution Modes: usage/execution_modes.md
     - Input Data: usage/input_data.md
     - Globus Integration: usage/globus.md
-    - Config File:
-      - Overview: configuration/config_overview.md
-      - Reference: configuration/reference.md
-      - Channel Selection: configuration/channel-selection.md
     - Processors: usage/processors.md
   - API Reference: api.md
 
@@ -64,3 +64,4 @@ markdown_extensions:
   - admonition
   - pymdownx.details  # Optional: allows for collapsible notes
   - pymdownx.superfences # Optional: allows nesting code blocks in notes
+  - md_in_html

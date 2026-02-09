@@ -94,7 +94,7 @@ qc:
 ```yaml
 additional_elements:
 
-  - category: image_filter
+  - category: image_enhancer
     type: normalize
     input: [DAPI, HLA1]
     output: "${input}_norm"
@@ -131,13 +131,15 @@ additional_elements:
     keep: true
 ```
 
-The pipeline allows for flexible image processing steps defined in the [Processors](../usage/processors.md) list. Each entry in this list is a processing unit that takes inputs (images or labels), performs an operation, and produces outputs.
+The pipeline allows for flexible image processing steps defined in the [Processors](../usage/processors.md) list.
+Each entry in this list is a processing unit that takes inputs (images or labels), performs an operation, and produces outputs.
+Processing steps are executed sequentially, meaning the order of the list determines the flow of data, and the output of one step is typically required for the next.
 
 ### Structure of an Element
 
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `category` | `str` | The category of the operation. Options: `image_filter`, `object_segmenter`, `mask_builder`. |
+| `category` | `str` | The category of the operation. Options: `image_enhancer`, `object_segmenter`, `mask_builder`. |
 | `type` | `str` | The specific operation name (e.g., `normalize`, `instanseg`). |
 | `input` | `str` \| `list` | The name(s) of input images or channels. |
 | `output` | `str` \| `list` | The name(s) assigned to the results. Supports variable expansion like `${input}_norm`. |

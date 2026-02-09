@@ -19,15 +19,26 @@ def generate_docs() -> str:
     """Generates Markdown documentation for all registered processors."""
 
     output = ["# Available Processors"]
+    output.append(
+        "Processors are modular operations used within [Step 04: Image Processing](../analysis_steps/04_image_processing.md)."
+    )
+    output.append("")
+    output.append("---")
 
-    # Iterate over Kinds (e.g., image_filter, object_segmenter)
+    # Iterate over Kinds (e.g., image_enhancer, object_segmenter)
     for kind in sorted(REGISTRY.keys()):
         processors = REGISTRY[kind]
         if not processors:
             continue
 
         # Section Header
-        output.append(f"## {kind.replace('_', ' ').title()}")
+        output.append("")
+        output.append("---")
+        output.append(f"## {kind.replace('_', ' ').title()}s")
+        output.append("")
+        output.append("---")
+        output.append("")
+        output.append("---")
         output.append("")
 
         # Iterate over Processors in that Kind
@@ -45,6 +56,9 @@ def generate_docs() -> str:
                 output.append(doc)
                 output.append("")
 
+            output.append('<details markdown="1">')
+            output.append("<summary><b>Technical Specs</b></summary>")
+            output.append("")
             # 2. Inputs/Outputs
             inputs = getattr(cls, "EXPECTED_INPUTS", "Variable")
             outputs = getattr(cls, "EXPECTED_OUTPUTS", "Variable")
@@ -73,7 +87,7 @@ def generate_docs() -> str:
                     default_val = field_info.get_default()
                     default_str = ""
                     if default_val is not None and default_val != PydanticUndefined:
-                        default_str = f", default=`{default_val}`"
+                        default_str = f"default=`{default_val}`"
 
                     # Format type
                     # Clean up "typing." prefix for cleaner docs
@@ -85,6 +99,8 @@ def generate_docs() -> str:
             else:
                 output.append("*   **Parameters**: None.")
 
+            output.append("</details>")
+            output.append("---")
             output.append("")
 
     return "\n".join(output)

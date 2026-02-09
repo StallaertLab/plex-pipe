@@ -1,11 +1,11 @@
 # Analysis Steps
 
-PlexPipe processes multiplexed images through a series of modular steps, transforming raw whole-slide images into quantitative single-cell data.
+PlexPipe processes multiplexed whole-slide images through a sequence of modular steps, transforming raw imaging data into quantitative single-cell measurements.
 
-To run the pipeline, users must prepare a [configuration file](../configuration/reference.md) that contains parameters for all the steps of the pipeline.
+To run the pipeline, users must first create a [configuration file](../configuration/config_overview.md) that defines the parameters for all pipeline steps. This configuration file is the central control point for PlexPipe and is required throughout the entire workflow.
 
-
-Note that Step 1 (ROI Definition) and Step 3 (Quality Control) require manual interaction through the Napari viewer interface.d
+While most steps run automatically based on the configuration, Step 1 (ROI Definition) and Step 3 (Quality Control) require user interaction via the Napari viewer.
+In these steps, users manually inspect the data, define regions of interest, and annotate imaging artefacts.
 
 ---
 
@@ -38,7 +38,7 @@ Note that Step 1 (ROI Definition) and Step 3 (Quality Control) require manual in
 
 ## 4. [Image Processing](04_image_processing.md)
 
-**Goal:** Enhance images and segment objects.
+**Goal:** Enhance images, segment objects and create derivative masks.
 
 *   **Input:** Core SpatialData objects.
 *   **Output:** SpatialData objects containing requested derivative images and masks.
