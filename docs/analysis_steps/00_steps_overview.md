@@ -18,7 +18,7 @@ In these steps, users manually inspect the data, define regions of interest, and
 
 ---
 
-## 2. [ROI Cutting](02_core_cutting.md)
+## 2. [ROI Cutting](02_roi_cutting.md)
 
 **Goal:** Extract individual ROIs into separate SpatialData objects.
 

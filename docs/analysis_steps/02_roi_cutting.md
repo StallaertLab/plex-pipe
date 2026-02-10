@@ -18,7 +18,7 @@ This module supports dual modes of operation for data retrieval: **Local** and [
 ---
 ## Execution
 
-This module is fully parameterized via the [configuration file](../configuration/reference.md#core-cutting) and does not require manual intervention.
+This module is fully parameterized via the [configuration file](../configuration/reference.md#roi-cutting) and does not require manual intervention.
 Consequently, it can be executed via a Jupyter Notebook, standalone script, or as a component of the Nextflow pipeline; further details are available in the [Execution Modes](../usage/execution_modes.md) documentation.
 
 ---
@@ -33,6 +33,8 @@ To complete the process, execute the following sections sequentially:
 * **Define ROIs for processing**: Ingests the [ROI parameters](./01_roi_definition.md/#roi-output-schema) into a Pandas DataFrame. A demonstration cell is provided to truncate this DataFrame for rapid testing purposes.
 * **Discover signal channels**: Identifies available TIFF images and implements the [channel selection logic](../configuration/channel-selection.md). A demonstration cell is included to show how to subset the channel list for testing.
 * **Run ROI cutting**: Triggers the ROI extraction process utilizing the local file sourcing strategy.
+
+---
 
 ## Script execution
 

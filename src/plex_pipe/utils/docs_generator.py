@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import re
 import sys
 from pathlib import Path
 
@@ -11,11 +12,13 @@ sys.path.append(str(Path(__file__).parents[2]))
 from pydantic import BaseModel
 from pydantic_core import PydanticUndefined
 
+from plex_pipe.object_quantification.metrics import METRIC_REGISTRY
+
 # Importing the package triggers the @register decorators
 from plex_pipe.processors import REGISTRY
 
 
-def generate_docs() -> str:
+def generate_processors_docs() -> str:
     """Generates Markdown documentation for all registered processors."""
 
     output = ["# Available Processors"]
@@ -106,22 +109,69 @@ def generate_docs() -> str:
     return "\n".join(output)
 
 
+def generate_metrics_docs() -> str:
+    """Generates a Markdown table for the quantification metrics."""
+    output = [""]
+    output.append("| Feature Name | Source / Implementation | Description |")
+    output.append("| :--- | :--- | :--- |")
+
+    for name, metric in METRIC_REGISTRY.items():
+        if metric.is_extra:
+            source = f"Custom: `{metric.func.__name__}`"
+            desc = (
+                metric.func.__doc__.split("\n")[0]
+                if metric.func.__doc__
+                else "No description."
+            )
+        else:
+            source = f"Skimage: `{metric.func}`"
+            desc = "Standard intensity property from `skimage.measure.regionprops`."
+        output.append(f"| **{name}** | {source} | {desc} |")
+
+    return "\n".join(output)
+
+
+def update_file_with_markers(
+    file_path: Path, content: str, start_marker: str, end_marker: str
+):
+    """Replaces content between markers or appends it if markers are missing."""
+    if not file_path.exists():
+        print(f"Warning: {file_path} not found. Skipping update.")
+        return
+
+    with open(file_path, encoding="utf-8") as f:
+        original_content = f.read()
+
+    new_section = f"{start_marker}\n\n{content}\n\n{end_marker}"
+
+    if start_marker in original_content and end_marker in original_content:
+        pattern = re.compile(f"{start_marker}.*?{end_marker}", re.DOTALL)
+        updated_content = pattern.sub(new_section, original_content)
+    else:
+        updated_content = original_content + "\n\n" + new_section
+
+    if original_content != updated_content:
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(updated_content)
+        print(f"Updated: {file_path}")
+
+
 def main() -> None:
-    """Generates and writes the documentation to the default path."""
-    # ensures UTF-8 encoding and avoids shell redirection issues
-    output_path = Path(__file__).parents[3] / "docs" / "usage" / "processors.md"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    docs_dir = Path(__file__).parents[3] / "docs"
 
-    content = generate_docs()
-    if output_path.exists():
-        with open(output_path, encoding="utf-8") as f:
-            if f.read() == content:
-                return
+    # 1. Update Processors (Full File Overwrite)
+    proc_path = docs_dir / "usage" / "processors.md"
+    proc_content = generate_processors_docs()
+    with open(proc_path, "w", encoding="utf-8") as f:
+        f.write(proc_content)
+    print(f"Generated: {proc_path}")
 
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(content)
-
-    print(f"Generated documentation at: {output_path}")
+    # 2. Update Quantification (In-place Injection)
+    quant_path = docs_dir / "analysis_steps" / "05_quantification.md"
+    metrics_content = generate_metrics_docs()
+    update_file_with_markers(
+        quant_path, metrics_content, "<!-- METRICS_START -->", "<!-- METRICS_END -->"
+    )
 
 
 if __name__ == "__main__":

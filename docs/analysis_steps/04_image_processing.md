@@ -50,6 +50,8 @@ To complete the process, execute the following sections sequentially:
 * **Setup processors**: Initialize the processing objects defined in your configuration. These objects are created once and reused across all ROIs.
 * **Run ROI Processing**: Execute the list of processing steps for each ROI. Note that the pipeline automatically validates each `SpatialData` object immediately before it is processed. An optional validation cell is also provided to run this check for all objects in the list upfront, ensuring every ROI has the required components before starting the full execution.
 
+---
+
 ## Script execution
 
 ```bash

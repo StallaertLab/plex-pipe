@@ -17,7 +17,7 @@ def configure_logging(settings):
 
     log_file = (
         settings.log_dir_path
-        / f"cores_segmenation_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
+        / f"rois_quantification_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
 
     logger.remove()
@@ -27,7 +27,7 @@ def configure_logging(settings):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Prepare cores from OME-TIFFs using metadata and optional Globus transfers."
+        description="Quantify objects from segmented ROIS using the provided config file."
     )
 
     parser.add_argument(
@@ -38,11 +38,6 @@ def parse_args():
         action="store_true",
         help="Should the masks be overwritten.",
     )
-    parser.add_argument(
-        "--remote_analysis",
-        action="store_true",
-        help="Use remote analysis directory as base.",
-    )
 
     return parser.parse_args()
 
@@ -52,9 +47,7 @@ def main():
     args = parse_args()
 
     # read config file
-    settings = load_analysis_settings(
-        args.exp_config, remote_analysis=args.remote_analysis
-    )
+    settings = load_analysis_settings(args.exp_config)
 
     # setup logging
     configure_logging(settings)
@@ -78,7 +71,7 @@ def main():
             mask_keys=masks_keys,
             mask_to_annotate=mask_to_annotate,
             markers_to_quantify=quant.markers_to_quantify,
-            overwrite=True,
+            overwrite=args.overwrite,
             add_qc_masks=quant.add_qc_masks,
             qc_prefix=qc_prefix,
         )
@@ -86,14 +79,14 @@ def main():
         quant_controller_list.append(controller)
 
     # define the cores for the analysis
-    core_dir = settings.analysis_dir / "cores"
+    core_dir = settings.analysis_dir / "rois"
     path_list = [core_dir / f for f in os.listdir(core_dir)]
     path_list.sort()
 
     # run processing
     for sd_path in path_list:
 
-        logger.info(f"Processing {sd_path.name}")
+        logger.info(f"Quantifying {sd_path.name}")
 
         # get sdata
         sdata = sd.read_zarr(sd_path)

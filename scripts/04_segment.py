@@ -28,7 +28,7 @@ def configure_logging(settings):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Prepare cores from OME-TIFFs using metadata and optional Globus transfers."
+        description="Segment ROIS using the provided config file."
     )
 
     parser.add_argument(

@@ -17,11 +17,11 @@ This step is performed interactively using [01_roi_definition_demo](https://gith
 The notebook is divided into two parts:
 
 * [Manual Definition](#drawing-rois-manually)
-* [Automatic Detection](#automatic-detection)
+* [Automatic Detection](#automatic-roi-suggestions)
 
 Execute the notebook cells sequentially to progress through the ROI definition workflow.
 
-Utilizing SAM2 for automated image segmentation requires an auxiliary environment configuration and the specification of model checkpoints, see [Setting up SAM2](#setting-up-sam2) section.
+Utilizing SAM2 for automated image segmentation requires an auxiliary environment configuration and the specification of model checkpoints, see [SAM2 Configuration and Environment Setup](#sam2-configuration-and-environment-setup) section.
 
 All ROIs (including SAM2 suggestions) are editable.
 

@@ -15,7 +15,7 @@
 
 ## Overview
 
-**PlexPipe** processes multiplexed images through a series of [modular steps](analysis_steps.md), transforming raw whole-slide TIFF images into quantitative single-cell data.
+**PlexPipe** processes multiplexed images through a series of [modular steps](./analysis_steps/00_steps_overview.md), transforming raw whole-slide TIFF images into quantitative single-cell data.
 
 ## Key Features
 
