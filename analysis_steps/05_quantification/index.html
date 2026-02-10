@@ -8,29 +8,31 @@
       
       
       
-        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/what_is_plexpipe/">
+        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/analysis_steps/05_quantification/">
       
       
+        <link rel="prev" href="../04_image_processing/">
       
-        <link rel="next" href="../analysis_steps/00_steps_overview/">
+      
+        <link rel="next" href="../../configuration/config_overview/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>What is PlexPipe? - PlexPipe</title>
+        <title>05_Quantification - PlexPipe</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,11 +51,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#plexpipe-multiplexed-image-analysis-pipeline" class="md-skip">
+        <a href="#quantification" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +100,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="PlexPipe" class="md-header__button md-logo" aria-label="PlexPipe" data-md-component="logo">
+    <a href="../.." title="PlexPipe" class="md-header__button md-logo" aria-label="PlexPipe" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -118,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              What is PlexPipe?
+              05_Quantification
             
           </span>
         </div>
@@ -234,7 +236,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="PlexPipe" class="md-nav__button md-logo" aria-label="PlexPipe" data-md-component="logo">
+    <a href="../.." title="PlexPipe" class="md-nav__button md-logo" aria-label="PlexPipe" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -261,6 +263,222 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../what_is_plexpipe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is PlexPipe?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analysis Steps
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Analysis Steps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_steps_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_roi_definition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01_ROI Definition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_roi_cutting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02_ROI Cutting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_quality_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    03_Quality_Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_image_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    04_Image_Processing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -280,7 +498,7 @@
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    05_Quantification
   
 
     
@@ -298,7 +516,7 @@
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    05_Quantification
   
 
     
@@ -335,10 +553,82 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
+  <a href="#supported-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Features
+        Supported features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linking-anndata-tables-to-segmentation-masks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linking AnnData Tables to Segmentation Masks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linking AnnData Tables to Segmentation Masks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-distributed-tables-matching-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Distributed Tables (Matching Links)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-consolidated-table-single-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Consolidated Table (Single Link)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notebook-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notebook workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#script-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script execution
       
     </span>
   </a>
@@ -349,220 +639,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Analysis Steps
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Analysis Steps
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/00_steps_overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/01_roi_definition/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    01_ROI Definition
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/02_roi_cutting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    02_ROI Cutting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/03_quality_control/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    03_Quality_Control
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/04_image_processing/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    04_Image_Processing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/05_quantification/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    05_Quantification
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -629,7 +705,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/config_overview/" class="md-nav__link">
+      <a href="../../configuration/config_overview/" class="md-nav__link">
         
   
   
@@ -657,7 +733,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/reference/" class="md-nav__link">
+      <a href="../../configuration/reference/" class="md-nav__link">
         
   
   
@@ -685,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/channel-selection/" class="md-nav__link">
+      <a href="../../configuration/channel-selection/" class="md-nav__link">
         
   
   
@@ -767,7 +843,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/installation/" class="md-nav__link">
+      <a href="../../usage/installation/" class="md-nav__link">
         
   
   
@@ -795,7 +871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/execution_modes/" class="md-nav__link">
+      <a href="../../usage/execution_modes/" class="md-nav__link">
         
   
   
@@ -823,7 +899,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/input_data/" class="md-nav__link">
+      <a href="../../usage/input_data/" class="md-nav__link">
         
   
   
@@ -851,7 +927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/globus/" class="md-nav__link">
+      <a href="../../usage/globus/" class="md-nav__link">
         
   
   
@@ -879,7 +955,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/processors/" class="md-nav__link">
+      <a href="../../usage/processors/" class="md-nav__link">
         
   
   
@@ -914,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -972,10 +1048,82 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
+  <a href="#supported-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Features
+        Supported features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linking-anndata-tables-to-segmentation-masks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linking AnnData Tables to Segmentation Masks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linking AnnData Tables to Segmentation Masks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-distributed-tables-matching-links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Distributed Tables (Matching Links)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-consolidated-table-single-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Consolidated Table (Single Link)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notebook-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notebook workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#script-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Script execution
       
     </span>
   </a>
@@ -1002,31 +1150,98 @@
   
 
 
-<h1 id="plexpipe-multiplexed-image-analysis-pipeline">PlexPipe - Multiplexed Image Analysis Pipeline</h1>
-<style>
-  .logo-dark { display: none; }
-  [data-md-color-scheme="slate"] .logo-light { display: none; }
-  [data-md-color-scheme="slate"] .logo-dark { display: inline; }
-</style>
-
-<p><img alt="Logo" class="logo-light" src="../images/PlexPipe_logo_small.png" />
-<img alt="Logo" class="logo-dark" src="../images/PlexPipe_logo_small_dark_transparent.png" /></p>
-<p><a href="https://github.com/StallaertLab/plex-pipe/actions"><img alt="Tests" src="https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg" /></a>
-<a href="https://codecov.io/github/StallaertLab/plex-pipe"><img alt="codecov" src="https://codecov.io/github/StallaertLab/plex-pipe/graph/badge.svg?token=EI4L1DW720" /></a>
-<img alt="Python Versions" src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-green" /></p>
+<h1 id="quantification">Quantification</h1>
 <h2 id="overview">Overview</h2>
-<p><strong>PlexPipe</strong> is an multiplex analysis pipeline that processes images through a series of <a href="../analysis_steps/00_steps_overview/">modular steps</a>, transforming raw whole-slide TIFF images into quantitative single-cell data.</p>
-<h2 id="key-features">Key Features</h2>
+<p>The final step extracts features from the segmented objects and stores them in the <code>AnnData</code> table(s) within <code>SpatialData</code> objects.</p>
 <ul>
-<li><strong>Input Data:</strong> The pipeline accepts sets of individual TIFF files. It follows the naming conventions used by the <strong>Cell DIVE</strong> system. For specific requirements regarding file naming, refer to <a href="../usage/input_data/">Input Data</a>.</li>
-<li><strong>Remote Data Sourcing:</strong> Seamlessly source and transfer large-scale imaging datasets from institutional endpoints or personal collections using <a href="https://www.globus.org/">Globus</a>. This ensures secure and reliable data movement directly into your processing environment (see: <a href="../usage/globus/">Globus Integration</a>).</li>
-<li><strong>Data Integration:</strong> Outputs are stored as <a href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a> objects, making them ready for downstream analysis within the <a href="https://scverse.org/">scverse</a> ecosystem or interactive exploration via the <a href="https://github.com/scverse/napari-spatialdata">napari-spatialdata plugin</a>.</li>
-<li><strong>Flexible Execution:</strong> PlexPipe can be implemented in two ways based on your needs:<ul>
-<li><strong>Local/Interactive:</strong> Utilize the provided Python scripts or Jupyter Notebooks for smaller datasets or pipeline prototyping (see <a href="../usage/execution_modes/">Execution Modes</a>).</li>
-<li><strong>High-Throughput:</strong> For parallel processing and large-scale workflows, use the Nextflow-optimized version: <a href="https://github.com/StallaertLab/plex-pipe-nextflow">plex-pipe-nextflow</a>.</li>
+<li><strong>Input:</strong> <code>SpatialData</code> objects containing segmentation masks and intensity images.</li>
+<li><strong>Output:</strong> <code>AnnData</code> tables containing single-cell feature matrices added to <code>SpatialData</code> objects.</li>
 </ul>
-</li>
+<p>Parameters of this step are defined in the Quantification part of <a href="../../configuration/reference/#quantification">configuration</a>.</p>
+<hr />
+<h2 id="supported-features">Supported features</h2>
+<ul>
+<li><strong>Morphological Features:</strong> Geometric attributes such as area, centroid, eccentricity, and orientation. All <a href="https://scikit-image.org/docs/0.25.x/api/skimage.measure.html#skimage.measure.regionprops">skimage.measure.regionprops</a> properties are supported.</li>
+<li><strong>Intensity Features:</strong> Statistical summaries (e.g., mean or median expression) for specified markers across the masked regions.</li>
 </ul>
+<!-- METRICS_START -->
+
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature Name</th>
+<th style="text-align: left;">Source / Implementation</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: left;">Skimage: <code>mean_intensity</code></td>
+<td style="text-align: left;">Standard intensity property from <code>skimage.measure.regionprops</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>max</strong></td>
+<td style="text-align: left;">Skimage: <code>max_intensity</code></td>
+<td style="text-align: left;">Standard intensity property from <code>skimage.measure.regionprops</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>min</strong></td>
+<td style="text-align: left;">Skimage: <code>min_intensity</code></td>
+<td style="text-align: left;">Standard intensity property from <code>skimage.measure.regionprops</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>median</strong></td>
+<td style="text-align: left;">Custom: <code>calculate_median</code></td>
+<td style="text-align: left;">Calculates the median intensity of the region.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>sum</strong></td>
+<td style="text-align: left;">Custom: <code>calculate_sum</code></td>
+<td style="text-align: left;">Calculates the sum intensity of the region.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>std</strong></td>
+<td style="text-align: left;">Custom: <code>calculate_std</code></td>
+<td style="text-align: left;">Calculates the standard deviation of intensity of the region.</td>
+</tr>
+</tbody>
+</table>
+<!-- METRICS_END -->
+
+<hr />
+<h2 id="linking-anndata-tables-to-segmentation-masks">Linking AnnData Tables to Segmentation Masks</h2>
+<p>In the <code>SpatialData</code> framework, every table should ideally be linked to a set of regions (masks).
+You can choose between two primary organizational strategies:</p>
+<h3 id="option-1-distributed-tables-matching-links">Option 1: Distributed Tables (Matching Links)</h3>
+<p>Separate <strong>quantification groups</strong> are defined to create distinct AnnData tables for each mask.
+* <strong>Example:</strong> A "cell" table linked to the cell mask and a "nucleus" table linked to the nucleus mask.
+* <strong>Benefit:</strong> Provides a strict 1:1 mapping between the table rows and the spatial labels.</p>
+<h3 id="option-2-consolidated-table-single-link">Option 2: Consolidated Table (Single Link)</h3>
+<p>Results from multiple masks are stored in a <strong>single AnnData table</strong>.
+* <strong>Example:</strong> Measurements for both "cell" and "nucleus" regions are stored in one table and linked to the "cell" segmentation mask.
+* <strong>Benefit:</strong> Simplifies downstream analysis by keeping all properties of a biological cell in one place.</p>
+<p>Both approaches are supported; choose the one that best fits your downstream analysis workflow.</p>
+<hr />
+<h2 id="execution">Execution</h2>
+<p>This module is fully parameterized via the <a href="../../configuration/reference/#quantification">configuration file</a> and does not require manual intervention.
+Consequently, it can be executed via a Jupyter Notebook, standalone script, or as a component of the Nextflow pipeline; further details are available in the <a href="../../usage/execution_modes/">Execution Modes</a> documentation.</p>
+<hr />
+<h2 id="notebook-workflow">Notebook workflow</h2>
+<p>The example <a href="https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/05_quantification_demo.ipynb">Jupyter Notebook</a> demonstrates the execution workflow using locally available data.</p>
+<p>To complete the process, execute the following sections sequentially:</p>
+<ul>
+<li><strong>Read in config</strong>: Specify the path to the analysis configuration file and load the required settings.</li>
+<li><strong>Specify the overwriting strategy</strong>: Set the <code>OVERWRITE_FLAG</code>. If <code>False</code>, the pipeline will throw an error to prevent overwriting existing table. If <code>True</code>, existing table will be replaced. Use with caution!</li>
+<li><strong>Define the logger</strong>: Initialize the logging protocol to track execution progress and document the processing steps.</li>
+<li><strong>Define ROIs for processing</strong>: Identify the <code>SpatialData</code> objects to be processed. A demonstration cell is provided to truncate this list for faster testing.</li>
+<li><strong>Setup quantifiers</strong>: Initialize the quantifying objects defined in your configuration. These objects are created once and reused across all ROIs.</li>
+<li><strong>Run ROIs Quantification</strong>: Quantify the ROIs.</li>
+</ul>
+<hr />
+<h2 id="script-execution">Script execution</h2>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>05_quantify.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite
+</code></pre></div>
 
 
 
@@ -1076,10 +1291,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

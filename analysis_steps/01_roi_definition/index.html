@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/usage/globus/">
+        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/analysis_steps/01_roi_definition/">
       
       
-        <link rel="prev" href="../input_data/">
+        <link rel="prev" href="../00_steps_overview/">
       
       
-        <link rel="next" href="../processors/">
+        <link rel="next" href="../02_roi_cutting/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Globus Integration - PlexPipe</title>
+        <title>01_ROI Definition - PlexPipe</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#roi-definition" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -115,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Globus Integration
+              01_ROI Definition
             
           </span>
         </div>
@@ -285,18 +290,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -317,7 +324,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -335,7 +342,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../analysis_steps/00_steps_overview/" class="md-nav__link">
+      <a href="../00_steps_overview/" class="md-nav__link">
         
   
   
@@ -360,10 +367,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../analysis_steps/01_roi_definition/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01_ROI Definition
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -379,6 +413,148 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#drawing-rois-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drawing ROIs manually
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Drawing ROIs manually">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layers-in-the-viewer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layers in the viewer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-roi-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic ROI suggestions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic ROI suggestions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sam2-configuration-and-environment-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAM2 Configuration and Environment Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-model-and-environment-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining Model and Environment Paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filtering-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roi-output-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROI Output Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -391,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../analysis_steps/02_roi_cutting/" class="md-nav__link">
+      <a href="../02_roi_cutting/" class="md-nav__link">
         
   
   
@@ -419,7 +595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../analysis_steps/03_quality_control/" class="md-nav__link">
+      <a href="../03_quality_control/" class="md-nav__link">
         
   
   
@@ -447,7 +623,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../analysis_steps/04_image_processing/" class="md-nav__link">
+      <a href="../04_image_processing/" class="md-nav__link">
         
   
   
@@ -475,7 +651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../analysis_steps/05_quantification/" class="md-nav__link">
+      <a href="../05_quantification/" class="md-nav__link">
         
   
   
@@ -645,20 +821,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -679,7 +853,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -697,7 +871,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../usage/installation/" class="md-nav__link">
         
   
   
@@ -725,7 +899,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../execution_modes/" class="md-nav__link">
+      <a href="../../usage/execution_modes/" class="md-nav__link">
         
   
   
@@ -753,7 +927,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../input_data/" class="md-nav__link">
+      <a href="../../usage/input_data/" class="md-nav__link">
         
   
   
@@ -778,17 +952,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../usage/globus/" class="md-nav__link">
         
   
   
@@ -804,7 +971,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -817,7 +983,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../processors/" class="md-nav__link">
+      <a href="../../usage/processors/" class="md-nav__link">
         
   
   
@@ -889,6 +1055,138 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#drawing-rois-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drawing ROIs manually
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Drawing ROIs manually">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layers-in-the-viewer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layers in the viewer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactive Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-roi-suggestions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic ROI suggestions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic ROI suggestions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sam2-configuration-and-environment-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAM2 Configuration and Environment Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-model-and-environment-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining Model and Environment Paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filtering-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roi-output-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROI Output Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -908,9 +1206,167 @@
   
 
 
-  <h1>Globus Integration</h1>
-
-
+<h1 id="roi-definition">ROI Definition</h1>
+<h2 id="overview">Overview</h2>
+<p>The initial stage of the plex-pipe pipeline involves defining the coordinates for Regions of Interest (ROIs). These regions are subsequently extracted and processed as individual SpatialData objects.</p>
+<ul>
+<li><strong>Input:</strong> A representative whole-slide image (usually DAPI).</li>
+<li>
+<p><strong>Output:</strong></p>
+<ul>
+<li>rois.pkl: <a href="#roi-output-schema">Parameters</a> defining ROIs.</li>
+<li>rois.csv: A human-readable definition of ROIs.</li>
+<li>rois.png: A visual overview of the defined ROIs.</li>
+</ul>
+</li>
+</ul>
+<p>This step is performed interactively using <a href="https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/01_roi_definition_demo.ipynb">01_roi_definition_demo</a> Jupyter notebook.</p>
+<p>The notebook is divided into two parts:</p>
+<ul>
+<li><a href="#drawing-rois-manually">Manual Definition</a></li>
+<li><a href="#automatic-roi-suggestions">Automatic Detection</a></li>
+</ul>
+<p>Execute the notebook cells sequentially to progress through the ROI definition workflow.</p>
+<p>Utilizing SAM2 for automated image segmentation requires an auxiliary environment configuration and the specification of model checkpoints, see <a href="#sam2-configuration-and-environment-setup">SAM2 Configuration and Environment Setup</a> section.</p>
+<p>All ROIs (including SAM2 suggestions) are editable.</p>
+<hr />
+<h2 id="drawing-rois-manually">Drawing ROIs manually</h2>
+<p>The notebook requires the user to specify the path to the configuration file (<code>config_path</code>), which defines the target image and the specific resolution level to be utilized for ROI definition, see also <a href="../../configuration/reference/#roi-definition">config schema</a>.</p>
+<p>When the resolution parameter remains unspecified, the loader defaults to the multi-resolution approach.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Coordinate Scaling: All transformations between the Napari viewer and the final save files are handled automatically, ensuring coordinates are scaled back to the original full-resolution image shape.</p>
+</div>
+<p>Manual definition of ROIs is performed using a <a href="https://napari.org/">Napari</a> viewer with custom widgets.</p>
+<hr />
+<h3 id="layers-in-the-viewer">Layers in the viewer</h3>
+<ul>
+<li>
+<p>Signal Layer: The loaded image data.</p>
+</li>
+<li>
+<p>Frame Layer: A white rectangle framing the full image extent.</p>
+</li>
+<li>
+<p>ROIs Layer (<span style="color: green;">Green</span>): Use Napari's native <a href="https://napari.org/dev/howtos/layers/shapes.html">shape tools</a> to draw rectangles or polygons to define ROIs in this layer.</p>
+</li>
+<li>
+<p>Bounding Boxes Layer (<span style="color: yellow;">Yellow</span>): Automatically updated upon saving (Save ROIs Button) to reflect the extent of your ROIs.</p>
+</li>
+</ul>
+<hr />
+<h3 id="interactive-controls">Interactive Controls</h3>
+<p>You can find these buttons in the Napari dock widget on the left:</p>
+<ul>
+<li>
+<p>Display Saved ROIs: Reloads the ROIs from the path specified in your config.</p>
+</li>
+<li>
+<p>Save ROIs: Triggers saving of the output files (overwriting previous saves).</p>
+</li>
+<li>
+<p>Edge Width Slider: Dynamically adjusts the stroke thickness of shapes for better visibility on high-resolution images.</p>
+</li>
+</ul>
+<p><img alt="A screenshot of the Napari Widgets" src="../../images/01_napari_widgets.png" /></p>
+<hr />
+<h2 id="automatic-roi-suggestions">Automatic ROI suggestions</h2>
+<p>For slides with many regions (e.g., TMAs), the Segment Anything Model 2 (SAM2) can suggest ROIs.</p>
+<h3 id="sam2-configuration-and-environment-setup">SAM2 Configuration and Environment Setup</h3>
+<p>To utilize automated ROI suggestions, follow the installation protocols provided by the <a href="https://github.com/facebookresearch/sam2?tab=readme-ov-file#installation">Segment Anything Model 2 (SAM2)</a> and <a href="https://github.com/facebookresearch/sam2?tab=readme-ov-file#download-checkpoints">download the model checkpoints</a>. Ensure that <code>plex-pipe</code> is installed within this dedicated SAM2 environment.</p>
+<p>SAM2 does not natively support Windows. For Windows-based workflows, you must install the <a href="https://learn.microsoft.com/en-us/windows/wsl/install">Windows Subsystem for Linux (WSL)</a> and configure the SAM2 environment within the WSL distribution.</p>
+<p>Cross-Platform Execution:</p>
+<ul>
+<li>Windows: The code automatically detects the OS and routes the SAM2 command through WSL.</li>
+<li>Linux: Runs directly using the specified sam_env.</li>
+</ul>
+<hr />
+<h3 id="defining-model-and-environment-paths">Defining Model and Environment Paths</h3>
+<p>The notebook requires the absolute paths to both the SAM2 model checkpoints and the Python executable of the SAM2 environment.</p>
+<p>You may define these parameters manually as a dictionary:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sam_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;model_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/mnt/d/sam2_test/sam2&#39;</span><span class="p">,</span> <span class="c1"># Absolute path to SAM2 checkpoints</span>
+    <span class="s1">&#39;sam_env&#39;</span><span class="p">:</span> <span class="s1">&#39;/home/kasia/miniforge3/envs/sam2-env/bin/python&#39;</span> <span class="c1"># Path to SAM2 Python executable</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Alternatively, use the <code>load_workstation_config</code> helper function to import settings from a YAML file.
+This approach allows a single centralized file to manage configurations for multiple workstations based on their hostnames.</p>
+<p>The file structure is as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">workstations</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">WORKSTATION_HOSTNAME</span><span class="p">:</span><span class="w"> </span><span class="c1"># As returned by platform.node()</span>
+<span class="w">    </span><span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path/to/model&quot;</span>
+<span class="w">    </span><span class="nt">sam2_env</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path/to/environment/python&quot;</span>
+</code></pre></div>
+<p>Template configuration files are available in the project's <a href="https://github.com/StallaertLab/plex-pipe/tree/main/examples">examples</a> folder.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When configuring the workstation YAML, provide WSL-compliant paths (e.g., <code>/mnt/d/...</code>). However, the main analysis configuration file does not require modification; the notebook automatically handles path translations between Windows and WSL during execution.</p>
+</div>
+<hr />
+<h3 id="filtering-parameters">Filtering Parameters</h3>
+<p>Adjust the following variables within the notebook to refine the model's output:</p>
+<ul>
+<li><strong><code>nominal_small_size</code></strong>: The expected diameter (in pixels) of the target objects. Use the Napari viewer to measure and determine this value for your specific dataset.</li>
+<li><strong><code>min_delta_factor</code> / <code>max_delta_factor</code></strong>: Multipliers used to establish the area thresholds for filtering masks that are either too small or too large relative to the nominal size.</li>
+</ul>
+<hr />
+<h3 id="workflow">Workflow</h3>
+<p>The underlying code for these steps is available in the notebook cells, allowing for full customization; however, the standard workflow is outlined below:</p>
+<ul>
+<li><strong>Configure Parameters</strong>: Define the filtering criteria as described above.</li>
+<li><strong>Execute Segmentation</strong>: Run the SAM2-specific cells to initiate the automated detection. The ROIs and bounding boxes will be automatically populated into the Napari viewer for review and manual correction.</li>
+<li><strong>Finalize and Save</strong>: Once the regions are validated, manually trigger the saving protocol via the <code>Save ROIs</code> button.</li>
+<li><strong>Contrast Sensitivity</strong>: The SAM2 subprocess utilizes the current <strong>Contrast Limits</strong> of the Napari 'signal' layer to normalize the image prior to segmentation. Ensure the image contrast is stretched to clearly distinguish objects of interest; this adjustment can also be utilized to exclude dim background artifacts.</li>
+<li><strong>Dynamic Resolution (Multi-Resolution Inputs)</strong>: If the input image is multi-resolution (<code>im_level</code> is not specified), SAM2 performs segmentation on the resolution level currently active in the viewer.<ul>
+<li>Object size parameters are adjusted automatically to match the current scale.</li>
+<li>If the workstation encounters memory errors, zoom out to a lower resolution level for segmentation.</li>
+<li>If the ROI geometries are insufficiently precise, zoom in to a higher resolution level to improve segmentation accuracy.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="roi-output-schema">ROI Output Schema</h2>
+<p>The primary output is <code>rois.pkl</code>, which defines the geometry of each roi.
+This schema is provided for informational purposes only; the pipeline manages this data structure automatically, and no manual modification is required by the user.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Column</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>roi_name</code></td>
+<td style="text-align: left;">Unique identifier for the roi (e.g., <code>ROI_000</code>, <code>ROI_0011</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>row_start</code></td>
+<td style="text-align: left;">Y-coordinate of the top edge of the bounding box.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>row_stop</code></td>
+<td style="text-align: left;">Y-coordinate of the bottom edge of the bounding box.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>column_start</code></td>
+<td style="text-align: left;">X-coordinate of the left edge of the bounding box.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>column_stop</code></td>
+<td style="text-align: left;">X-coordinate of the right edge of the bounding box.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>poly_type</code></td>
+<td style="text-align: left;">Type of shape (<code>rectangle</code> or <code>polygon</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>polygon_vertices</code></td>
+<td style="text-align: left;">(y, x) coordinates defining the polygon.</td>
+</tr>
+</tbody>
+</table>
+<p>Example output files can be found in the <a href="https://github.com/StallaertLab/plex-pipe/tree/main/examples">examples folder</a>.</p>
 
 
 

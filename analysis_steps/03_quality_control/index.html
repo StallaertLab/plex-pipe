@@ -8,29 +8,31 @@
       
       
       
-        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/what_is_plexpipe/">
+        <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/analysis_steps/03_quality_control/">
       
       
+        <link rel="prev" href="../02_roi_cutting/">
       
-        <link rel="next" href="../analysis_steps/00_steps_overview/">
+      
+        <link rel="next" href="../04_image_processing/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
-        <title>What is PlexPipe? - PlexPipe</title>
+        <title>03_Quality_Control - PlexPipe</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,11 +51,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#plexpipe-multiplexed-image-analysis-pipeline" class="md-skip">
+        <a href="#quality-control-qc" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +100,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="PlexPipe" class="md-header__button md-logo" aria-label="PlexPipe" data-md-component="logo">
+    <a href="../.." title="PlexPipe" class="md-header__button md-logo" aria-label="PlexPipe" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -118,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              What is PlexPipe?
+              03_Quality_Control
             
           </span>
         </div>
@@ -234,7 +236,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="PlexPipe" class="md-nav__button md-logo" aria-label="PlexPipe" data-md-component="logo">
+    <a href="../.." title="PlexPipe" class="md-nav__button md-logo" aria-label="PlexPipe" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -261,6 +263,166 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../what_is_plexpipe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is PlexPipe?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analysis Steps
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Analysis Steps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_steps_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_roi_definition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    01_ROI Definition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_roi_cutting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    02_ROI Cutting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -280,7 +442,7 @@
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    03_Quality_Control
   
 
     
@@ -298,7 +460,7 @@
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    03_Quality_Control
   
 
     
@@ -335,10 +497,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
+  <a href="#notebook-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Features
+        Notebook Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-execution-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative Execution Workflows
       
     </span>
   </a>
@@ -352,80 +525,6 @@
     </li>
   
 
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Analysis Steps
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Analysis Steps
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/00_steps_overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -435,91 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../analysis_steps/01_roi_definition/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    01_ROI Definition
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/02_roi_cutting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    02_ROI Cutting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/03_quality_control/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    03_Quality_Control
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../analysis_steps/04_image_processing/" class="md-nav__link">
+      <a href="../04_image_processing/" class="md-nav__link">
         
   
   
@@ -547,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../analysis_steps/05_quantification/" class="md-nav__link">
+      <a href="../05_quantification/" class="md-nav__link">
         
   
   
@@ -629,7 +644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/config_overview/" class="md-nav__link">
+      <a href="../../configuration/config_overview/" class="md-nav__link">
         
   
   
@@ -657,7 +672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/reference/" class="md-nav__link">
+      <a href="../../configuration/reference/" class="md-nav__link">
         
   
   
@@ -685,7 +700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/channel-selection/" class="md-nav__link">
+      <a href="../../configuration/channel-selection/" class="md-nav__link">
         
   
   
@@ -767,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/installation/" class="md-nav__link">
+      <a href="../../usage/installation/" class="md-nav__link">
         
   
   
@@ -795,7 +810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/execution_modes/" class="md-nav__link">
+      <a href="../../usage/execution_modes/" class="md-nav__link">
         
   
   
@@ -823,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/input_data/" class="md-nav__link">
+      <a href="../../usage/input_data/" class="md-nav__link">
         
   
   
@@ -851,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/globus/" class="md-nav__link">
+      <a href="../../usage/globus/" class="md-nav__link">
         
   
   
@@ -879,7 +894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/processors/" class="md-nav__link">
+      <a href="../../usage/processors/" class="md-nav__link">
         
   
   
@@ -914,7 +929,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -972,10 +987,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
+  <a href="#notebook-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Features
+        Notebook Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-execution-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative Execution Workflows
       
     </span>
   </a>
@@ -1002,31 +1028,37 @@
   
 
 
-<h1 id="plexpipe-multiplexed-image-analysis-pipeline">PlexPipe - Multiplexed Image Analysis Pipeline</h1>
-<style>
-  .logo-dark { display: none; }
-  [data-md-color-scheme="slate"] .logo-light { display: none; }
-  [data-md-color-scheme="slate"] .logo-dark { display: inline; }
-</style>
-
-<p><img alt="Logo" class="logo-light" src="../images/PlexPipe_logo_small.png" />
-<img alt="Logo" class="logo-dark" src="../images/PlexPipe_logo_small_dark_transparent.png" /></p>
-<p><a href="https://github.com/StallaertLab/plex-pipe/actions"><img alt="Tests" src="https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg" /></a>
-<a href="https://codecov.io/github/StallaertLab/plex-pipe"><img alt="codecov" src="https://codecov.io/github/StallaertLab/plex-pipe/graph/badge.svg?token=EI4L1DW720" /></a>
-<img alt="Python Versions" src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-green" /></p>
+<h1 id="quality-control-qc">Quality Control (QC)</h1>
 <h2 id="overview">Overview</h2>
-<p><strong>PlexPipe</strong> is an multiplex analysis pipeline that processes images through a series of <a href="../analysis_steps/00_steps_overview/">modular steps</a>, transforming raw whole-slide TIFF images into quantitative single-cell data.</p>
-<h2 id="key-features">Key Features</h2>
+<p>This is a manual step performed by user drawing exclusion shapes.
+To support it we provide a napari widget that can be easily operated from a Jupyter <a href="https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/03_QC_demo.ipynb">notebook</a>.</p>
 <ul>
-<li><strong>Input Data:</strong> The pipeline accepts sets of individual TIFF files. It follows the naming conventions used by the <strong>Cell DIVE</strong> system. For specific requirements regarding file naming, refer to <a href="../usage/input_data/">Input Data</a>.</li>
-<li><strong>Remote Data Sourcing:</strong> Seamlessly source and transfer large-scale imaging datasets from institutional endpoints or personal collections using <a href="https://www.globus.org/">Globus</a>. This ensures secure and reliable data movement directly into your processing environment (see: <a href="../usage/globus/">Globus Integration</a>).</li>
-<li><strong>Data Integration:</strong> Outputs are stored as <a href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a> objects, making them ready for downstream analysis within the <a href="https://scverse.org/">scverse</a> ecosystem or interactive exploration via the <a href="https://github.com/scverse/napari-spatialdata">napari-spatialdata plugin</a>.</li>
-<li><strong>Flexible Execution:</strong> PlexPipe can be implemented in two ways based on your needs:<ul>
-<li><strong>Local/Interactive:</strong> Utilize the provided Python scripts or Jupyter Notebooks for smaller datasets or pipeline prototyping (see <a href="../usage/execution_modes/">Execution Modes</a>).</li>
-<li><strong>High-Throughput:</strong> For parallel processing and large-scale workflows, use the Nextflow-optimized version: <a href="https://github.com/StallaertLab/plex-pipe-nextflow">plex-pipe-nextflow</a>.</li>
+<li><strong>Input:</strong> SpatialData objects containing marker images.</li>
+<li><strong>Output:</strong> User-defined exclusion shapes for each marker (added to SpatialData objects).</li>
+</ul>
+<p>Specified polygons will be used in the quantification step to create masks in the AnnData tables marking if an intensity-based properties for a given channel/marker should be included in the downstream analysis.</p>
+<p>Parameters of this step are defined in the Quality Control (QC) part of <a href="../../configuration/reference/#quality-control">configuration</a>.</p>
+<hr />
+<h2 id="notebook-workflow">Notebook Workflow</h2>
+<p>Execute the following sections within the <a href="https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/03_QC_demo.ipynb">Quality Control notebook</a> sequentially:</p>
+<ul>
+<li><strong>Read in config</strong>: Specify the absolute pathway to the analysis configuration file to initialize the session settings.</li>
+<li><strong>Select SpatialData Object</strong>: This section generates a list of available SpatialData objects. Adjust the <code>ind</code> parameter to select the specific ROI for review.</li>
+<li><strong>Initialize Napari QC Widget</strong>: Launches an interactive Napari viewer equipped with a custom widget designed for rapid data annotation:<ul>
+<li><strong>Marker Navigation</strong>: Facilitates efficient browsing of markers within the SpatialData object via forward/backward navigation arrows or by selecting a specific marker from the dropdown menu.</li>
+<li><strong>Interactive Annotation</strong>: A dedicated shapes layer is automatically generated for each marker. Use <a href="https://napari.org/dev/howtos/layers/shapes.html">Napari's native shape tools</a> to delineate regions for exclusion.</li>
+<li><strong>Automated Persistence</strong>: If a marker already contains existing exclusion geometries, they are automatically loaded into the viewer for further editing.</li>
+<li><strong>Data Export</strong>: Utilize the <code>Save</code> and <code>Save All</code> buttons to commit exclusion polygons for the active marker or the entire ROI, respectively.</li>
+<li><strong>Session Termination</strong>: Close the Napari viewer interface once the annotations are completed and saved.</li>
 </ul>
 </li>
+<li><strong>Iterative Review</strong>: Return to the <strong>Select SpatialData Object</strong> section, update the object index, and repeat the annotation process for all remaining ROIs.</li>
 </ul>
+<p><img alt="A screenshot of the QC Widgets" src="../../images/qc_widget.png" /></p>
+<hr />
+<h2 id="alternative-execution-workflows">Alternative Execution Workflows</h2>
+<p>Since Step 2 (<a href="../02_roi_cutting/">ROI Extraction</a>), Step 4 (<a href="../04_image_processing/">Image Processing</a>), and Step 5 (<a href="../05_quantification/">Quantification</a>) are fully automated and require no manual intervention, they may be executed sequentially. In this configuration, the Quality Control (QC) stage can be deferred until after the quantification is complete. This is possible because the QC process appends exclusion masks directly to the <code>AnnData</code> tables, and these geometries are not a prerequisite for the quantification itself.</p>
+<p>To implement quality control after the quantification phase, please refer to the <a href="https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/06_add_QC_after_quantification.ipynb">post-quantification QC notebook</a>.</p>
 
 
 
@@ -1076,10 +1108,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
