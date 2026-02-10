@@ -150,21 +150,33 @@ def update_file_with_markers(
     else:
         updated_content = original_content + "\n\n" + new_section
 
-    if original_content != updated_content:
-        with open(file_path, "w", encoding="utf-8") as f:
+    if original_content.strip() != updated_content.strip():
+        with open(file_path, "w", encoding="utf-8", newline="") as f:
             f.write(updated_content)
-        print(f"Updated: {file_path}")
+        print(f"Updated: {file_path.name}")
+    else:
+        # If we hit this, mkdocs serve will NOT refresh the browser
+        print(f"No changes detected in {file_path.name}")
 
 
 def main() -> None:
     docs_dir = Path(__file__).parents[3] / "docs"
 
-    # 1. Update Processors (Full File Overwrite)
+    # 1. Lazy Update for Processors ---
     proc_path = docs_dir / "usage" / "processors.md"
-    proc_content = generate_processors_docs()
-    with open(proc_path, "w", encoding="utf-8") as f:
-        f.write(proc_content)
-    print(f"Generated: {proc_path}")
+    new_proc_content = generate_processors_docs()
+
+    # Read existing content to check for differences
+    current_proc_content = ""
+    if proc_path.exists():
+        current_proc_content = proc_path.read_text(encoding="utf-8")
+
+    # Only write if the content is truly different
+    if new_proc_content.strip() != current_proc_content.strip():
+        proc_path.write_text(new_proc_content, encoding="utf-8")
+        print(f"Generated: {proc_path}")
+    else:
+        print(f"No changes detected in {proc_path.name}")
 
     # 2. Update Quantification (In-place Injection)
     quant_path = docs_dir / "analysis_steps" / "05_quantification.md"

@@ -8,7 +8,7 @@ This step handles [channel selection logic](../configuration/channel-selection.m
 *   **Input:** TIF(F) images and ROI coordinates (`rois.pkl`).
 *   **Output:** Individual **SpatialData** (Zarr) objects for each ROI (images only).
 
-Parameters of this step are defined in the ROI Cutting part of the [config file](../configuration/reference.md#core-cutting).
+Parameters of this step are defined in the ROI Cutting part of the [config file](../configuration/reference.md#roi-cutting).
 
 ---
 ## Data Sourcing

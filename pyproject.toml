@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "plex_pipe"
 dynamic = ["version"]
-description = "A pipeline for analyzing multiplexed Cell Dive data"
+description = "A pipeline for analyzing multiplexed data."
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
@@ -27,7 +27,7 @@ dependencies = [
     "shapely>=2.1.1",
     "spatialdata>=0.4",
     "tifffile>=2025.1.10",
-    "zarr>=2.18.7",
+    "zarr>3.0",
     "fsspec>=2024.6.1",
 ]
 classifiers = [
@@ -39,7 +39,6 @@ classifiers = [
 [project.optional-dependencies]
 segmentation-gpu = [
     "cellpose>=4.0",
-    "imagecodecs>=2024.6.1",
     "instanseg-torch>=0.0.9",
     "torch",
 ]
@@ -54,6 +53,9 @@ dev = [
     "pytest-cov>=4.1.0"
 ]
 all = [
+    "plex_pipe[segmentation-gpu,gui]"
+]
+dev_all = [
     "plex_pipe[segmentation-gpu,gui,dev]"
 ]
 

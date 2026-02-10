@@ -18,7 +18,7 @@ Parameters of this step are defined in the Quantification part of [configuration
 <!-- METRICS_START -->
 
 
-| Metric Name | Source / Implementation | Description |
+| Feature Name | Source / Implementation | Description |
 | :--- | :--- | :--- |
 | **mean** | Skimage: `mean_intensity` | Standard intensity property from `skimage.measure.regionprops`. |
 | **max** | Skimage: `max_intensity` | Standard intensity property from `skimage.measure.regionprops`. |
