@@ -1,7 +1,7 @@
 # 🔧 Configuration
 
 The configuration file serves as the central blueprint for the PlexPipe analysis.
-It provides parameters for all stages of the pipeline divided into sections corresponding to the [analysis steps](../what_is_plexpipe.md).
+It provides parameters for all stages of the pipeline divided into sections corresponding to the [analysis steps](../analysis_steps/00_steps_overview.md).
 
 This configuration is defined in a YAML file; you can find a deep dive into the syntax at [YAML official website](https://yaml.org/about/), but the description and examples below should be more than enough to get you started.
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 import numpy as np
 from loguru import logger
@@ -77,7 +77,7 @@ class InstansegSegmenter(BaseOp):
 
     def prepare_input(self, in_image):
 
-        if isinstance(in_image, (tuple, list)):
+        if isinstance(in_image, tuple | list):
             in_image = np.stack(in_image, axis=-1)  # (H, W, C)
         elif isinstance(in_image, np.ndarray):
             if in_image.ndim == 2:
@@ -125,22 +125,22 @@ class Cellpose4Segmenter(BaseOp):
     class Params(BaseModel):
         """Parameters for the Cellpose segmenter."""
 
-        diameter: Optional[float] = Field(
+        diameter: float | None = Field(
             30,
             gt=0,
             description="From Cellpose documentation: Scaling factor for the segmentation. Default size of cells 30 - segments well objects of size 10 -120.",
         )
-        flow_threshold: Optional[float] = Field(
+        flow_threshold: float | None = Field(
             0.4,
             description="From Cellpose documentation: Maximum allowed flow error per mask (flow_threshold, default = 0.4). Increase it if too few ROIs are detected; decrease it if too many poor-quality ROIs appear.",
         )
-        cellprob_threshold: Optional[float] = Field(
+        cellprob_threshold: float | None = Field(
             0,
             gt=-6,
             lt=6,
             description="From Cellpose documentation: Pixel threshold to define ROIs. Lower the threshold if too few ROIs are detected; raise it if too many—especially from dim regions.",
         )
-        niter: Optional[int] = Field(
+        niter: int | None = Field(
             0,
             ge=0,
             description="From Cellpose documentation: If niter is None or 0, it scales with ROI size—use larger values (e.g., niter=2000) for longer ROIs.",
@@ -161,7 +161,7 @@ class Cellpose4Segmenter(BaseOp):
     def prepare_input(self, in_image):
 
         message = None
-        if isinstance(in_image, (tuple, list)):
+        if isinstance(in_image, tuple | list):
             for im in in_image:
                 if im.ndim != 2:
                     message = "Only 2D arrays are accepted."

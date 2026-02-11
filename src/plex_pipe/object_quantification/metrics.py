@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, Dict, Union
 
 import numpy as np
 
@@ -16,7 +16,7 @@ class Metric:
     """
 
     name: str
-    func: Union[str, Callable]
+    func: str | Callable
 
     @property
     def is_extra(self) -> bool:
@@ -31,10 +31,10 @@ class Metric:
         return self.func
 
 
-METRIC_REGISTRY: Dict[str, Metric] = {}
+METRIC_REGISTRY: dict[str, Metric] = {}
 
 
-def register_metric(name: str, func: Union[str, Callable]) -> None:
+def register_metric(name: str, func: str | Callable) -> None:
     """Registers a new metric."""
     METRIC_REGISTRY[name] = Metric(name, func)
 

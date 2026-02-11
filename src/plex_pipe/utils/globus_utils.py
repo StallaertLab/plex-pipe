@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict
 
 import globus_sdk
 import yaml
@@ -14,7 +13,7 @@ class GlobusConfig:
     client_id: str
     source_collection_id: str
     destination_collection_id: str
-    transfer_tokens: Dict
+    transfer_tokens: dict
 
     @classmethod
     def from_config_files(

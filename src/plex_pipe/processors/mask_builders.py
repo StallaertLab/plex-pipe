@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
-
 import numpy as np
 from pydantic import Field, field_validator, model_validator
 from scipy import ndimage as ndi
@@ -181,7 +179,7 @@ class BlobBuilder(BaseOp):
     class Params(ProcessorParamsBase):
         """Parameters for the blob creation operation."""
 
-        work_shape: Tuple[int, int] = Field(
+        work_shape: tuple[int, int] = Field(
             (250, 250),
             description="The resolution at which the blob is calculated. Lowering this value makes the processor more 'forgiving' of gaps but coarser in detail.",
         )
@@ -192,7 +190,7 @@ class BlobBuilder(BaseOp):
         )
 
         @field_validator("work_shape")
-        def check_positive_dimensions(cls, v: Tuple[int, int]) -> Tuple[int, int]:
+        def check_positive_dimensions(cls, v: tuple[int, int]) -> tuple[int, int]:
             """Ensures both dimensions in work_shape are positive integers."""
             if not (v[0] > 0 and v[1] > 0):
                 raise ValueError(

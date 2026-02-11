@@ -1,5 +1,4 @@
 from itertools import groupby
-from typing import Optional
 
 import numpy as np
 import spatialdata as sd
@@ -14,8 +13,8 @@ class QcShapeMasker:
         self,
         table_name: str = "quantification",
         qc_prefix: str = "qc_exclude",
-        object_name: Optional[str] = "cell",
-        layer_name: Optional[str] = "qc_mask",
+        object_name: str | None = "cell",
+        layer_name: str | None = "qc_mask",
         write_to_disk=False,
     ) -> None:
 
@@ -79,11 +78,12 @@ class QcShapeMasker:
             candidate_points = [points[i] for i in p_idx]
 
             exact = [
-                poly.covers(pt) for pt, poly in zip(candidate_points, candidate_polys)
+                poly.covers(pt)
+                for pt, poly in zip(candidate_points, candidate_polys, strict=False)
             ]
 
             # Any True among candidates marks the point as inside some polygon
-            for i, is_in in zip(p_idx, exact):
+            for i, is_in in zip(p_idx, exact, strict=False):
                 if is_in:
                     mask[i] = False
 

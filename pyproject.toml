@@ -1,9 +1,16 @@
+# =============================================================================
+# BUILD SYSTEM
+# =============================================================================
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
+# =============================================================================
+# PROJECT METADATA
+# =============================================================================
 [project]
 name = "plex_pipe"
+requires-python = ">=3.11"
 dynamic = ["version"]
 description = "A pipeline for analyzing multiplexed data."
 readme = "README.md"
@@ -11,10 +18,20 @@ license = { file = "LICENSE" }
 authors = [
     { name = "Kasia Kedziora", email = "kasia.kedziora@pitt.edu" }
 ]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent"
+]
+
+# =============================================================================
+# DEPENDENCIES
+# =============================================================================
+
 dependencies = [
     "anndata>=0.11.4",
     "dask[array]>=2024.4",
-    "globus-sdk>= 3.59.0",
     "imagecodecs>=2024.9.22",
     "loguru>=0.7.3",
     "numpy>2.0",
@@ -24,41 +41,86 @@ dependencies = [
     "pyyaml>=6.0.2",
     "scikit-image>=0.25.2",
     "scipy>=1.15.3",
+    "setuptools<81.0.0", # temporary fix for xarray trouble 02/16/2026
     "shapely>=2.1.1",
-    "spatialdata>=0.4",
+    "spatialdata>=0.4, <0.7", # 0.7 fails test_assembler - look into it
     "tifffile>=2025.1.10",
     "zarr>3.0",
     "fsspec>=2024.6.1",
 ]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Operating System :: OS Independent"
-]
 
 [project.optional-dependencies]
-segmentation-gpu = [
+jupyter = [
+    "ipykernel>=6.0",
+    "ipywidgets>=8.1.8",
+]
+globus = [
+    "globus-sdk>= 3.59.0",
+]
+segmentation-cpu= [
+    "torch",
+    "torchvision",
     "cellpose>=4.0",
     "instanseg-torch>=0.0.9",
+]
+segmentation-gpu= [
     "torch",
+    "torchvision",
+    "cellpose>=4.0",
+    "instanseg-torch>=0.0.9",
 ]
 gui = [
     "napari>=0.6.6",
     "qtpy>=2.4.0",
     "PyQt5>=5.15.2",
 ]
-dev = [
-    "tox>=4.12.0",
-    "pytest>=8.0.0",
-    "pytest-cov>=4.1.0"
+all-cpu = [
+    "plex_pipe[jupyter,globus,gui,segmentation-cpu]"
 ]
-all = [
-    "plex_pipe[segmentation-gpu,gui]"
-]
-dev_all = [
-    "plex_pipe[segmentation-gpu,gui,dev]"
+all-gpu = [
+    "plex_pipe[jupyter,globus,gui,segmentation-gpu]"
 ]
 
+[dependency-groups]
+all-dev-gpu = [
+    "black>=23.3.0",
+    "ruff>=0.0.241",
+    "tox>=4.12.0",
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "pre-commit>=3.6.0",
+    "plex_pipe[all-gpu]",
+]
+
+# =============================================================================
+# UV CONFIGURATION
+# =============================================================================
+
+[tool.uv]
+override-dependencies = [
+    "PyQt5==5.15.10",
+    "PyQt5-Qt5==5.15.2"
+]
+
+[[tool.uv.index]]
+name = "pytorch-gpu"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-gpu", marker = "extra == 'segmentation-gpu'" },
+]
+torchvision = [
+  { index = "pytorch-gpu", marker = "extra == 'segmentation-gpu'" },
+]
+
+# =============================================================================
+# TOOL CONFIGURATION
+# =============================================================================
 [tool.setuptools]
 include-package-data = true
 
@@ -68,14 +130,12 @@ where = ["src"]
 [tool.setuptools.package-data]
 "*" = ["*.yaml"]
 
-
 [tool.setuptools_scm]
 write_to = "src/plex_pipe/_version.py"
 
-
 [tool.black]
 line-length = 79
-target-version = ['py39', 'py310', 'py311']
+target-version = ['py311', 'py312', 'py313']
 
 [tool.ruff]
 line-length = 79
@@ -94,10 +154,9 @@ lint.select = [
 ]
 lint.ignore = [
     "E501", # line too long. let black handle this
-    "UP006", "UP007", # type annotation. As using magicgui require runtime type annotation then we disable this.
-    "SIM117", # flake8-simplify - some of merged with statements are not looking great with black, reanble after drop python 3.9
+    "UP006", "UP007", # type annotation.
+    "SIM117", # flake8-simplify
 ]
-
 exclude = [
     ".bzr",
     ".direnv",

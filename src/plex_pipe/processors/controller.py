@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 import numpy as np
 import spatialdata as sd
@@ -21,14 +21,14 @@ class ResourceBuildingController:
     def __init__(
         self,
         builder: BaseOp,
-        input_names: Union[str, Sequence[str]],
-        output_names: Union[str, Sequence[str]],
+        input_names: str | Sequence[str],
+        output_names: str | Sequence[str],
         resolution_level: int = 0,
         keep: bool = False,
         overwrite: bool = False,
         pyramid_levels: int = 1,
         downscale: int = 2,
-        chunk_size: Optional[Sequence[int]] = None,
+        chunk_size: Sequence[int] | None = None,
     ) -> None:
         """Initializes the ResourceBuildingController.
 
@@ -214,7 +214,7 @@ class ResourceBuildingController:
         logger.info(f"New element(s) '{self.output_names}' have been created.")
 
         # save output
-        for el, el_name in zip(new_elements, self.output_names):
+        for el, el_name in zip(new_elements, self.output_names, strict=False):
 
             # bring to max resolution level
             if self.resolution_level > 0:

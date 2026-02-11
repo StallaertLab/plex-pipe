@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Literal, Type
+from typing import Any, Literal
 
 from pydantic import BaseModel
 
@@ -10,8 +10,8 @@ from plex_pipe.processors.base import BaseOp
 
 @dataclass
 class RegistryEntry:
-    processor_class: Type[BaseOp]
-    param_model: Type[BaseModel]
+    processor_class: type[BaseOp]
+    param_model: type[BaseModel]
 
 
 Kind = Literal[
@@ -20,7 +20,7 @@ Kind = Literal[
     "image_enhancer",
 ]
 
-REGISTRY: Dict[Kind, Dict[str, Type[BaseOp]]] = {
+REGISTRY: dict[Kind, dict[str, type[BaseOp]]] = {
     "mask_builder": {},
     "object_segmenter": {},
     "image_enhancer": {},
@@ -32,7 +32,7 @@ def register(kind: Kind, name: str):
     Decorator for plugin registration that also captures the Params model.
     """
 
-    def deco(cls: Type[BaseOp]):
+    def deco(cls: type[BaseOp]):
         # Get the parameter model from the class, defaulting to an empty one
         param_model = getattr(cls, "Params", BaseModel)
 

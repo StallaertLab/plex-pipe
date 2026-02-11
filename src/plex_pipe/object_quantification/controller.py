@@ -1,5 +1,4 @@
 import re
-from typing import Dict, List, Optional, Tuple
 
 import anndata as ad
 import numpy as np
@@ -43,15 +42,15 @@ class QuantificationController:
 
     def __init__(
         self,
-        mask_keys: Dict[str, str],
+        mask_keys: dict[str, str],
         table_name: str = "quantification",
-        mask_to_annotate: Optional[str] = None,
-        markers_to_quantify: Optional[List[str]] = None,
+        mask_to_annotate: str | None = None,
+        markers_to_quantify: list[str] | None = None,
         add_qc_masks=False,
-        qc_prefix: Optional[str] = "qc_exclude",
+        qc_prefix: str | None = "qc_exclude",
         overwrite: bool = False,
-        morphological_properties: Optional[List[str]] = None,
-        intensity_properties: Optional[List[str]] = None,
+        morphological_properties: list[str] | None = None,
+        intensity_properties: list[str] | None = None,
     ) -> None:
 
         # this requirement is independent of specific sdata instance
@@ -159,7 +158,7 @@ class QuantificationController:
         mask = np.array(sd.get_pyramid_levels(sdata[mask_key], n=0)).squeeze()
         return mask
 
-    def get_masks_dictionary(self, sdata: sd.SpatialData) -> Dict[str, np.ndarray]:
+    def get_masks_dictionary(self, sdata: sd.SpatialData) -> dict[str, np.ndarray]:
         """Creates and returns a dictionary of label masks from a SpatialData object.
 
         Args:
@@ -178,7 +177,7 @@ class QuantificationController:
     # Compute obs and obsm
     ############################################################################
 
-    def build_obs(self, masks: Dict[str, np.ndarray]) -> pd.DataFrame:
+    def build_obs(self, masks: dict[str, np.ndarray]) -> pd.DataFrame:
         """Calculates morphological properties for objects in each loaded mask.
 
         This method computes morphological features and centroid for every
@@ -219,7 +218,7 @@ class QuantificationController:
 
         return obs
 
-    def find_ndims_columns(self, names: List[str]) -> Dict[str, List[tuple[int, str]]]:
+    def find_ndims_columns(self, names: list[str]) -> dict[str, list[tuple[int, str]]]:
         """Identifies and groups columns representing multi-dimensional data.
 
         This function uses a regex to find column names that follow a specific
@@ -267,8 +266,8 @@ class QuantificationController:
         return ndims_buckets
 
     def build_obsm(
-        self, obs: pd.DataFrame, ndims_buckets: Dict[str, List[tuple[int, str]]]
-    ) -> Tuple[Dict[str, np.ndarray], List[str]]:
+        self, obs: pd.DataFrame, ndims_buckets: dict[str, list[tuple[int, str]]]
+    ) -> tuple[dict[str, np.ndarray], list[str]]:
         """Builds multi-dimensional annotation dictionary (`obsm`) from obs columns.
 
         This method identifies columns in the observation DataFrame (`obs`) that
@@ -296,7 +295,7 @@ class QuantificationController:
             # Sort by dimension index
             dim_cols_sorted = sorted(dim_cols, key=lambda t: t[0])
             dims_sorted, cols_sorted = (
-                zip(*dim_cols_sorted) if dim_cols_sorted else ([], [])
+                zip(*dim_cols_sorted, strict=False) if dim_cols_sorted else ([], [])
             )
 
             # Build array
@@ -347,7 +346,7 @@ class QuantificationController:
 
         return img
 
-    def build_signal_df(self, sdata: sd.SpatialData, masks: Dict[str, np.ndarray]):
+    def build_signal_df(self, sdata: sd.SpatialData, masks: dict[str, np.ndarray]):
         """Quantifies channel intensities for each object across all specified masks.
 
         This method calculates the mean and median intensity for every object defined

@@ -4,11 +4,7 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Annotated,
-    Dict,
-    List,
     Literal,
-    Optional,
-    Type,
     Union,
 )
 
@@ -36,26 +32,26 @@ class GeneralSettings(BaseModel):
     image_dir: str
     analysis_name: str
     analysis_dir: str
-    log_dir: Optional[Path] = None
+    log_dir: Path | None = None
 
 
 class RoiDefinitionSettings(BaseModel):
     detection_image: str
-    roi_info_file_path: Optional[str] = None
-    im_level: Optional[float] = None
+    roi_info_file_path: str | None = None
+    im_level: float | None = None
 
 
 class RoiCuttingSettings(BaseModel):
-    roi_dir_tif: Optional[str] = None
-    roi_dir_output: Optional[str] = None
-    include_channels: Optional[Union[str, List[str]]] = None
-    exclude_channels: Optional[Union[str, List[str]]] = None
-    use_markers: Optional[Union[str, List[str]]] = None
-    ignore_markers: Optional[Union[str, List[str]]] = None
-    margin: Optional[int] = 0
-    mask_value: Optional[int] = 0
-    transfer_cleanup_enabled: Optional[bool] = False
-    roi_cleanup_enabled: Optional[bool] = False
+    roi_dir_tif: str | None = None
+    roi_dir_output: str | None = None
+    include_channels: str | list[str] | None = None
+    exclude_channels: str | list[str] | None = None
+    use_markers: str | list[str] | None = None
+    ignore_markers: str | list[str] | None = None
+    margin: int | None = 0
+    mask_value: int | None = 0
+    transfer_cleanup_enabled: bool | None = False
+    roi_cleanup_enabled: bool | None = False
 
 
 class QcSettings(BaseModel):
@@ -77,25 +73,25 @@ DEFAULT_intensity_properties = ["mean", "median"]
 
 class QuantTask(BaseModel):
     name: str
-    masks: Dict[str, str]
+    masks: dict[str, str]
     layer_connection: str | None = None
-    morphological_properties: List[str] = DEFAULT_morphological_properties
-    intensity_properties: List[str] = DEFAULT_intensity_properties
-    markers_to_quantify: Optional[List[str]] = None
+    morphological_properties: list[str] = DEFAULT_morphological_properties
+    intensity_properties: list[str] = DEFAULT_intensity_properties
+    markers_to_quantify: list[str] | None = None
     add_qc_masks: bool = False
 
     @field_validator("morphological_properties")
     @classmethod
-    def ensure_label_in_features(cls, v: List[str]) -> List[str]:
+    def ensure_label_in_features(cls, v: list[str]) -> list[str]:
         if "label" not in v:
             v.append("label")
         return v
 
 
 class StorageSettings(BaseModel):
-    chunk_size: Optional[List[int]] = [1, 512, 512]
-    max_pyramid_level: Optional[int] = 4
-    downscale: Optional[int] = 2
+    chunk_size: list[int] | None = [1, 512, 512]
+    max_pyramid_level: int | None = 4
+    downscale: int | None = 2
 
 
 ###################################################################
@@ -104,12 +100,12 @@ class StorageSettings(BaseModel):
 class BaseStep(BaseModel):
     category: Kind
     type: str
-    input: Union[str, List[str]]
-    output: Union[str, List[str]]
+    input: str | list[str]
+    output: str | list[str]
     keep: bool = True
 
 
-def create_step_models() -> list[Type[BaseModel]]:
+def create_step_models() -> list[type[BaseModel]]:
     """Dynamically creates Pydantic models for each registered processor."""
     all_step_models = []
     for kind, processors in REGISTRY.items():
@@ -146,9 +142,9 @@ class AnalysisConfig(BaseModel):
     general: GeneralSettings
     roi_definition: RoiDefinitionSettings
     roi_cutting: RoiCuttingSettings
-    additional_elements: List[Annotated[PipelineStep, Field(discriminator="type")]]
+    additional_elements: list[Annotated[PipelineStep, Field(discriminator="type")]]
     qc: QcSettings
-    quant: List[QuantTask]
+    quant: list[QuantTask]
     sdata_storage: StorageSettings
 
     analysis_dir: Path = Path(".")

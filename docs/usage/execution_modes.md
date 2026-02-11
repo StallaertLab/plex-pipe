@@ -2,7 +2,8 @@
 
 PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow)).
 
-Interactive [steps](../what_is_plexpipe.md) (1 - Core detection and x - Quality Control) are designed to be executed using [Napari](https://napari.org/))
+Interactive [steps](../analysis_steps/00_steps_overview.md) (1 - Core detection and 3 - Quality Control) are designed to be executed using [Napari](https://napari.org/) with designed widgets.
+
 ---
 
 ## Command-Line Usage
@@ -12,17 +13,18 @@ To run the pipeline from the command line, use the provided scripts:
 ### Prepare Cores
 
 ```bash
-python scripts/prepare_cores.py --config config/analysis_pipeline.yaml
+python scripts/02_cut_rois.py --exp-config ../examples/example_pipeline_config.yaml
 ```
 
-This script wraps the `CoreController` class, which handles:
+### Image Processing
+```bash
+python 04_segment.py --exp_config ../examples/example_pipeline_config.yaml --overwrite
+```
 
-* Reading image and metadata files.
-* Cutting out cores with appropriate margins and masking.
-* Writing intermediate TIFFs.
-* Assembling per-core Zarr datasets using the [SpatialData](https://spatialdata.scverse.org/) model.
-
-For more details, see the `core_cutter.py` source and its [configuration](configuration/core-cutting.md).
+### Quantification
+```bash
+python 05_quantify.py --exp_config ../examples/example_pipeline_config.yaml --overwrite
+```
 
 ---
 

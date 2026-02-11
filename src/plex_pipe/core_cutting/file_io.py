@@ -4,7 +4,7 @@ import ssl
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path, PurePosixPath
-from typing import Any, Tuple, Union
+from typing import Any
 
 import dask.array as da
 import zarr
@@ -251,7 +251,7 @@ def write_temp_tiff(array, core_id: str, channel: str, temp_dir: str):
     imwrite(fname, array)
 
 
-def read_ome_tiff(path: str, level_num: int = 0) -> Tuple[da.Array, Any]:
+def read_ome_tiff(path: str, level_num: int = 0) -> tuple[da.Array, Any]:
     """Load an OME-TIFF (flat or pyramidal) as a Dask array.
 
     Args:
@@ -279,7 +279,7 @@ def read_ome_tiff(path: str, level_num: int = 0) -> Tuple[da.Array, Any]:
     return im_da, store
 
 
-def list_local_files(image_dir: Union[str, Path]) -> list[str]:
+def list_local_files(image_dir: str | Path) -> list[str]:
     """List ``*.tif*`` files within a directory.
 
     Args:

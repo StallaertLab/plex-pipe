@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from enum import Enum
 from typing import (
     Any,
-    List,
-    Sequence,
-    Tuple,
 )
 
 from loguru import logger
@@ -116,7 +114,7 @@ class BaseOp(ABC):
             ) from e
 
     @staticmethod
-    def _normalize_names(names: str | Sequence[str] | None, label: str) -> List[str]:
+    def _normalize_names(names: str | Sequence[str] | None, label: str) -> list[str]:
         """Normalizes input/output names to a list of strings.
 
         This method accepts a string, a sequence of strings, or None, and
@@ -150,7 +148,7 @@ class BaseOp(ABC):
         self,
         inputs: str | Sequence[str] | None,
         outputs: str | Sequence[str] | None,
-    ) -> Tuple[List[str], List[str]]:
+    ) -> tuple[list[str], list[str]]:
         """Validates and normalizes the input and output names for the operation.
 
         This method ensures that the number of inputs and outputs matches the
