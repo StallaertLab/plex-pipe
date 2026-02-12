@@ -43,7 +43,7 @@ dependencies = [
     "scipy>=1.15.3",
     "setuptools<81.0.0", # temporary fix for xarray trouble 02/16/2026
     "shapely>=2.1.1",
-    "spatialdata>=0.4, <0.7", # 0.7 fails test_assembler - look into it
+    "spatialdata>0.7",
     "tifffile>=2025.1.10",
     "zarr>3.0",
     "fsspec>=2024.6.1",
@@ -60,6 +60,7 @@ globus = [
 segmentation-cpu= [
     "torch",
     "torchvision",
+    "scanpy",
     "cellpose>=4.0",
     "instanseg-torch>=0.0.9",
 ]
@@ -70,9 +71,10 @@ segmentation-gpu= [
     "instanseg-torch>=0.0.9",
 ]
 gui = [
-    "napari>=0.6.6",
     "qtpy>=2.4.0",
     "PyQt5>=5.15.2",
+    "napari>=0.6.6",
+    "napari-spatialdata>0.5.7",
 ]
 all-cpu = [
     "plex_pipe[jupyter,globus,gui,segmentation-cpu]"
