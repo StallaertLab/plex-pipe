@@ -43,8 +43,8 @@ def redo_cores_layer(viewer, data=None, edge_width=2, shape_type="polygon"):
 
 def redo_bbox_layer(
     viewer: napari.Viewer,
-    data: list[list[float]],
-    text: list[str],
+    data: list[list[float]] | None = None,
+    text: list[str] | None = None,
     edge_width: int = 2,
 ) -> None:
     """Create or replace the ``bounding_boxes`` layer in a viewer.
@@ -62,6 +62,10 @@ def redo_bbox_layer(
 
     if "bounding_boxes" in viewer.layers:
         viewer.layers.remove("bounding_boxes")
+
+    # initialize data if None
+    if data is None:
+        data = []
 
     viewer.add_shapes(
         data,
@@ -94,15 +98,15 @@ def display_saved_rois(viewer, IM_LEVEL, edge_width=2, save_path=None):
     rect_list, poly_list, df = read_in_saved_rois(save_path, IM_LEVEL=IM_LEVEL)
 
     if len(rect_list) > 0:
-        redo_bbox_layer(
-            viewer, rect_list, edge_width=edge_width, text=df["roi_name"].tolist()
-        )
-        redo_cores_layer(
-            viewer, poly_list, edge_width=edge_width, shape_type=df.poly_type.to_list()
-        )
+        roi_names = df["roi_name"].tolist()
+        shape_types = df.poly_type.to_list()
     else:
-        viewer.add_shapes(data=[], name="ROIs")
-        viewer.status = "No previous rois found!"
+        roi_names = []
+        shape_types = []
+        viewer.status = "No previous rois found. Displaying empty layers."
+
+    redo_bbox_layer(viewer, rect_list, edge_width=edge_width, text=roi_names)
+    redo_cores_layer(viewer, poly_list, edge_width=edge_width, shape_type=shape_types)
 
 
 def save_rois_from_viewer(viewer, org_im_shape, req_level, save_path=None):

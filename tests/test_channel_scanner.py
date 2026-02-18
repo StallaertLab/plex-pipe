@@ -1,6 +1,5 @@
 import plex_pipe.core_cutting.channel_scanner as channel_scanner
 from plex_pipe.core_cutting.channel_scanner import (
-    build_transfer_map,
     scan_channels_from_list,
 )
 
@@ -100,27 +99,6 @@ def test_scan_use_markers_overrides_grouping():
     assert "CD3" not in out
 
 
-def test_build_transfer_map_creates_posix_destinations_from_local_dir(tmp_path):
-    """
-    Verifies: local destination mapping is POSIX-format and file-named.
-    Why: Globus expects POSIX-style targets regardless of the OS running tests.
-    """
-    remote = {
-        "CD3": "/remote/dir/CD3-02.ome.tif",
-        "DAPI": "/remote/dir/DAPI.ome.tif",
-    }
-    # Use a POSIX-ish base; function converts to POSIX for Globus anyway.
-    base = tmp_path / "work" / "local"
-    base.mkdir(parents=True, exist_ok=True)
-
-    m = build_transfer_map(remote, str(base))
-    # remote side preserved as POSIX
-    assert m["CD3"][0].endswith("/remote/dir/CD3-02.ome.tif")
-    # local side is base + filename, POSIX-formatted
-    assert m["CD3"][1].endswith("/work/local/CD3-02.ome.tif")
-    assert m["DAPI"][1].endswith("/work/local/DAPI.ome.tif")
-
-
 def test_discover_channels_uses_globus_listing(monkeypatch):
     calls = {}
 
@@ -132,7 +110,7 @@ def test_discover_channels_uses_globus_listing(monkeypatch):
         ]
 
     # Patch the **local binding** inside channel_scanner
-    monkeypatch.setattr(channel_scanner, "list_globus_files", fake_list_globus)
+    monkeypatch.setattr(channel_scanner, "list_globus_tifs", fake_list_globus)
 
     out = channel_scanner.discover_channels("/remote/path", gc=object())
     assert calls.get("hit")

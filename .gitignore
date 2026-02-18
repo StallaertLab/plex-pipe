@@ -90,6 +90,7 @@ examples/input
 examples/output/sample_analysis/rois
 examples/output/sample_analysis/logs
 examples/output/sample_analysis/temp
+examples/output/sample_analysis_globus
 
 # Sandbox directory
 notebooks/sandbox

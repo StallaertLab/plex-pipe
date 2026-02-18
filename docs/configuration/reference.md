@@ -56,7 +56,7 @@ core_cutting:
   margin: 0
   mask_value: 0
   transfer_cleanup_enabled: True
-  core_cleanup_enabled: True
+  temp_roi_delete: True
 ```
 
 | Key                        | Type        | Description                                                             |
@@ -70,7 +70,7 @@ core_cutting:
 | `margin`                   | `int` (optional) | Number of pixels to pad around each bounding box when cutting cores. Defaults to 0.    |
 | `mask_value`               | `int` (optional) | Value used to fill background for polygonal core masks. Defaults to 0.                 |
 | `transfer_cleanup_enabled` | `bool` (optional) | Whether to delete temporary files downloaded via Globus after the run. Defaults to False.|
-| `core_cleanup_enabled`     | `bool` (optional) | Whether to delete TIFFs from the temporary storage in `cores_dir_tif` after core assembly. Defaults to False. For details see [Input Data](../usage/input_data.md).|
+| `temp_roi_delete`     | `bool` (optional) | Whether to delete TIFFs from the temporary storage in `cores_dir_tif` after core assembly. Defaults to False. For details see [Input Data](../usage/input_data.md).|
 
 Parameters `include_channels`, `exclude_channels`, `use_markers` and `ignore_markers` provide a fine-grained control over which imaging channels are included in processing. See [Channel Selection Logic](channel-selection.md) for details.
 

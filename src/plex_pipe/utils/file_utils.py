@@ -1,6 +1,10 @@
-from pathlib import PurePosixPath, PureWindowsPath
+import os
+from pathlib import Path
+from typing import Any
 
-from globus_sdk import GlobusAPIError
+import dask.array as da
+import zarr
+from tifffile import TiffFile, imwrite
 
 
 def change_to_wsl_path(path):
@@ -28,141 +32,57 @@ def change_to_wsl_path(path):
     return wsl_path
 
 
-def globus_dir_exists(tc, endpoint_id, path):
+def write_temp_tiff(array, core_id: str, channel: str, temp_dir: str):
+    """Save an array as ``temp/<core_id>/<channel>.tiff``.
 
-    try:
-        tc.operation_ls(endpoint_id, path=path)
-        return True
-    except GlobusAPIError as e:
-        if e.code == "ClientError.NotFound":
-            return False
-        raise  # some other error, bubble it up
-
-
-class GlobusPathConverter:
-    """Converts local Windows file paths to Globus-compatible POSIX-style paths.
-
-    This class converts Windows-style file paths (e.g., ``C:\\Users\\Kasia\\Documents\\file.txt``)
-    into Globus-compatible POSIX paths (e.g., ``/C/Users/Kasia/Documents/file.txt``),
-    according to how the Globus Connect Personal endpoint is configured.
-
-    The converter supports three endpoint layout modes:
-
-    - **multi_drive**:
-        Each Windows drive (C, D, E, etc.) appears as a top-level folder under
-        the Globus root (e.g., ``/C``, ``/D``). This layout is typical when
-        the shared directory is set to the full system root (``C:\\``) and multiple
-        drives are available in Globus Connect Personal.
-        Example:
-            ``C:\\Users\\Kasia\\Documents\\file.txt`` → ``/C/Users/Kasia/Documents/file.txt``
-
-    - **single_drive**:
-        The endpoint root corresponds to a single drive (e.g., ``C:\\``), or to a
-        network-mounted CIFS drive (e.g., ``R:\\``). In this case, the Globus root
-        ``/`` maps directly to that drive, and no drive letter appears in the path.
-        Example:
-            ``C:\\Users\\Kasia\\Documents\\file.txt`` → ``/Users/Kasia/Documents/file.txt``
-            ``R:\\Data\\Project1\\results.csv`` → ``/Data/Project1/results.csv``
-
-    - **subfolder_root**:
-        Only a specific subfolder of a drive (e.g., ``C:\\Users\\Kasia``) is shared.
-        All accessible paths must lie within this folder, and conversion is relative
-        to it. Attempting to convert a path outside the shared root will raise an error.
-        Example:
-            ``C:\\Users\\Kasia\\Documents\\file.txt`` → ``/Documents/file.txt``
-
-    Attributes:
-        layout (str): The endpoint layout type. One of {"multi_drive", "single_drive", "subfolder_root"}.
-        shared_root (str | None): The absolute Windows path of the shared root directory.
-            Required only when ``layout == "subfolder_root"``.
-
-    Example usage:
-        >>> conv = GlobusPathConverter(layout="multi_drive")
-        >>> conv.windows_to_globus(r"C:\\Users\\Kasia\\Documents\\file.txt")
-        '/C/Users/Kasia/Documents/file.txt'
-
-        >>> conv = GlobusPathConverter(layout="single_drive")
-        >>> conv.windows_to_globus(r"C:\\Users\\Kasia\\Documents\\file.txt")
-        '/Users/Kasia/Documents/file.txt'
-
-        >>> conv = GlobusPathConverter(layout="single_drive")
-        >>> conv.windows_to_globus(r"R:\\Project\\data.csv")
-        '/Project/data.csv'
-
-        >>> conv = GlobusPathConverter(layout="subfolder_root",
-        ...                            shared_root=r"C:\\Users\\Kasia")
-        >>> conv.windows_to_globus(r"C:\\Users\\Kasia\\Documents\\file.txt")
-        '/Documents/file.txt'
-
-    Raises:
-        ValueError: If an invalid layout is provided, or if the path lies outside
-            the shared root when using ``subfolder_root`` layout.
-        RuntimeError: If ``shared_root`` is missing when required.
+    Args:
+        array (numpy.ndarray): Image data to save.
+        core_id (str): Core identifier.
+        channel (str): Channel name.
+        temp_dir (str): Base directory for temporary files.
     """
+    core_path = os.path.join(temp_dir, core_id)
+    os.makedirs(core_path, exist_ok=True)
+    fname = os.path.join(core_path, f"{channel}.tiff")
+    imwrite(fname, array)
 
-    def __init__(self, layout: str, shared_root: str | None = None):
-        """Initialize the GlobusPathConverter.
 
-        Args:
-            layout (str): The endpoint layout type. Must be one of
-                {"multi_drive", "single_drive", "subfolder_root"}.
-            shared_root (str | None): Absolute Windows path to the shared directory,
-                required only for ``subfolder_root`` layout.
+def read_ome_tiff(path: str, level_num: int = 0) -> tuple[da.Array, Any]:
+    """Load an OME-TIFF (flat or pyramidal) as a Dask array.
 
-        Raises:
-            ValueError: If an invalid layout is provided.
-            RuntimeError: If ``shared_root`` is required but not provided.
-        """
-        self.layout = layout
-        if layout not in {"multi_drive", "single_drive", "subfolder_root"}:
-            raise ValueError(
-                "layout must be 'multi_drive', 'single_drive', or 'subfolder_root'"
-            )
+    Args:
+        path (str): Path to the TIFF file.
+        level_num (int, optional): Multiscale level to read. Defaults to 0 (highest res).
 
-        self.shared_root = PureWindowsPath(shared_root) if shared_root else None
+    Returns:
+        tuple[da.Array, Any]: The image array and the underlying store.
+    """
+    with TiffFile(path) as tif:
 
-        if layout == "subfolder_root" and not shared_root:
-            raise RuntimeError("shared_root is required when layout='subfolder_root'")
+        store = tif.aszarr()
+        # Open the store - could be a Group or an Array
+        z_obj = zarr.open(store, mode="r")
 
-    def windows_to_globus(self, win_path: str) -> str:
-        """Convert a Windows path to a Globus-compatible POSIX path.
+        # CASE 1: a single Array (Flat TIFF)
+        if isinstance(z_obj, zarr.Array):
+            im_da = da.from_zarr(z_obj)
 
-        Args:
-            win_path (str): Absolute Windows-style path (e.g., ``C:\\Data\\file.txt``).
+        # CASE 2: a Group (Pyramidal TIFF)
+        elif isinstance(z_obj, zarr.Group):
+            # Access the specific array within the group
+            im_da = da.from_zarr(z_obj[str(level_num)])
 
-        Returns:
-            str: The equivalent Globus-compatible path (e.g., ``/C/Data/file.txt``).
+    return im_da, store
 
-        Raises:
-            ValueError: If the path lies outside the shared root (in ``subfolder_root`` layout)
-                or lacks a drive letter when ``multi_drive`` is used.
-            RuntimeError: If ``shared_root`` is required but not initialized.
-        """
-        # Normalize Windows path
-        p = PureWindowsPath(win_path)
-        drive = p.drive.replace(":", "").upper()
 
-        if self.layout == "multi_drive":
-            if not drive:
-                raise ValueError(
-                    "Path must include a drive (e.g., C:) for multi_drive layout."
-                )
-            return str(PurePosixPath("/", drive, *p.parts[1:]))
+def list_local_files(image_dir: str | Path) -> list[str]:
+    """List ``*.tif*`` files within a directory.
 
-        elif self.layout == "single_drive":
-            # For single-drive or CIFS mounts (e.g., R:), root is mapped directly to /
-            return str(PurePosixPath("/", *p.parts[1:]))
+    Args:
+        image_dir (str | Path): Directory to search.
 
-        elif self.layout == "subfolder_root":
-            if not self.shared_root:
-                raise RuntimeError("shared_root not set for subfolder_root layout.")
-            try:
-                rel_path = p.relative_to(self.shared_root)
-            except ValueError as err:
-                raise ValueError(
-                    f"Path '{win_path}' is outside the shared root: '{self.shared_root}'"
-                ) from err
-            return str(PurePosixPath("/", rel_path))
-
-        else:
-            raise ValueError(f"Unsupported layout: {self.layout}")
+    Returns:
+        list[str]: Sorted list of matching file paths.
+    """
+    image_dir = Path(image_dir)  # Ensures uniform behavior
+    return [str(p) for p in image_dir.glob("*.tif*")]

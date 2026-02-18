@@ -1,15 +1,12 @@
 import os
 import re
-from pathlib import Path
 
 from loguru import logger
 
-from plex_pipe.core_cutting.file_io import (
-    list_globus_files,
-    list_local_files,
-)
+from plex_pipe.utils.file_utils import list_local_files
 from plex_pipe.utils.globus_utils import (
     GlobusConfig,
+    list_globus_tifs,
 )
 
 
@@ -165,42 +162,10 @@ def discover_channels(
         dict[str, str]: Mapping of selected channel names to file paths.
     """
     if gc is not None:
-        files = list_globus_files(gc, image_dir_or_path)
+        files = list_globus_tifs(gc, image_dir_or_path)
     else:
         files = list_local_files(image_dir_or_path)
 
     return scan_channels_from_list(
         files, include_channels, exclude_channels, use_markers, ignore_markers
     )
-
-
-def build_transfer_map(
-    remote_paths: dict[str, str],
-    full_local_path: str | Path,
-) -> dict[str, tuple[str, str]]:
-    """Create a transfer map for Globus operations.
-
-    Args:
-        remote_paths (dict[str, str]): Channel name to remote path mapping.
-        full_local_path (str | Path): Absolute destination directory.
-
-    Returns:
-        dict[str, tuple[str, str]]: Channel name to ``(remote, local)`` path
-            pairs where the local path is formatted for Globus.
-    """
-    base = Path(full_local_path).resolve()
-
-    # Convert base to Globus-style POSIX
-    base_drive = base.drive.rstrip(":")  # Extract drive letter without colon
-    base_suffix = base.relative_to(
-        base.anchor
-    ).as_posix()  # Strip drive anchor and convert to POSIX
-    base_globus = Path(f"/{base_drive}/{base_suffix}")
-
-    return {
-        ch: (
-            str(Path(remote).as_posix()),
-            str((base_globus / Path(remote).name).as_posix()),
-        )
-        for ch, remote in remote_paths.items()
-    }

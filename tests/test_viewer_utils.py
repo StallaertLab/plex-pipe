@@ -147,8 +147,15 @@ def test_display_saved_rois_empty(mock_read, mock_viewer):
 
     viewer_utils.display_saved_rois(mock_viewer, IM_LEVEL=0)
 
-    mock_viewer.add_shapes.assert_called_with(data=[], name="ROIs")
-    assert "No previous rois found" in mock_viewer.status
+    mock_viewer.add_shapes.assert_called_with(
+        [],
+        shape_type=[],
+        edge_color="green",
+        face_color="transparent",
+        edge_width=2,
+        name="ROIs",
+    )
+    assert "No previous rois found. Displaying empty layers." in mock_viewer.status
 
 
 @patch("plex_pipe.core_definition.viewer_utils.QFileDialog.getSaveFileName")
