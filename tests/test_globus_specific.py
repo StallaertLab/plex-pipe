@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path, PurePosixPath
 from unittest.mock import MagicMock, patch
 
@@ -31,6 +32,9 @@ def test_endpoint_init_windows_default():
         assert endpoint.shared_root is None
 
 
+@pytest.mark.skipif(
+    sys.platform != "win32", reason="Requires Windows drive letter logic"
+)
 def test_local_to_globus_windows_multi_drive():
     """Test C:\\Data -> /C/Data on Windows."""
     with patch("os.name", "nt"):
@@ -52,6 +56,9 @@ def test_local_to_globus_rooted_scope_error():
             endpoint.local_to_globus("/home/user/private.tif")
 
 
+@pytest.mark.skipif(
+    sys.platform != "win32", reason="Requires Windows drive letter logic"
+)
 def test_globus_to_local_windows_multi():
     """Test /D/Temp -> D:\\Temp conversion."""
     with patch("os.name", "nt"):

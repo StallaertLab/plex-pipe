@@ -91,7 +91,7 @@ very sparse regions beyond the actual tissue boundary.
 *   **Inputs**: 1
 *   **Outputs**: 1
 *   **Parameters**:
-    *   `work_shape` (Tuple[int, int]default=`(250, 250)`): The resolution at which the blob is calculated. Lowering this value makes the processor more 'forgiving' of gaps but coarser in detail.
+    *   `work_shape` (tuple[int, int]default=`(250, 250)`): The resolution at which the blob is calculated. Lowering this value makes the processor more 'forgiving' of gaps but coarser in detail.
     *   `radius` (<class 'int'>default=`5`): The size of the disk used to open and close the mask. Larger values result in smoother, more rounded blobs.
 </details>
 ---
@@ -178,10 +178,10 @@ Uses the Cellpose deep learning model for segmentation.
 *   **Inputs**: Variable
 *   **Outputs**: 1
 *   **Parameters**:
-    *   `diameter` (Optional[float]default=`30`): From Cellpose documentation: Scaling factor for the segmentation. Default size of cells 30 - segments well objects of size 10 -120.
-    *   `flow_threshold` (Optional[float]default=`0.4`): From Cellpose documentation: Maximum allowed flow error per mask (flow_threshold, default = 0.4). Increase it if too few ROIs are detected; decrease it if too many poor-quality ROIs appear.
-    *   `cellprob_threshold` (Optional[float]default=`0`): From Cellpose documentation: Pixel threshold to define ROIs. Lower the threshold if too few ROIs are detected; raise it if too many—especially from dim regions.
-    *   `niter` (Optional[int]default=`0`): From Cellpose documentation: If niter is None or 0, it scales with ROI size—use larger values (e.g., niter=2000) for longer ROIs.
+    *   `diameter` (float | Nonedefault=`30`): From Cellpose documentation: Scaling factor for the segmentation. Default size of cells 30 - segments well objects of size 10 -120.
+    *   `flow_threshold` (float | Nonedefault=`0.4`): From Cellpose documentation: Maximum allowed flow error per mask (flow_threshold, default = 0.4). Increase it if too few ROIs are detected; decrease it if too many poor-quality ROIs appear.
+    *   `cellprob_threshold` (float | Nonedefault=`0`): From Cellpose documentation: Pixel threshold to define ROIs. Lower the threshold if too few ROIs are detected; raise it if too many—especially from dim regions.
+    *   `niter` (int | Nonedefault=`0`): From Cellpose documentation: If niter is None or 0, it scales with ROI size—use larger values (e.g., niter=2000) for longer ROIs.
 </details>
 ---
 
