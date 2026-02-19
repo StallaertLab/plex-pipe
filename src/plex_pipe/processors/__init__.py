@@ -2,6 +2,8 @@ from importlib import import_module
 from pathlib import Path
 from pkgutil import iter_modules
 
+from plex_pipe.processors.controller import ResourceBuildingController
+
 # 1) Auto-discover processor modules so @register runs on import
 _pkg_path = Path(__file__).parent
 for m in iter_modules([str(_pkg_path)]):
@@ -19,4 +21,5 @@ __all__ = [
     "build_processor",
     "register",
     "REGISTRY",
+    "ResourceBuildingController",
 ]

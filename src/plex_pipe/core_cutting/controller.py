@@ -10,7 +10,7 @@ from plex_pipe.core_cutting.input_strategy import FileAvailabilityStrategy
 from plex_pipe.utils.file_utils import read_ome_tiff, write_temp_tiff
 
 
-class CorePreparationController:
+class RoiPreparationController:
     """Coordinate cutting and assembly of cores from multiplex images."""
 
     def __init__(

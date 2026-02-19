@@ -6,13 +6,13 @@ import pandas as pd
 from loguru import logger
 
 from plex_pipe.core_cutting.controller import (
-    CorePreparationController,
+    RoiPreparationController,
 )
 from plex_pipe.core_cutting.input_strategy import (
     GlobusFileStrategy,
     LocalFileStrategy,
 )
-from plex_pipe.utils.config_loaders import load_analysis_settings
+from plex_pipe.utils.config_loaders import load_config
 from plex_pipe.utils.globus_utils import GlobusConfig
 
 
@@ -65,7 +65,7 @@ def main():
     args = parse_args()
 
     # read config file
-    config = load_analysis_settings(args.exp_config)
+    config = load_config(args.exp_config)
 
     # setup logging
     configure_logging(config)
@@ -99,7 +99,7 @@ def main():
         strategy = LocalFileStrategy(config=config)
 
     # setup cutting controller
-    controller = CorePreparationController(
+    controller = RoiPreparationController(
         metadata_df=df,  # df defines which cores to process
         file_strategy=strategy,
         temp_dir=config.roi_dir_tif_path,

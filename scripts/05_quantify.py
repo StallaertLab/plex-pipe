@@ -7,7 +7,7 @@ import spatialdata as sd
 from loguru import logger
 
 from plex_pipe.object_quantification.controller import QuantificationController
-from plex_pipe.utils.config_loaders import load_analysis_settings
+from plex_pipe.utils.config_loaders import load_config
 
 
 def configure_logging(settings):
@@ -47,7 +47,7 @@ def main():
     args = parse_args()
 
     # read config file
-    settings = load_analysis_settings(args.exp_config)
+    settings = load_config(args.exp_config)
 
     # setup logging
     configure_logging(settings)

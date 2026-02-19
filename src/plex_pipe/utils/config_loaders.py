@@ -32,7 +32,7 @@ def load_workstation_config(config_path=None):
         raise KeyError("'workstations' key not found in the configuration file.")
 
 
-def load_analysis_settings(settings_path):
+def load_config(settings_path):
     """
     Load analysis settings from a YAML file.
 

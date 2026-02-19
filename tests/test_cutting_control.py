@@ -6,7 +6,7 @@ import pytest
 
 # Import module under test
 from plex_pipe.core_cutting.controller import (
-    CorePreparationController as controller,
+    RoiPreparationController as controller,
 )
 from plex_pipe.core_cutting.input_strategy import FileAvailabilityStrategy
 
