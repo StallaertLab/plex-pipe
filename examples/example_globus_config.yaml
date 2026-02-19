@@ -1,0 +1,23 @@
+# globus_config.yaml.example
+
+gc:
+  # Get this from developers.globus.org (looks like a UUID)
+  client_id: "00000000-0000-0000-0000-000000000000"
+
+  collections:
+    remote_source:
+      # Find this on the Globus Web App under 'Collection Search'
+      id: "source-collection-uuid-here"
+      root: "/path/to/remote/data"
+
+    local_workstation:
+      # Find this on the Globus Web App under 'Collection Search'
+      # The UUID of your Globus Connect Personal endpoint
+      id: "destination-collection-uuid-here"
+      # Windows: null (for multi-drive) or specify the entry point, e.g. "C:/"
+      # Linux: null (for Home) or specify the entry point, e.g. "/home/user/data"
+      root: null
+
+transfer_tokens:
+  # Tokens are long alphanumeric strings obtained via the login flow
+  refresh_token: "paste-refresh-token-here"

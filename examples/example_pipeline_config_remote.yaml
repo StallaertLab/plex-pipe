@@ -4,16 +4,16 @@
 # general settings
 ######################################################
 general:
-  image_dir: /CellDive/BLCA-1A/BLCA-1A_Final
-  analysis_name: "sample_analysis_globus"
-  analysis_dir: D:/plex-pipe/examples/output
+  image_dir: "../examples/input"
+  analysis_name: "sample_analysis"
+  analysis_dir: "/analysis_dir"
   log_dir: null # => ${analysis_dir}/logs
 
 ######################################################
 # roi definition
 ######################################################
 roi_definition:
-  detection_image: "BLCA-1A_1.0.4_R000_DAPI__FINAL_F.ome.tif"
+  detection_image: "sample_1.0.4_R000_DAPI__FINAL_F.tiff"
   roi_info_file_path: null # => ${analysis_dir}/rois.pkl
   im_level: 6
 
@@ -23,8 +23,8 @@ roi_definition:
 roi_cutting:
   roi_dir_tif: null # => ${analysis_dir}/rois
   roi_dir_output: null # => ${analysis_dir}/temp
-  use_markers:
-    - DAPI
+  ignore_markers:
+    - bCat
   roi_cleanup_enabled: True
 
 ######################################################

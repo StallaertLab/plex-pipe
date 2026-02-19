@@ -1,28 +1,19 @@
 import argparse
 import sys
 from datetime import datetime
-from pathlib import Path
 
 import pandas as pd
 from loguru import logger
 
-from plex_pipe.core_cutting.channel_scanner import (
-    build_transfer_map,
-    discover_channels,
-)
 from plex_pipe.core_cutting.controller import (
     CorePreparationController,
 )
-from plex_pipe.core_cutting.file_io import (
+from plex_pipe.core_cutting.input_strategy import (
     GlobusFileStrategy,
     LocalFileStrategy,
 )
 from plex_pipe.utils.config_loaders import load_analysis_settings
-from plex_pipe.utils.file_utils import GlobusPathConverter
-from plex_pipe.utils.globus_utils import (
-    GlobusConfig,
-    create_globus_tc,
-)
+from plex_pipe.utils.globus_utils import GlobusConfig
 
 
 def configure_logging(config):
@@ -60,9 +51,10 @@ def parse_args():
         default="crcd_collection_id",
     )
     parser.add_argument(
-        "--globus_home_setting",
-        help="How to change Windows to Globus paths in yaml.",
-        default="single_drive",
+        "--cleanup",
+        "-c",
+        action="store_true",
+        help="Enable deletion of Globus transfered image files.",
     )
 
     return parser.parse_args()
@@ -82,64 +74,36 @@ def main():
     # setup Globus if requested
     if args.globus_config:
 
-        image_path = config.general.image_dir
-
-        gc = GlobusConfig.from_config_files(
+        gc = GlobusConfig.from_yaml(
             args.globus_config,
-            from_collection=args.from_collection,
-            to_collection=args.to_collection,
+            source_key=args.from_collection,
+            dest_key=args.to_collection,
         )
-        tc = create_globus_tc(gc.client_id, gc.transfer_tokens)
-
-        # if windows paths change to globus
-        if ":/" in image_path or ":\\" in image_path:
-            conv = GlobusPathConverter(layout=args.globus_home_setting)
-            image_path = conv.windows_to_globus(image_path)
 
     else:
 
         gc = None
 
-    # map channels to image paths
-    channel_map = discover_channels(
-        Path(config.general.image_dir),
-        include_channels=config.roi_cutting.include_channels,
-        exclude_channels=config.roi_cutting.exclude_channels,
-        use_markers=config.roi_cutting.use_markers,
-        ignore_markers=config.roi_cutting.ignore_markers,
-    )
-
     # get cores coordinates
     df_path = config.roi_info_file_path
     df = pd.read_pickle(df_path)
-
-    # build transfer map
-    transfer_cache_dir = config.temp_dir
-    transfer_map = build_transfer_map(channel_map, transfer_cache_dir)
 
     # define file access
     if gc:
         # initialize Globus transfer
         strategy = GlobusFileStrategy(
-            tc=tc, transfer_map=transfer_map, gc=gc, cleanup_enabled=True
+            config=config, gc=gc, cleanup_enabled=args.cleanup
         )
-        # build a dict for transfered images
-        image_paths = {
-            ch: str(Path(transfer_cache_dir) / Path(remote).name)
-            for ch, (remote, _) in transfer_map.items()
-        }
+        strategy.submit_all_transfers(batch_size=1)
     else:
-        strategy = LocalFileStrategy()
-        # local files have not been moved
-        image_paths = channel_map
+        strategy = LocalFileStrategy(config=config)
 
     # setup cutting controller
     controller = CorePreparationController(
         metadata_df=df,  # df defines which cores to process
-        image_paths=image_paths,
+        file_strategy=strategy,
         temp_dir=config.roi_dir_tif_path,
         output_dir=config.roi_dir_output_path,
-        file_strategy=strategy,
         margin=config.roi_cutting.margin,
         mask_value=config.roi_cutting.mask_value,
         max_pyramid_levels=config.sdata_storage.max_pyramid_level,

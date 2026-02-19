@@ -78,7 +78,7 @@ class QuantTask(BaseModel):
     morphological_properties: list[str] = DEFAULT_morphological_properties
     intensity_properties: list[str] = DEFAULT_intensity_properties
     markers_to_quantify: list[str] | None = None
-    add_qc_masks: bool = False
+    qc_to_table: bool = False
 
     @field_validator("morphological_properties")
     @classmethod

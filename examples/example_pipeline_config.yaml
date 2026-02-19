@@ -99,7 +99,7 @@ quant:
       ring: ring
       cyto: cytoplasm
     layer_connection: instanseg_cell
-    qc_to_layer: True
+    qc_to_table: True
 
 ######################################################
 # storage settings

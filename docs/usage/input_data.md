@@ -17,38 +17,17 @@ Format: `[Prefix]_[Round].0.4_R000_[Dye]_[Marker]-[Suffix].ome.tif`
 *   **Marker**: pH2AX
 *   **Channel Name**: `001_pH2AX`
 
+---
 
 ## Sourcing Image Files
 
-Original tiff files are required to divide into separate SpatialData objects in the Core Cutting step.
+Original tiff files are required to divide into separate SpatialData objects in the ROI Cutting step.
 
-Core cutting supports two modes of operation:
+These files can be sourced differently resulting in the [ROI cutting step](../analysis_steps/02_roi_cutting.md) supporting two modes of operation:
 
 * **Local mode**: Tiff files are available on the local filesystem.
-* **Globus mode**: Tiff files are accessed remotely using Globus endpoints.
+* **Globus mode**: Tiff files are accessed remotely using [Globus](https://www.globus.org/) endpoints.
 
----
+For details of setting up Globus see [Globus Setup](../usage/globus.md).
 
-Differences in local vs. Globus mode come from how OME-TIFF files are sourced.
-
-### 📰 Local Mode
-
-In local mode, `image_dir` should point to a folder with accessible OME-TIFF files on disk.
-
-```yaml
-image_dir: "C:/path_to_image_directory"
-```
-
----
-
-### ☁️ Globus Mode
-
-In Globus mode, you must also specify the path to a Globus configuration directory. The `image_dir` field should reflect the remote directory on the Globus endpoint:
-
-```yaml
-image_dir: "/my_globus/path_to_image_directory"
-```
-
-This allows the pipeline to discover and transfer files on demand via Globus.
-
-**Work in progress explain Globus settings file.**
+All downstream steps are performed on locally available SpatialData object.

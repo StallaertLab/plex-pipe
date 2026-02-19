@@ -96,8 +96,6 @@ def mock_gc():
     gc.client_id = "client-id"
     gc.transfer_tokens = {
         "refresh_token": "dummy_rt",
-        "access_token": "dummy_at",
-        "expires_at_seconds": 3600,
     }
     gc.source.collection_id = "source-uuid"
     gc.destination.collection_id = "dest-uuid"

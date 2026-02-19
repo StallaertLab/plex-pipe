@@ -105,16 +105,12 @@ def create_globus_tc(client_id, transfer_tokens):
     auth_client = globus_sdk.NativeAppAuthClient(client_id)
 
     transfer_rt = transfer_tokens["refresh_token"]
-    transfer_at = transfer_tokens["access_token"]
-    expires_at_s = transfer_tokens["expires_at_seconds"]
 
     # construct a RefreshTokenAuthorizer
     # note that `client` is passed to it, to allow it to do the refreshes
     authorizer = globus_sdk.RefreshTokenAuthorizer(
         transfer_rt,
         auth_client,
-        access_token=transfer_at,
-        expires_at=expires_at_s,
     )
 
     # create TransferClient

@@ -15,6 +15,10 @@ Parameters of this step are defined in the ROI Cutting part of the [config file]
 
 This module supports dual modes of operation for data retrieval: **Local** and [**Globus**](https://www.globus.org/). For comprehensive instructions on configuring Globus for remote data sourcing, see [Globus Settings](../usage/globus.md) documentation and the corresponding [demonstration notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/02_roi_cutting_globus_demo.ipynb).
 
+If switching from local ROI definition to remote processing, ensure that `image_dir` and `analysis_dir` in the [config](../configuration/reference.md) reflect the remote environment.
+
+You can automate the transfer of configuration and metadata using this [utility notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/01a_prepare_remote_analysis.ipynb).
+
 ---
 ## Execution
 

@@ -83,9 +83,7 @@ def mock_yaml_config():
             },
         },
         "transfer_tokens": {
-            "access_token": "at",
             "refresh_token": "rt",
-            "expires_at_seconds": 123,
         },
     }
 

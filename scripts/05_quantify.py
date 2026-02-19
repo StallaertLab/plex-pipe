@@ -72,7 +72,7 @@ def main():
             mask_to_annotate=mask_to_annotate,
             markers_to_quantify=quant.markers_to_quantify,
             overwrite=args.overwrite,
-            add_qc_masks=quant.add_qc_masks,
+            add_qc_masks=quant.qc_to_table,
             qc_prefix=qc_prefix,
         )
 

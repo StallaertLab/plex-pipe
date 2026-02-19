@@ -16,9 +16,9 @@ general:
 
 | Key                        | Type        | Description                                        |
 | -------------------------- | ----------- | ---------------------------------------------------|
-| `image_dir`                | `Path`       | Source directory with tiff images. For differences between the local and Globus use see [Input Data](../usage/input_data.md). |            |
+| `image_dir`                | `Path`       | Source directory with tiff images. In local mode, `image_dir` should point to a folder on a local system. In Globus mode, `image_dir` should reflect the remote directory on the Globus endpoint.|            |
 | `analysis_name`            | `str`       | Name of the analysis run.                          |
-| `analysis_root_dir`        | `Path`       | Analysis output base directory. Analysis will be saved in `analysis_toot_dir/analysis_name` referred to as `analysis_dir`.|
+| `analysis_root_dir`        | `Path`       | Analysis output base directory. Analysis will be saved in `analysis_root_dir/analysis_name` referred to as `analysis_dir`.|
 | `log_dir`                  | `Path` (optional)       | Custom log directory. Defaults to `analysis_dir/logs`.   |
 
 ## ROI Definition
@@ -184,7 +184,7 @@ quant:
 | `morphological_properties` | `list[str]` (optional) | List of morphological features to calculate. 'Label' is added automatically if absent from the custom list to identify objects. Defaults to ["label", "centroid", "area", "eccentricity", "solidity", "perimeter", "euler_number"].|
 | `intensity_properties` | `list[str]` (optional) | List of intensity metrics to calculate. Defaults to ['mean', 'median']. |
 | `markers_to_quantify` | `list[str]` (optional) | List of specific markers to quantify itensity properties. If omitted, all available channels are quantified. |
-| `add_qc_masks` | `bool` (optional) | If True, uses polygons defined in the QC step to create a mask layer in the AnnData table indicating which objects are from the accepted regions. Defaults to False. |
+| `qc_to_table` | `bool` (optional) | If True, uses polygons defined in the QC step to create a mask layer in the AnnData table indicating which objects are from the accepted regions. Defaults to False. |
 
 For `morphological_properties`, any property supported by skimage.measure.regionprops can be used.
 
