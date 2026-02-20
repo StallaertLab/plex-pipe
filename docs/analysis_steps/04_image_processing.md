@@ -31,10 +31,7 @@ Newly generated images and masks can either be stored permanently within the `Sp
 Temporary outputs are useful for multi-step workflows—for example, normalized intensity images may be generated solely to serve as input for a segmentation processor without being persisted in the final dataset.
 
 ---
-## Execution
-
-This module is fully parameterized via the [configuration file](../configuration/reference.md#image-processing) and does not require manual intervention.
-Consequently, it can be executed via a Jupyter Notebook, standalone script, or as a component of the Nextflow pipeline; further details are available in the [Execution Modes](../usage/execution_modes.md) documentation.
+{% include "includes/execution_snippet.md" %}
 
 ---
 ## Notebook workflow

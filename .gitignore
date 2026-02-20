@@ -65,7 +65,7 @@ desktop.ini
 .pytype/
 
 # setuptools-scm version file
-src/track_gardener/_version.py
+src/plex_pipe/_version.py
 
 # Logs and debug files
 *.log

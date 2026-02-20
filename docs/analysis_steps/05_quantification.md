@@ -49,10 +49,7 @@ Results from multiple masks are stored in a **single AnnData table**.
 Both approaches are supported; choose the one that best fits your downstream analysis workflow.
 
 ---
-## Execution
-
-This module is fully parameterized via the [configuration file](../configuration/reference.md#quantification) and does not require manual intervention.
-Consequently, it can be executed via a Jupyter Notebook, standalone script, or as a component of the Nextflow pipeline; further details are available in the [Execution Modes](../usage/execution_modes.md) documentation.
+{% include "includes/execution_snippet.md" %}
 
 ---
 ## Notebook workflow

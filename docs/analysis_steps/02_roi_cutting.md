@@ -20,10 +20,7 @@ If switching from local ROI definition to remote processing, ensure that `image_
 You can automate the transfer of configuration and metadata using this [utility notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/01a_prepare_remote_analysis.ipynb).
 
 ---
-## Execution
-
-This module is fully parameterized via the [configuration file](../configuration/reference.md#roi-cutting) and does not require manual intervention.
-Consequently, it can be executed via a Jupyter Notebook, standalone script, or as a component of the Nextflow pipeline; further details are available in the [Execution Modes](../usage/execution_modes.md) documentation.
+{% include "includes/execution_snippet.md" %}
 
 ---
 ## Notebook workflow

@@ -94,6 +94,7 @@ all-dev-gpu = [
     "mkdocstrings[python]>=0.24.0",
     "pre-commit>=3.6.0",
     "plex_pipe[all-gpu]",
+    "mkdocs-macros-plugin>=1.5.0",
 ]
 
 # =============================================================================

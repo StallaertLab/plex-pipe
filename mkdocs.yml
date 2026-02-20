@@ -50,6 +50,7 @@ nav:
 
 plugins:
   - search
+  - macros
   - mkdocstrings:
       handlers:
         python:
