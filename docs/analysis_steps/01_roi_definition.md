@@ -12,7 +12,7 @@ The initial stage of the plex-pipe pipeline involves defining the coordinates fo
     * rois.png: A visual overview of the defined ROIs.
 
 
-This step is performed interactively using [01_roi_definition_demo](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/01_roi_definition_demo.ipynb) Jupyter notebook.
+This step is performed interactively using [01_roi_definition_demo.ipynb](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/01_roi_definition_demo.ipynb) Jupyter notebook.
 
 The notebook is divided into two parts:
 
@@ -53,11 +53,11 @@ Manual definition of ROIs is performed using a [Napari](https://napari.org/) vie
 
 You can find these buttons in the Napari dock widget on the left:
 
+* Edge Width: Dynamically adjusts the stroke thickness of shapes for better visibility on high-resolution images.
+
 * Display Saved ROIs: Reloads the ROIs from the path specified in your config.
 
 * Save ROIs: Triggers saving of the output files (overwriting previous saves).
-
-* Edge Width Slider: Dynamically adjusts the stroke thickness of shapes for better visibility on high-resolution images.
 
 ![A screenshot of the Napari Widgets](../images/01_napari_widgets.png)
 
