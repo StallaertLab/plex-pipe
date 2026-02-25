@@ -293,14 +293,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../what_is_plexpipe.md" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Installation
   
 
     
@@ -729,34 +729,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../execution_modes/" class="md-nav__link">
         
   
@@ -860,34 +832,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Sourcing Image Files">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        📰 Local Mode
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#globus-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ☁️ Globus Mode
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -913,7 +857,7 @@
   <span class="md-ellipsis">
     
   
-    Globus Integration
+    Globus Setup
   
 
     
@@ -1033,34 +977,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Sourcing Image Files">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        📰 Local Mode
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#globus-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ☁️ Globus Mode
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -1104,26 +1020,16 @@ The filename is parsed to extract the <strong>round number</strong> and <strong>
 <li><strong>Marker</strong>: pH2AX</li>
 <li><strong>Channel Name</strong>: <code>001_pH2AX</code></li>
 </ul>
+<hr />
 <h2 id="sourcing-image-files">Sourcing Image Files</h2>
-<p>Original tiff files are required to divide into separate SpatialData objects in the Core Cutting step.</p>
-<p>Core cutting supports two modes of operation:</p>
+<p>Original tiff files are required to divide into separate SpatialData objects in the ROI Cutting step.</p>
+<p>These files can be sourced differently resulting in the <a href="../../analysis_steps/02_roi_cutting/">ROI cutting step</a> supporting two modes of operation:</p>
 <ul>
 <li><strong>Local mode</strong>: Tiff files are available on the local filesystem.</li>
-<li><strong>Globus mode</strong>: Tiff files are accessed remotely using Globus endpoints.</li>
+<li><strong>Globus mode</strong>: Tiff files are accessed remotely using <a href="https://www.globus.org/">Globus</a> endpoints.</li>
 </ul>
-<hr />
-<p>Differences in local vs. Globus mode come from how OME-TIFF files are sourced.</p>
-<h3 id="local-mode">📰 Local Mode</h3>
-<p>In local mode, <code>image_dir</code> should point to a folder with accessible OME-TIFF files on disk.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">image_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C:/path_to_image_directory&quot;</span>
-</code></pre></div>
-<hr />
-<h3 id="globus-mode">☁️ Globus Mode</h3>
-<p>In Globus mode, you must also specify the path to a Globus configuration directory. The <code>image_dir</code> field should reflect the remote directory on the Globus endpoint:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">image_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/my_globus/path_to_image_directory&quot;</span>
-</code></pre></div>
-<p>This allows the pipeline to discover and transfer files on demand via Globus.</p>
-<p><strong>Work in progress explain Globus settings file.</strong></p>
+<p>For details of setting up Globus see <a href="../globus/">Globus Setup</a>.</p>
+<p>All downstream steps are performed on locally available SpatialData object.</p>
 
 
 
@@ -1173,7 +1079,7 @@ The filename is parsed to extract the <strong>round number</strong> and <strong>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

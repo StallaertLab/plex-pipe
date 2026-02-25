@@ -21,7 +21,7 @@
     
     
       
-        <title>Sam2 wsl setup - PlexPipe</title>
+        <title>Setting up SAM2 on WSL - PlexPipe</title>
       
     
     
@@ -75,6 +75,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#setting-up-sam2-on-wsl" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -111,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sam2 wsl setup
+              Setting up SAM2 on WSL
             
           </span>
         </div>
@@ -284,14 +289,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../what_is_plexpipe.md" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Installation
   
 
     
@@ -718,34 +723,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../execution_modes/" class="md-nav__link">
         
   
@@ -809,7 +786,7 @@
   <span class="md-ellipsis">
     
   
-    Globus Integration
+    Globus Setup
   
 
     
@@ -902,6 +879,71 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-install-wsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Install WSL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-set-up-the-python-environment-in-wsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Set up the Python Environment in WSL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-install-sam2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Install SAM2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-configure-plexpipe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Configure PlexPipe
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -921,9 +963,47 @@
   
 
 
-  <h1>Sam2 wsl setup</h1>
-
-
+<h1 id="setting-up-sam2-on-wsl">Setting up SAM2 on WSL</h1>
+<p>The <strong>Segment Anything Model 2 (SAM2)</strong> is required for automatic core detection in PlexPipe. Since SAM2 does not natively support Windows, Windows users must run it via the Windows Subsystem for Linux (WSL).</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol>
+<li><strong>Windows 10 or 11</strong></li>
+<li><strong>NVIDIA GPU</strong> (Recommended for performance, though CPU execution is possible but slow).</li>
+</ol>
+<h2 id="step-1-install-wsl">Step 1: Install WSL</h2>
+<p>Open PowerShell as Administrator and run:</p>
+<div class="highlight"><pre><span></span><code><span class="n">wsl</span> <span class="p">-</span><span class="n">-install</span>
+</code></pre></div>
+<p>Restart your computer if prompted. By default, this installs Ubuntu.</p>
+<h2 id="step-2-set-up-the-python-environment-in-wsl">Step 2: Set up the Python Environment in WSL</h2>
+<ol>
+<li>Open your WSL terminal (search for "Ubuntu" in the Start menu).</li>
+<li>Update packages and install Python/Pip:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade<span class="w"> </span>-y
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3<span class="w"> </span>python3-pip<span class="w"> </span>python3-venv<span class="w"> </span>git<span class="w"> </span>-y
+</code></pre></div>
+<ol>
+<li>Create a virtual environment for SAM2:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/sam2_env
+<span class="nb">source</span><span class="w"> </span>~/sam2_env/bin/activate
+</code></pre></div>
+<h2 id="step-3-install-sam2">Step 3: Install SAM2</h2>
+<p>Follow the official installation instructions from the SAM2 repository. Typically, this involves:</p>
+<ol>
+<li>Installing PyTorch (check pytorch.org for the command matching your CUDA version).</li>
+<li>Installing SAM2:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/facebookresearch/sam2.git
+</code></pre></div>
+<h2 id="step-4-configure-plexpipe">Step 4: Configure PlexPipe</h2>
+<p>When running the Core Detection widget in PlexPipe on Windows:</p>
+<ol>
+<li>Locate the path to your python executable inside WSL. It is usually:
+    <code>/home/&lt;username&gt;/sam2_env/bin/python</code></li>
+<li>Provide this path to the widget when prompted or in the configuration settings.</li>
+</ol>
 
 
 
@@ -973,7 +1053,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/usage/execution_modes/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../../configuration/channel-selection/">
       
       
         <link rel="next" href="../input_data/">
@@ -293,14 +293,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../what_is_plexpipe.md" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Installation
   
 
     
@@ -726,34 +726,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -817,17 +789,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#interactive-steps-1-core-detection-and-x-quality-control-are-designed-to-be-executed-using-napari" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interactive steps (1 - Core detection and x - Quality Control) are designed to be executed using Napari)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#command-line-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -844,6 +805,28 @@
     <span class="md-ellipsis">
       
         Prepare Cores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantification
       
     </span>
   </a>
@@ -917,7 +900,7 @@
   <span class="md-ellipsis">
     
   
-    Globus Integration
+    Globus Setup
   
 
     
@@ -1020,17 +1003,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#interactive-steps-1-core-detection-and-x-quality-control-are-designed-to-be-executed-using-napari" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Interactive steps (1 - Core detection and x - Quality Control) are designed to be executed using Napari)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#command-line-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1047,6 +1019,28 @@
     <span class="md-ellipsis">
       
         Prepare Cores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantification
       
     </span>
   </a>
@@ -1091,20 +1085,22 @@
 
 <h1 id="usage">Usage</h1>
 <p>PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see <a href="https://github.com/StallaertLab/plex-pipe-nextflow">plex-pipe-nextflow</a>).</p>
-<h2 id="interactive-steps-1-core-detection-and-x-quality-control-are-designed-to-be-executed-using-napari">Interactive <a href="../what_is_plexpipe.md">steps</a> (1 - Core detection and x - Quality Control) are designed to be executed using <a href="https://napari.org/">Napari</a>)</h2>
+<p>Interactive <a href="../../analysis_steps/00_steps_overview/">steps</a> (1 - Core detection and 3 - Quality Control) are designed to be executed using <a href="https://napari.org/">Napari</a> with designed widgets.</p>
+<hr />
 <h2 id="command-line-usage">Command-Line Usage</h2>
 <p>To run the pipeline from the command line, use the provided scripts:</p>
 <h3 id="prepare-cores">Prepare Cores</h3>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/prepare_cores.py<span class="w"> </span>--config<span class="w"> </span>config/analysis_pipeline.yaml
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp-config<span class="w"> </span>../examples/example_pipeline_config.yaml
 </code></pre></div>
-<p>This script wraps the <code>CoreController</code> class, which handles:</p>
-<ul>
-<li>Reading image and metadata files.</li>
-<li>Cutting out cores with appropriate margins and masking.</li>
-<li>Writing intermediate TIFFs.</li>
-<li>Assembling per-core Zarr datasets using the <a href="https://spatialdata.scverse.org/">SpatialData</a> model.</li>
-</ul>
-<p>For more details, see the <code>core_cutter.py</code> source and its <a href="configuration/core-cutting.md">configuration</a>.</p>
+<p>or alternatively with <a href="../input_data/#sourcing-image-files">remote sourcing</a> of the image files:</p>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">&#39;../examples/example_pipeline_config_globus.yaml&#39;</span><span class="w"> </span>-globus_config<span class="w"> </span><span class="s1">&#39;../examples/example_globus_config.yaml&#39;</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">&#39;r_collection_id&#39;</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">&#39;cbi_collection_id&#39;</span><span class="w">  </span>--cleanup
+</code></pre></div>
+<h3 id="image-processing">Image Processing</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>04_segment.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite
+</code></pre></div>
+<h3 id="quantification">Quantification</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>05_quantify.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite
+</code></pre></div>
 <hr />
 <h2 id="jupyter-notebook-usage">Jupyter Notebook Usage</h2>
 <p>For interactive inspection, prototyping, or educational purposes, the following notebooks illustrate how to use the components directly:</p>
@@ -1161,7 +1157,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

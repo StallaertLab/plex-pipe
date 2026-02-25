@@ -11,10 +11,10 @@
         <link rel="canonical" href="https://stallaertlab.github.io/plex_pipe/usage/installation/">
       
       
-        <link rel="prev" href="../../configuration/channel-selection/">
+        <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../execution_modes/">
+        <link rel="next" href="../../analysis_steps/00_steps_overview/">
       
       
         
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installation-guide-plexpipe-gpu" class="md-skip">
+        <a href="#installation-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -290,17 +290,44 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../what_is_plexpipe.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Installation
   
 
     
@@ -309,6 +336,176 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#uv-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        uv Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="uv Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimal-installation-library-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal installation (library only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-setup-with-example-notebooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full setup (with example notebooks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conda-step-by-step-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conda Step-by-Step Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conda Step-by-Step Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-create-a-clean-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Create a Clean Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-identify-and-install-pytorch-cuda-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Identify and Install PyTorch (CUDA Check)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-install-segmentation-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Install Segmentation Libraries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-install-napari" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Install Napari
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-clone-and-install-plexpipe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Clone and Install PlexPipe
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Clone and Install PlexPipe">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#navigate-to-where-you-want-to-keep-the-code-eg-analysis-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Navigate to where you want to keep the code (e.g., analysis-pipelines)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clone-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clone the repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-in-editable-mode-this-links-the-folder-to-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install in editable mode (this links the folder to your environment)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -677,20 +874,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -711,7 +906,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -721,203 +916,6 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        📋 Prerequisites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conda-step-by-step-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Conda Step-by-Step Setup
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Conda Step-by-Step Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-create-a-clean-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Create a Clean Environment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-identify-and-install-pytorch-cuda-check" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Identify and Install PyTorch (CUDA Check)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-install-segmentation-libraries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Install Segmentation Libraries
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-install-napari" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Install Napari
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4-clone-and-install-plexpipe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Clone and Install PlexPipe
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Clone and Install PlexPipe">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#navigate-to-where-you-want-to-keep-the-code-eg-analysis-pipelines" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Navigate to where you want to keep the code (e.g., analysis-pipelines)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#clone-the-repository" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Clone the repository
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#install-in-editable-mode-this-links-the-folder-to-your-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Install in editable mode (this links the folder to your environment)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
             
               
                 
@@ -989,7 +987,7 @@
   <span class="md-ellipsis">
     
   
-    Globus Integration
+    Globus Setup
   
 
     
@@ -1092,13 +1090,41 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#uv-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📋 Prerequisites
+        uv Setup
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="uv Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimal-installation-library-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimal installation (library only)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#full-setup-with-example-notebooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full setup (with example notebooks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1233,20 +1259,48 @@
   
 
 
-<h1 id="installation-guide-plexpipe-gpu">Installation Guide: PlexPipe GPU</h1>
-<p>This guide covers the setup for <strong>PlexPipe</strong> with GPU support. Following these steps in order is critical to ensure that the segmentation engines (InstanSeg, Cellpose) can access your hardware acceleration.</p>
+<h1 id="installation-guide">Installation Guide</h1>
+<h2 id="uv-setup">uv Setup</h2>
+<p>We recommend using <a href="https://docs.astral.sh/uv/">uv</a> for high-performance environment management.</p>
 <hr />
-<h2 id="prerequisites">📋 Prerequisites</h2>
-<ul>
-<li><strong>NVIDIA GPU:</strong></li>
-<li><strong>NVIDIA Driver:</strong> Version <strong>570.xx</strong> or higher (Required for CUDA 12.8).</li>
-<li><strong>Conda:</strong> <a href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> or Anaconda installed.</li>
-</ul>
+<h3 id="minimal-installation-library-only">Minimal installation (library only)</h3>
+<p>Use this if you want to import <code>plex-pipe</code> into your own scripts.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a virtual environment</span>
+uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.12
+
+<span class="c1"># Install for CPU-only</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;plex_pipe[all-cpu] @ git+https://github.com/StallaertLab/plex-pipe.git&quot;</span>
+
+<span class="c1"># OR: Install with GPU support (requires CUDA 12.6 compatible drivers)</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;plex_pipe[all-gpu] @ git+https://github.com/StallaertLab/plex-pipe.git&quot;</span>
+</code></pre></div>
+<hr />
+<h3 id="full-setup-with-example-notebooks">Full setup (with example notebooks)</h3>
+<p>Use this if you want to run the provided analysis notebooks and explore the example workflows:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Clone the repository to get the notebooks and source</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/StallaertLab/plex-pipe.git
+<span class="nb">cd</span><span class="w"> </span>plex-pipe
+<span class="c1"># Build the environment based on your hardware:</span>
+
+<span class="c1"># For CPU-only:</span>
+uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>all-cpu
+
+<span class="c1"># OR: Install with GPU support (requires CUDA 12.6 compatible drivers)</span>
+uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>all-gpu
+</code></pre></div>
+<div class="admonition note windows encoding fix">
+<p class="admonition-title">Note</p>
+<p>To avoid UnicodeDecodeError when running interactive notebooks on Windows, you must enable Python's UTF-8 mode. Create a file named .env in the project root with this line:</p>
+<div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">PYTHONUTF8=1</span>
+</code></pre></div>
+</div>
 <hr />
 <h2 id="conda-step-by-step-setup">Conda Step-by-Step Setup</h2>
+<p>This guide covers the setup for <strong>PlexPipe</strong> with GPU support. Following these steps in order is critical to ensure that the segmentation engines (InstanSeg, Cellpose) can access your hardware acceleration.</p>
+<p>Install <a href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> or <a href="https://www.anaconda.com/">Anaconda</a>.</p>
 <h3 id="1-create-a-clean-environment">1. Create a Clean Environment</h3>
 <p>Open your terminal (PowerShell or Anaconda Prompt) and create a fresh environment.</p>
-<div class="highlight"><pre><span></span><code>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>plex-pipe-gpu<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.12<span class="w"> </span>git<span class="w"> </span><span class="nv">setuptools</span><span class="o">=</span><span class="m">80</span>.10.2<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>-y
+<div class="highlight"><pre><span></span><code>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>plex-pipe-gpu<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.12<span class="w"> </span>git<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>-y
 conda<span class="w"> </span>activate<span class="w"> </span>plex-pipe-gpu
 </code></pre></div>
 <hr />
@@ -1329,7 +1383,7 @@ Look at the top-right corner of the table for "CUDA Version: XX.X".</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

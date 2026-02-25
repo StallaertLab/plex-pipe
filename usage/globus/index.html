@@ -25,7 +25,7 @@
     
     
       
-        <title>Globus Integration - PlexPipe</title>
+        <title>Globus Setup - PlexPipe</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#globus-configuration-for-plex-pipe" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -115,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Globus Integration
+              Globus Setup
             
           </span>
         </div>
@@ -288,14 +293,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../what_is_plexpipe.md" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Installation
   
 
     
@@ -724,34 +729,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../execution_modes/" class="md-nav__link">
         
   
@@ -814,6 +791,26 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Globus Setup
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -822,7 +819,7 @@
   <span class="md-ellipsis">
     
   
-    Globus Integration
+    Globus Setup
   
 
     
@@ -831,6 +828,97 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Registry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path Translation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path Translation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-root-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The root Parameter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-outside-of-scope-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting "Outside of Scope" Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication (Tokens)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -916,6 +1004,88 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Registry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path Translation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path Translation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-root-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The root Parameter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-outside-of-scope-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting "Outside of Scope" Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication (Tokens)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -935,9 +1105,123 @@
   
 
 
-  <h1>Globus Integration</h1>
+<h1 id="globus-configuration-for-plex-pipe">Globus Configuration for plex-pipe</h1>
+<p>PlexPipe allows you to process remote datasets locally.
+The machine running this software pulls raw data from a Source (e.g. storage server) directly onto its own local drives using <a href="https://www.globus.org/">Globus</a>.</p>
+<hr />
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>
+<p><strong>Globus Account</strong>: Access via <a href="https://app.globus.org/">app.globus.org</a>.</p>
+</li>
+<li>
+<p><strong>Endpoints</strong>: You need the UUIDs for two collections:</p>
+<ul>
+<li><strong>Source</strong>: Where the raw data lives (e.g. storage server).</li>
+<li><strong>Destination</strong>: The collection representing the machine where you are running PlexPipe.</li>
+</ul>
+</li>
+<li>
+<p><strong>Permissions</strong>: Your Globus identity must have Read access to the Source and Write access to the Destination.</p>
+</li>
+<li>
+<p><strong>GCP for Personal Machines</strong>: If you are running this on your own workstation, you must have <a href="https://www.globus.org/globus-connect-personal">Globus Connect Personal</a> running.</p>
+</li>
+<li>
+<p><strong>Application ID (client_id)</strong>: You must register a "Native App" at <a href="https://developers.globus.org/">developers.globus.org</a>. This client_id identifies your instance of plex-pipe to the Globus network.</p>
+</li>
+</ul>
+<hr />
+<h2 id="configuration-registry">Configuration Registry</h2>
+<p>PlexPipe uses a Registry model to manage data locations. Instead of hardcoding IDs into the pipeline, you define your local workstation and all potential remote sources once in a centralized configuration file.</p>
+<p>This configuration is stored in a YAML file. Throughout this documentation, we refer to this file as <code>globus_config.yaml</code>.</p>
+<p>To get started, a skeleton file containing the required structure and placeholders is provided in the <a href="https://github.com/StallaertLab/plex-pipe/tree/main/examples">examples folder</a> of the repository.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">gc</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Get this from developers.globus.org (looks like a UUID)</span>
+<span class="w">  </span><span class="nt">client_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;00000000-0000-0000-0000-000000000000&quot;</span>
 
+<span class="w">  </span><span class="nt">collections</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">remote_source</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># Find this on the Globus Web App under &#39;Collection Search&#39;</span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;source-collection-uuid-here&quot;</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/remote/data&quot;</span>
 
+<span class="w">    </span><span class="nt">local_workstation</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># Find this on the Globus Web App under &#39;Collection Search&#39;</span>
+<span class="w">      </span><span class="c1"># The UUID of your Globus Connect Personal endpoint</span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;destination-collection-uuid-here&quot;</span>
+<span class="w">      </span><span class="c1"># Windows: null (for multi-drive) or specify the entry point, e.g. &quot;C:/&quot;</span>
+<span class="w">      </span><span class="c1"># Linux: null (for Home) or specify the entry point, e.g. &quot;/home/user/data&quot;</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</code></pre></div>
+<hr />
+<h2 id="path-translation">Path Translation</h2>
+<p>PlexPipe automatically translates file paths between your local operating system and the Globus POSIX standard.
+This allows you to define your <code>analysis_dir</code> and <code>image_dir</code> using the native format of the system where that folder resides in the <a href="../../configuration/reference/">configuration file</a>.</p>
+<ul>
+<li>
+<p><strong>Local Folders</strong>: Use your local system's pathway format (e.g., use Windows paths if running on a Windows workstation).</p>
+</li>
+<li>
+<p><strong>Remote Folders</strong>: Use the remote system's native pathway format (e.g., use Linux/POSIX paths for sourcing from a remote cluster).</p>
+</li>
+</ul>
+<h3 id="the-root-parameter">The root Parameter</h3>
+<p>The <code>root</code> parameter in your Globus configuration defines the entry point (or "scope") for the file system:</p>
+<ul>
+<li>
+<p><strong>Multi-Drive</strong> (Windows only): Set <code>root: null</code>. This allows the use of standard Windows paths (e.g., <code>D:\Data</code>) which map to Globus virtual paths (e.g., <code>/D/Data</code>).</p>
+</li>
+<li>
+<p><strong>Home Directory</strong> (Linux/Mac): Set <code>root: null</code>. This defaults the scope to your user home folder (~/).</p>
+</li>
+<li>
+<p><strong>Restricted/Rooted</strong>: Set root: <code>/data/images</code>. Use this to "jail" the converter to a specific directory if Globus was configured with a restricted access point.</p>
+</li>
+</ul>
+<h3 id="troubleshooting-outside-of-scope-errors">Troubleshooting "Outside of Scope" Errors</h3>
+<p>If PlexPipe reports that a path is "outside of scope," it means the pathway you provided in your <a href="../../configuration/reference/">configuration file</a> falls outside the area defined by your root parameter.</p>
+<ul>
+<li>
+<p>If the <code>root</code> is incorrect: Update the <code>root</code> parameter in your <code>globus_config.yaml</code> to accurately reflect the access point of that collection.</p>
+</li>
+<li>
+<p>If Globus lacks permission: If your root is correct but the path is still inaccessible, you must update the Shared Directories (in Globus Connect Personal) or the Storage Gateway (in Globus Connect Server) to grant the endpoint physical access to those folders.</p>
+</li>
+</ul>
+<hr />
+<h2 id="authentication-tokens">Authentication (Tokens)</h2>
+<p>To allow PlexPipe to move data on your behalf, you must generate a set of authentication tokens. This links your Globus identity to the pipeline.</p>
+<p>We recommend following the Native App authentication flow to obtain a Refresh Token. This allows long-running processing jobs to automatically renew their access without manual intervention.</p>
+<ul>
+<li>
+<p><strong>Instructions</strong>: Follow the Globus SDK <a href="https://globus-sdk-python.readthedocs.io/en/stable/examples/native_app.html">Native App Guide</a> to register your application and run the authentication script.</p>
+</li>
+<li>
+<p><strong>Required Scopes</strong>: Ensure your script requests the <code>TransferClient.scopes.all scope</code>.</p>
+</li>
+<li>
+<p><strong>What to Save</strong>: From the script output, copy the <code>refresh_token</code> into your <code>globus_config.yaml</code>.</p>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">transfer_tokens</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">refresh_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Agv100Yp9K7D8z2L_m5N6b3V4c1X9z0A_B2C3D4E5F6G&quot;</span><span class="w"> </span><span class="c1"># replace with your actual refresh token</span>
+</code></pre></div>
+<div class="admonition warning security notice">
+<p class="admonition-title">Warning</p>
+<p>Your Refresh Token is a long-lived credential that grants full access to your Globus collections. Storing this token in your <code>globus_config.yaml</code> makes that file a sensitive secret.</p>
+<ul>
+<li>
+<p>Never commit this file to GitHub or share it publicly.</p>
+</li>
+<li>
+<p>Always add <code>globus_config.yaml</code> to your <code>.gitignore</code>.</p>
+</li>
+<li>
+<p>If you believe your tokens have been compromised, you can revoke them at any time via the <a href="https://auth.globus.org/v2/web/consents">Globus Manage Consents</a> page.</p>
+</li>
+</ul>
+</div>
 
 
 
@@ -987,7 +1271,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

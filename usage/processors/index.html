@@ -293,14 +293,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../what_is_plexpipe.md" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    What is PlexPipe?
+    Installation
   
 
     
@@ -729,34 +729,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../execution_modes/" class="md-nav__link">
         
   
@@ -820,7 +792,7 @@
   <span class="md-ellipsis">
     
   
-    Globus Integration
+    Globus Setup
   
 
     
@@ -1375,7 +1347,7 @@ very sparse regions beyond the actual tissue boundary.</li>
 <li><strong>Inputs</strong>: 1</li>
 <li><strong>Outputs</strong>: 1</li>
 <li><strong>Parameters</strong>:<ul>
-<li><code>work_shape</code> (Tuple[int, int]default=<code>(250, 250)</code>): The resolution at which the blob is calculated. Lowering this value makes the processor more 'forgiving' of gaps but coarser in detail.</li>
+<li><code>work_shape</code> (tuple[int, int]default=<code>(250, 250)</code>): The resolution at which the blob is calculated. Lowering this value makes the processor more 'forgiving' of gaps but coarser in detail.</li>
 <li><code>radius</code> (<class 'int'>default=<code>5</code>): The size of the disk used to open and close the mask. Larger values result in smoother, more rounded blobs.</li>
 </ul>
 </li>
@@ -1458,10 +1430,10 @@ set rad_bigger=7 and rad_smaller=2.</p>
 <li><strong>Inputs</strong>: Variable</li>
 <li><strong>Outputs</strong>: 1</li>
 <li><strong>Parameters</strong>:<ul>
-<li><code>diameter</code> (Optional[float]default=<code>30</code>): From Cellpose documentation: Scaling factor for the segmentation. Default size of cells 30 - segments well objects of size 10 -120.</li>
-<li><code>flow_threshold</code> (Optional[float]default=<code>0.4</code>): From Cellpose documentation: Maximum allowed flow error per mask (flow_threshold, default = 0.4). Increase it if too few ROIs are detected; decrease it if too many poor-quality ROIs appear.</li>
-<li><code>cellprob_threshold</code> (Optional[float]default=<code>0</code>): From Cellpose documentation: Pixel threshold to define ROIs. Lower the threshold if too few ROIs are detected; raise it if too many—especially from dim regions.</li>
-<li><code>niter</code> (Optional[int]default=<code>0</code>): From Cellpose documentation: If niter is None or 0, it scales with ROI size—use larger values (e.g., niter=2000) for longer ROIs.</li>
+<li><code>diameter</code> (float | Nonedefault=<code>30</code>): From Cellpose documentation: Scaling factor for the segmentation. Default size of cells 30 - segments well objects of size 10 -120.</li>
+<li><code>flow_threshold</code> (float | Nonedefault=<code>0.4</code>): From Cellpose documentation: Maximum allowed flow error per mask (flow_threshold, default = 0.4). Increase it if too few ROIs are detected; decrease it if too many poor-quality ROIs appear.</li>
+<li><code>cellprob_threshold</code> (float | Nonedefault=<code>0</code>): From Cellpose documentation: Pixel threshold to define ROIs. Lower the threshold if too few ROIs are detected; raise it if too many—especially from dim regions.</li>
+<li><code>niter</code> (int | Nonedefault=<code>0</code>): From Cellpose documentation: If niter is None or 0, it scales with ROI size—use larger values (e.g., niter=2000) for longer ROIs.</li>
 </ul>
 </li>
 </ul>
@@ -1536,7 +1508,7 @@ set rad_bigger=7 and rad_smaller=2.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
