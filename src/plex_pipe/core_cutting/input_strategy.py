@@ -31,13 +31,17 @@ class FileAvailabilityStrategy(ABC):
     channel_map: ChannelMap
 
     @abstractmethod
-    def __init__(self, config):
+    def __init__(self, config: AnalysisConfig) -> None:
+        """Initialize the strategy.
 
+        Args:
+            config: Analysis configuration object.
+        """
         self.config = config
 
     @abstractmethod
-    def yield_ready_channels(self) -> Iterator[tuple[str, str]]:
-        """Yields (channel, local_path) as they become available."""
+    def yield_ready_channels(self) -> Iterator[tuple[str, str | Path]]:
+        """Yield (channel, local_path) tuples as they become available."""
 
     @abstractmethod
     def cleanup(self, path: Path) -> None:
@@ -49,12 +53,17 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
 
     def __init__(
         self,
-        config,
+        config: AnalysisConfig,
         gc: GlobusConfig,
         cleanup_enabled: bool = True,
     ) -> None:
-        """ """
+        """Initialize the GlobusFileStrategy.
 
+        Args:
+            config: Analysis configuration object.
+            gc: Globus configuration object.
+            cleanup_enabled: Whether to remove local files after processing.
+        """
         # build channel map
         super().__init__(config)
         self.gc = gc
@@ -81,8 +90,8 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
             remote: ch for ch, (remote, local) in self.transfer_map.items()
         }
 
-    def build_transfer_map(self):
-        """Create a transfer map for Globus operations."""
+    def build_transfer_map(self) -> None:
+        """Create a mapping between channel names and transfer paths."""
 
         base = self.config.temp_dir
 
@@ -97,7 +106,14 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
         self.transfer_map = transfer_map
 
     def submit_all_transfers(self, batch_size: int = 1) -> None:
-        """Submits transfers in chunks of batch_size."""
+        """Submit file transfer tasks to Globus.
+
+        Args:
+            batch_size: Number of files to include in a single transfer task.
+
+        Raises:
+            RuntimeError: If the Globus API submission fails.
+        """
 
         channels = list(self.transfer_map.items())
 
@@ -125,8 +141,15 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
             except GlobusAPIError as e:
                 raise RuntimeError(f"Failed to submit Globus batch: {e}") from e
 
-    def yield_ready_channels(self):
-        """Monitors all pending tasks and yields channels as they land."""
+    def yield_ready_channels(self) -> Iterator[tuple[str, Path]]:
+        """Monitor pending transfers and yield channels as they complete.
+
+        Yields:
+            Tuple of (channel_name, local_file_path).
+
+        Raises:
+            GlobusAPIError: If a non-retryable Globus API error occurs.
+        """
         remaining_channels = set(self.channel_map.keys())
         self.yielded_channels = set()
 
@@ -156,7 +179,12 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
                     time.sleep(10)
 
     def cleanup(self, path: Path, force: bool = False) -> None:
-        """Remove the specified file if cleanup is enabled."""
+        """Remove the specified file if cleanup is enabled.
+
+        Args:
+            path: Path to the file to remove.
+            force: If True, perform cleanup even if cleanup_enabled is False.
+        """
 
         if not self.cleanup_enabled and not force:
             logger.info(f"Skipping cleanup for {path}; cleanup is disabled.")
@@ -175,9 +203,13 @@ class LocalFileStrategy(FileAvailabilityStrategy):
 
     def __init__(
         self,
-        config,
+        config: AnalysisConfig,
     ) -> None:
+        """Initialize the LocalFileStrategy.
 
+        Args:
+            config: Analysis configuration object.
+        """
         self.gc = None
         super().__init__(config)
 
@@ -189,12 +221,16 @@ class LocalFileStrategy(FileAvailabilityStrategy):
             ignore_markers=self.config.roi_cutting.ignore_markers,
         )
 
-    def get_image_paths(self):
-        """In local mode, the channel map already contains the final paths."""
-        return self.channel_map
+    def yield_ready_channels(self) -> Iterator[tuple[str, str]]:
+        """Yield all discovered local channels.
 
-    def yield_ready_channels(self):
-        for channel, path in self.get_image_paths().items():
+        Yields:
+            Tuple of (channel_name, file_path).
+
+        Raises:
+            RuntimeError: If a expected local file is missing.
+        """
+        for channel, path in self.channel_map.items():
 
             # 2. Safety check: In local mode, files MUST exist
             if Path(path).exists():
@@ -208,4 +244,8 @@ class LocalFileStrategy(FileAvailabilityStrategy):
                 raise RuntimeError(msg)
 
     def cleanup(self, path: Path) -> None:
-        """Local files are left untouched."""
+        """No-op for local files (they are left untouched).
+
+        Args:
+            path: Path to the file (ignored).
+        """

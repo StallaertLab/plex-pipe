@@ -16,28 +16,22 @@ class CoreAssembler:
         output_dir: str,
         max_pyramid_levels: int = 4,
         downscale: int = 2,
-        chunk_size: tuple[int, int, int] = (
-            1,
-            256,
-            256,
-        ),  # SpatialData default chunk size
+        chunk_size: tuple[int, int, int] = (1, 256, 256),
         allowed_channels: list[str] | None = None,
         cleanup: bool = False,
     ) -> None:
-        """Initialize the assembler.
+        """Initialize the CoreAssembler.
 
         Args:
-            temp_dir (str): Directory containing temporary core subdirectories.
-            output_dir (str): Destination directory for assembled Zarr stores.
-            max_pyramid_levels (int, optional): Maximum number of multiscale
-                pyramid levels. Set to 0 to disable.
-            downscale (int, optional): Downsampling factor between levels.
-            chunk_size (tuple[int, int, int], optional): Chunk dimensions
-                (C, Y, X) for the Zarr array.
-            allowed_channels (list[str] | None, optional): Channel names
-                to process. If None, all found channels are used.
-            cleanup (bool, optional): Whether to delete intermediate TIFF files
-                after assembly.
+            temp_dir: Directory containing temporary core subdirectories.
+            output_dir: Destination directory for assembled Zarr stores.
+            max_pyramid_levels: Maximum number of multiscale pyramid levels.
+                Set to 0 to disable.
+            downscale: Downsampling factor between levels.
+            chunk_size: Chunk dimensions (C, Y, X) for the Zarr array.
+            allowed_channels: List of channel names to process. If None, all
+                found channels are used.
+            cleanup: Whether to delete intermediate TIFF files after assembly.
         """
         self.temp_dir = temp_dir
         self.output_dir = output_dir
@@ -51,11 +45,11 @@ class CoreAssembler:
         """Assemble a single core from per-channel TIFFs into a SpatialData Zarr store.
 
         Args:
-            core_id (str): Unique identifier for the core, corresponding to its
+            core_id: Unique identifier for the core, corresponding to its
                 subdirectory name.
 
         Returns:
-            str: Path to the generated Zarr store.
+            Path to the generated Zarr store.
 
         Raises:
             FileNotFoundError: If the core's temporary directory is missing.
@@ -124,8 +118,8 @@ class CoreAssembler:
         """Delete intermediate TIFF files for the specified channels.
 
         Args:
-            core_path (str): Path to the core's temporary directory.
-            channels (list[str]): List of channel names to delete.
+            core_path: Path to the core's temporary directory.
+            channels: List of channel names to delete.
         """
         for ch in channels:
             tiff_path = os.path.join(core_path, f"{ch}.tiff")

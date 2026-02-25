@@ -26,19 +26,19 @@ class RoiPreparationController:
         downscale: int = 2,
         temp_roi_delete: bool = True,
     ) -> None:
-        """Initialize the controller.
+        """Initialize the RoiPreparationController.
 
         Args:
             metadata_df: DataFrame containing ROI metadata.
             file_strategy: Strategy for retrieving image files.
             temp_dir: Directory for temporary core files.
             output_dir: Destination for assembled Zarr outputs.
-            margin: Pixels of padding around each core.
+            margin: Padding pixels around each core.
             mask_value: Fill value for masked regions.
             max_pyramid_levels: Number of pyramid levels for the output.
             chunk_size: Chunk dimensions (C, Y, X) for the Zarr array.
             downscale: Downsampling factor between pyramid levels.
-            temp_roi_delete: Whether to remove intermediate TIFFs after assembly.
+            temp_roi_delete: Whether to delete intermediate TIFFs after assembly.
         """
 
         self.metadata_df = metadata_df

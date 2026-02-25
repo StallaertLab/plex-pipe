@@ -177,7 +177,7 @@ def test_cellpose_input_truncation(mock_cellpose_lib):
         assert args[0].shape == (2, 10, 10)
 
 
-def test_cellpose_invalid_input():
+def test_cellpose_invalid_input(mock_cellpose_lib):
     """Verifies error on non-2D inputs."""
     segmenter = Cellpose4Segmenter()
 

@@ -1,3 +1,5 @@
+from typing import Any
+
 import cv2
 import numpy as np
 import pandas as pd
@@ -7,29 +9,29 @@ class CoreCutter:
     """Extract rectangular or polygonal regions from images."""
 
     def __init__(self, margin: int = 0, mask_value: int = 0) -> None:
-        """Create a new cutter.
+        """Initialize the CoreCutter.
 
         Args:
-            margin (int, optional): Padding to apply around each core.
-            mask_value (int, optional): Value used outside polygon masks.
+            margin: Padding pixels around each core.
+            mask_value: Value to fill outside the polygon mask.
         """
-
         self.margin = margin
         self.mask_value = mask_value
 
-    def extract_core(self, array: np.ndarray, row: pd.Series) -> np.ndarray:
-        """Extract a single core from the given image.
+    def extract_core(self, array: Any, row: pd.Series) -> np.ndarray:
+        """Extract a single core from the source image.
 
         Args:
-            array (numpy.ndarray | dask.array.Array): Source image.
-            row (pandas.Series): Metadata describing the core. Required fields
-                include ``row_start``, ``row_stop``, ``column_start``,
-                ``column_stop`` and ``poly_type``.
+            array: Source image (NumPy or Dask array).
+            row: Metadata describing the core. Must contain 'row_start',
+                'row_stop', 'column_start', 'column_stop', and 'poly_type'.
 
         Returns:
-            numpy.ndarray: The extracted core image.
-        """
+            The extracted core image as a NumPy array.
 
+        Raises:
+            ValueError: If 'poly_type' is unknown.
+        """
         # Read bbox coordinates
         y0 = int(row["row_start"])
         y1 = int(row["row_stop"])
@@ -60,19 +62,10 @@ class CoreCutter:
             poly_rc_local = polygon - np.array([y0m, x0m])[None, :]
             poly_xy_int32 = np.round(poly_rc_local[:, [1, 0]]).astype(np.int32)
 
-            # poly_y, poly_x = zip(*shifted_polygon)
-
-            # # Create polygon mask
-            # rr, cc = sk_polygon(poly_y, poly_x, subarray.shape)
-
             # Apply mask
             mask = np.zeros(subarray.shape, np.uint8)
             cv2.fillPoly(mask, [poly_xy_int32], 1)
             subarray[mask == 0] = self.mask_value
-            # masked_array = np.full(
-            #     subarray.shape, self.mask_value, dtype=subarray.dtype
-            # )
-            # masked_array[rr,cc] = subarray[rr,cc]
 
             return subarray
 

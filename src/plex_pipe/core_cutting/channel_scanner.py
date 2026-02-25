@@ -20,15 +20,18 @@ def scan_channels_from_list(
 ) -> dict[str, str]:
     """Build a channel map from a list of file paths.
 
+    Parses filenames to identify markers and rounds. Selects the latest round for
+    each marker, with a preference for round 001 for DAPI.
+
     Args:
-        files: Sequence of paths to OME-TIFF files.
-        include_channels: Specific channels to include.
-        exclude_channels: Specific channels to exclude.
-        use_markers: Whitelist of marker names to include.
-        ignore_markers: Blacklist of marker names to ignore.
+        files: List of file paths to process.
+        include_channels: Specific channel names to include, bypassing selection.
+        exclude_channels: Specific channel names to exclude.
+        use_markers: List of marker names to keep.
+        ignore_markers: List of marker names to discard.
 
     Returns:
-        Dictionary mapping channel names to their file paths.
+        Dictionary mapping marker names to file paths.
 
     Raises:
         ValueError: If no valid OME-TIFF files are found.
@@ -147,18 +150,18 @@ def discover_channels(
     ignore_markers: list[str] | None = None,
     gc: GlobusConfig | None = None,
 ) -> dict[str, str]:
-    """Discover available channels from local or Globus storage.
+    """Creates a channel map from local or Globus storage.
 
     Args:
-        image_dir_or_path: Directory containing image files.
-        include_channels: Specific channels to include.
-        exclude_channels: Specific channels to exclude.
-        gc: Globus configuration object. If provided, scans via Globus APIs.
-        use_markers: Whitelist of marker names to include.
-        ignore_markers: Blacklist of marker names to ignore.
+        image_dir_or_path: Local directory path or Globus path to scan.
+        include_channels: Specific channel names to include.
+        exclude_channels: Specific channel names to exclude.
+        use_markers: List of marker names to keep.
+        ignore_markers: List of marker names to discard.
+        gc: Globus configuration. If provided, scans via Globus API.
 
     Returns:
-        Dictionary mapping channel names to their file paths.
+        Dictionary mapping marker names to file paths.
     """
     if gc is not None:
         files = list_globus_tifs(gc, image_dir_or_path)
