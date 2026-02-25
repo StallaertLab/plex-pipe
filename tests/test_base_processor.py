@@ -56,15 +56,14 @@ def test_cfg_is_stored_as_dict():
 
 
 def test_invalid_parameters_raises():
-    with pytest.raises(ValueError) as ei:
-        op = DummyOp(a=1, c="x")
-        assert f"Parameters for {op.type_name} are not correct" in str(ei.value)
+    with pytest.raises(ValueError, match="Parameters for 'dummy' are not correct"):
+        DummyOp(a=1, c="x")
 
 
 ###############################################################################
 # _normalize_names
 @pytest.mark.parametrize(
-    "value, expected",
+    ("value", "expected"),
     [
         (None, []),
         ("img", ["img"]),
@@ -103,10 +102,10 @@ def test_validate_io_wrong_input_count_raises():
         EXPECTED_INPUTS = 2
 
     op = TwoIn()
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="TwoIn: expected 2 input name"):
         op.validate_io(inputs=["a"], outputs="dst")  # too few
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="TwoIn: expected 2 input name"):
         op.validate_io(inputs=["a", "b", "c"], outputs="dst")  # too many
 
 
@@ -115,10 +114,10 @@ def test_validate_io_wrong_output_count_raises():
         EXPECTED_OUTPUTS = 2
 
     op = TwoOut()
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="TwoOut: expected 2 output name"):
         op.validate_io(inputs="a", outputs=["x"])  # too few
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="TwoOut: expected 2 output name"):
         op.validate_io(inputs="a", outputs=["x", "y", "z"])  # too many
 
 

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import operator
+from functools import reduce
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Annotated,
     Literal,
-    Union,
 )
 
 from pydantic import (
@@ -44,10 +45,10 @@ class RoiDefinitionSettings(BaseModel):
 class RoiCuttingSettings(BaseModel):
     roi_dir_tif: str | None = None
     roi_dir_output: str | None = None
-    include_channels: str | list[str] | None = None
-    exclude_channels: str | list[str] | None = None
-    use_markers: str | list[str] | None = None
-    ignore_markers: str | list[str] | None = None
+    include_channels: list[str] = Field(default_factory=list)
+    exclude_channels: list[str] = Field(default_factory=list)
+    use_markers: list[str] = Field(default_factory=list)
+    ignore_markers: list[str] = Field(default_factory=list)
     margin: int | None = 0
     mask_value: int | None = 0
     transfer_cleanup_enabled: bool | None = False
@@ -128,8 +129,11 @@ def create_step_models() -> list[type[BaseModel]]:
 
 
 # 4. PipelineStep is a Union of all dynamically generated models
-step_models = create_step_models()
-PipelineStep = BaseStep if not step_models else Union[*step_models]
+if TYPE_CHECKING:
+    PipelineStep = BaseStep
+else:
+    step_models = create_step_models()
+    PipelineStep = BaseStep if not step_models else reduce(operator.or_, step_models)
 
 
 class AnalysisConfig(BaseModel):

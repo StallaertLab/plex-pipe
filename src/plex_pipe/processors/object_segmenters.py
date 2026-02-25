@@ -61,8 +61,12 @@ class InstansegSegmenter(BaseOp):
         # warn the user about any unrecognized parameters
         model_config = ConfigDict(extra="forbid")
 
-    def __init__(self, **cfg: Any):
+    def __init__(self, **cfg: Any) -> None:
+        """Initializes the InstanSeg segmenter.
 
+        Args:
+            **cfg: Configuration parameters passed to the Params model.
+        """
         super().__init__(**cfg)
 
         if self.params.resolve_cell_and_nucleus:
@@ -75,8 +79,21 @@ class InstansegSegmenter(BaseOp):
 
         self.model = InstanSeg(self.params.model, verbosity=1)
 
-    def prepare_input(self, in_image):
+    def prepare_input(
+        self, in_image: tuple[np.ndarray, ...] | list[np.ndarray] | np.ndarray
+    ) -> np.ndarray:
+        """Standardizes input images into (H, W, C) format.
 
+        Args:
+            in_image: Input image(s). Can be a single array (2D or 3D) or a sequence
+                of 2D arrays.
+
+        Returns:
+            A numpy array formatted as (H, W, C).
+
+        Raises:
+            ValueError: If the input format is not supported.
+        """
         if isinstance(in_image, tuple | list):
             in_image = np.stack(in_image, axis=-1)  # (H, W, C)
         elif isinstance(in_image, np.ndarray):
@@ -95,8 +112,15 @@ class InstansegSegmenter(BaseOp):
 
         return in_image
 
-    def run(self, *in_image):
+    def run(self, *in_image: np.ndarray) -> list[np.ndarray]:
+        """Runs the InstanSeg model on the provided image(s).
 
+        Args:
+            *in_image: One or more input image arrays.
+
+        Returns:
+            A list of segmentation masks (e.g., [nuclei, cells]).
+        """
         # standardize input
         in_image = self.prepare_input(in_image)
 
@@ -149,8 +173,12 @@ class Cellpose4Segmenter(BaseOp):
         # warn the user about any unrecognized parameters
         model_config = ConfigDict(extra="forbid")
 
-    def __init__(self, **cfg: Any):
+    def __init__(self, **cfg: Any) -> None:
+        """Initializes the Cellpose segmenter.
 
+        Args:
+            **cfg: Configuration parameters passed to the Params model.
+        """
         super().__init__(**cfg)
 
         # import model
@@ -158,8 +186,20 @@ class Cellpose4Segmenter(BaseOp):
 
         self.model = models.CellposeModel(gpu=True)
 
-    def prepare_input(self, in_image):
+    def prepare_input(
+        self, in_image: tuple[np.ndarray, ...] | list[np.ndarray] | np.ndarray
+    ) -> np.ndarray:
+        """Standardizes input images for Cellpose.
 
+        Args:
+            in_image: Input image(s). Can be a single array or a sequence of arrays.
+
+        Returns:
+            A numpy array formatted as (C, H, W) or (H, W).
+
+        Raises:
+            ValueError: If inputs are not 2D arrays or if more than 2 channels are provided.
+        """
         message = None
         if isinstance(in_image, tuple | list):
             for im in in_image:
@@ -181,10 +221,15 @@ class Cellpose4Segmenter(BaseOp):
 
         return in_image
 
-    def run(self, *in_image) -> np.ndarray:
-        """
-        Run segmentation using Cellpose.
-        It can accept a single image or a pair of images for nucleus and cytoplasm in any order.
+    def run(self, *in_image: np.ndarray) -> np.ndarray:
+        """Runs segmentation using Cellpose.
+
+        Args:
+            *in_image: One or more input image arrays. Can be a single image or a pair
+                of images (e.g., nucleus and cytoplasm).
+
+        Returns:
+            The segmentation mask.
         """
 
         # prepare input

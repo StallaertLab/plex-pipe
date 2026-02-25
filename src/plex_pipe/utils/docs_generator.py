@@ -44,7 +44,7 @@ def generate_processors_docs() -> str:
         output.append("---")
         output.append("")
 
-        # Iterate over Processors in that Kind
+        # Iterate over Processors
         for name in sorted(processors.keys()):
             entry = processors[name]
             cls = entry.processor_class
@@ -117,7 +117,7 @@ def generate_metrics_docs() -> str:
 
     for name, metric in METRIC_REGISTRY.items():
         if metric.is_extra:
-            source = f"Custom: `{metric.func.__name__}`"
+            source = f"Custom: `{metric.regionprops_name}`"
             desc = (
                 metric.func.__doc__.split("\n")[0]
                 if metric.func.__doc__
@@ -162,7 +162,7 @@ def update_file_with_markers(
 def main() -> None:
     docs_dir = Path(__file__).parents[3] / "docs"
 
-    # 1. Lazy Update for Processors ---
+    # Lazy Update for Processors
     proc_path = docs_dir / "usage" / "processors.md"
     new_proc_content = generate_processors_docs()
 
@@ -178,7 +178,7 @@ def main() -> None:
     else:
         print(f"No changes detected in {proc_path.name}")
 
-    # 2. Update Quantification (In-place Injection)
+    # Update Quantification (In-place Injection)
     quant_path = docs_dir / "analysis_steps" / "05_quantification.md"
     metrics_content = generate_metrics_docs()
     update_file_with_markers(

@@ -20,7 +20,6 @@ def test_endpoint_init_posix_default():
         with patch.object(Path, "home") as mock_home:
             mock_home.return_value.resolve.return_value = PurePosixPath("/home/user")
             endpoint = GlobusEndpoint("id-123")
-            assert endpoint.mode == "rooted"
             assert endpoint.shared_root == PurePosixPath("/home/user")
 
 
@@ -28,7 +27,6 @@ def test_endpoint_init_windows_default():
     """Test that Windows defaults to multi_drive."""
     with patch("os.name", "nt"):
         endpoint = GlobusEndpoint("id-123")
-        assert endpoint.mode == "multi_drive"
         assert endpoint.shared_root is None
 
 
@@ -91,7 +89,11 @@ def mock_yaml_config():
 def test_globus_config_init(mock_yaml_config):
     config = GlobusConfig(mock_yaml_config, "source_lab", "dest_workstation")
     assert config.source.collection_id == "src-uuid"
-    assert config.destination.mode == ("multi_drive" if os.name == "nt" else "rooted")
+    assert (
+        config.destination.shared_root is None
+        if os.name == "nt"
+        else config.destination.shared_root is not None
+    )
 
 
 def test_globus_config_missing_key(mock_yaml_config):

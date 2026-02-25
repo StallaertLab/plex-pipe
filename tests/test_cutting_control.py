@@ -122,7 +122,7 @@ def test_run_loop_workflow(test_controller, mock_dependencies):
     ]
 
     # Run the controller
-    test_controller.run(poll_interval=0.01)
+    test_controller.run()
 
     # Assertions
 
@@ -151,7 +151,7 @@ def test_run_loop_cleanup_trigger(test_controller, mock_dependencies):
     strategy = mock_dependencies["strategy"]
     strategy.yield_ready_channels.return_value = [("DAPI", "/path/to/dapi.tif")]
 
-    test_controller.run(poll_interval=0)
+    test_controller.run()
 
     # Verify cleanup called
     assert strategy.cleanup.call_count == 1

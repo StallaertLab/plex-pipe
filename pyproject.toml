@@ -95,6 +95,8 @@ all-dev-gpu = [
     "pre-commit>=3.6.0",
     "plex_pipe[all-gpu]",
     "mkdocs-macros-plugin>=1.5.0",
+    "mypy>=1.19.1",
+    "types-pyyaml>=6.0.12.20250915",
 ]
 
 # =============================================================================
@@ -153,11 +155,15 @@ lint.select = [
     "G", # flake8-logging-format
     "PIE", # flake8-pie
     "SIM", # flake8-simplify
+    "NPY", # numpy types
+    "ARG", # unused arguments
+    "PT", # pytest style
+    "PD", # pandas vet
 ]
 lint.ignore = [
     "E501", # line too long. let black handle this
-    "UP006", "UP007", # type annotation.
     "SIM117", # flake8-simplify
+    "PD901", # Allow the variable name 'df'
 ]
 exclude = [
     ".bzr",
@@ -181,3 +187,21 @@ exclude = [
     "*_vendor*",
     "*.ipynb",
 ]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG001", "ARG002"]
+
+[tool.mypy]
+python_version = "3.10"
+
+mypy_path = "src"
+explicit_package_bases = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "plex_pipe._version",
+]
+ignore_errors = true

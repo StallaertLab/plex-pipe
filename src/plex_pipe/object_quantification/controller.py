@@ -33,8 +33,7 @@ class QuantificationController:
         table_name: Name for the output AnnData table within the SpatialData object.
         mask_to_annotate: If provided, the label key to which the resulting
             table should be connected.
-        channels: A list of image channel keys to quantify. If None, all images
-            in the SpatialData object are quantified.
+
         add_qc_masks: If True, runs quality control masking after quantification.
         qc_prefix: Prefix for the quality control exclusion columns.
         overwrite: If True, allows overwriting an existing table of the same name.
@@ -46,8 +45,8 @@ class QuantificationController:
         table_name: str = "quantification",
         mask_to_annotate: str | None = None,
         markers_to_quantify: list[str] | None = None,
-        add_qc_masks=False,
-        qc_prefix: str | None = "qc_exclude",
+        add_qc_masks: bool = False,
+        qc_prefix: str = "qc_exclude",
         overwrite: bool = False,
         morphological_properties: list[str] | None = None,
         intensity_properties: list[str] | None = None,
@@ -239,7 +238,7 @@ class QuantificationController:
             r"^(?P<base>[^-]+)-(?P<dim>\d+)(?P<suffix>.*)?$"
         )  # first '-' is expected to precede dimension number
 
-        ndims_buckets = {}  # (property:str) -> List[tuple[dim:int, col:str]]
+        ndims_buckets: dict[str, list[tuple[int, str]]] = {}
         for col in names:
             m = _ndims_regex.match(col)
             if m:
@@ -289,7 +288,7 @@ class QuantificationController:
                   consolidated into `obsm`.
         """
         obsm = {}
-        cols_to_drop = []
+        cols_to_drop: list[str] = []
         for prop, dim_cols in ndims_buckets.items():
 
             # Sort by dimension index
@@ -376,10 +375,13 @@ class QuantificationController:
             metric = METRIC_REGISTRY[m_name]
             if metric.is_extra:
                 extra_props.append(metric.func)
-            else:
+            elif isinstance(metric.func, str):
                 props.append(metric.func)
 
             rename_map[metric.regionprops_name] = metric.name
+
+        # mypy requires
+        assert self.channels is not None, "Channels must be defined."
 
         for channel_key in self.channels:
             img = self.get_channel(sdata, channel_key)

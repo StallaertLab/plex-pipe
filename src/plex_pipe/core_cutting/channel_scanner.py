@@ -1,5 +1,6 @@
 import os
 import re
+from collections.abc import Sequence
 
 from loguru import logger
 
@@ -11,7 +12,7 @@ from plex_pipe.utils.globus_utils import (
 
 
 def scan_channels_from_list(
-    files: list[str] | tuple[str, ...],
+    files: Sequence[str],
     include_channels: list[str] | None = None,
     exclude_channels: list[str] | None = None,
     use_markers: list[str] | None = None,
@@ -20,16 +21,14 @@ def scan_channels_from_list(
     """Build a channel map from a list of file paths.
 
     Args:
-        files (Sequence[str]): Paths to OME-TIFF files.
-        include_channels (list[str] | None, optional): Channels that should
-            be included.
-        exclude_channels (list[str] | None, optional): Channels to skip.
-        use_markers (list[str] | None, optional): Final subset of base channel
-            names.
-        ignore_markers (list[str] | None, optional): Markers to ignore.
+        files: Sequence of paths to OME-TIFF files.
+        include_channels: Specific channels to include.
+        exclude_channels: Specific channels to exclude.
+        use_markers: Whitelist of marker names to include.
+        ignore_markers: Blacklist of marker names to ignore.
 
     Returns:
-        dict[str, str]: Mapping of selected channel names to file paths.
+        Dictionary mapping channel names to their file paths.
 
     Raises:
         ValueError: If no valid OME-TIFF files are found.
@@ -40,7 +39,7 @@ def scan_channels_from_list(
     use_markers = use_markers or []
     ignore_markers = ignore_markers or []
 
-    image_dict = {}
+    image_dict: dict[str, str] = {}
 
     for filepath in files:
         fname = os.path.basename(filepath)
@@ -74,14 +73,14 @@ def scan_channels_from_list(
     for key, val in image_dict.items():
         logger.info(f"{key} <- {val}")
 
-    grouped = {}
+    grouped: dict[str, list[tuple[int, str]]] = {}
     for ch in image_dict:
         if "_" not in ch:
             continue
         round_prefix, base = ch.split("_", 1)
         grouped.setdefault(base, []).append((int(round_prefix), ch))
 
-    result = {}
+    result: dict[str, str] = {}
 
     for base, items in grouped.items():
         items.sort()
@@ -144,22 +143,22 @@ def discover_channels(
     image_dir_or_path: str,
     include_channels: list[str] | None = None,
     exclude_channels: list[str] | None = None,
-    gc: GlobusConfig | None = None,
     use_markers: list[str] | None = None,
     ignore_markers: list[str] | None = None,
+    gc: GlobusConfig | None = None,
 ) -> dict[str, str]:
     """Discover available channels from local or Globus storage.
 
     Args:
-        image_dir_or_path (str): Directory containing image files.
-        include_channels (list[str] | None, optional): Channels to always keep.
-        exclude_channels (list[str] | None, optional): Channels to ignore.
-        gc (GlobusConfig | None, optional): If provided, scan via Globus APIs.
-        use_channels (list[str] | None, optional): Final subset of base channel
-            names.
+        image_dir_or_path: Directory containing image files.
+        include_channels: Specific channels to include.
+        exclude_channels: Specific channels to exclude.
+        gc: Globus configuration object. If provided, scans via Globus APIs.
+        use_markers: Whitelist of marker names to include.
+        ignore_markers: Blacklist of marker names to ignore.
 
     Returns:
-        dict[str, str]: Mapping of selected channel names to file paths.
+        Dictionary mapping channel names to their file paths.
     """
     if gc is not None:
         files = list_globus_tifs(gc, image_dir_or_path)

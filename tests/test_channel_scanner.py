@@ -102,7 +102,7 @@ def test_scan_use_markers_overrides_grouping():
 def test_discover_channels_uses_globus_listing(monkeypatch):
     calls = {}
 
-    def fake_list_globus(gc, path):
+    def fake_list_globus(*args, **kwargs):
         calls["hit"] = True
         return [
             "p_001.0.4_R000_DAPI_xxx.ome.tif",

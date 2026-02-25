@@ -48,7 +48,7 @@ def mock_sdata():
 
 
 @pytest.fixture
-def controller(mock_sdata):
+def controller():
     """Creates a standard controller instance."""
     builder = MockBuilder(output_type="labels")
     return ResourceBuildingController(

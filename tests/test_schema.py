@@ -19,10 +19,6 @@ def base_cfg(**overrides):
         "roi_cutting": {
             "roi_dir_tif": None,
             "roi_dir_output": None,
-            "include_channels": None,
-            "exclude_channels": None,
-            "use_markers": None,
-            "ignore_markers": None,
             "margin": 8,
             "mask_value": 1,
             "transfer_cleanup_enabled": False,
@@ -43,7 +39,7 @@ def base_cfg(**overrides):
     return cfg
 
 
-def test_resolves_paths_and_defaults(tmp_path, monkeypatch):
+def test_resolves_paths_and_defaults():
     """
     Verifies the 'after' model_validator computes derived paths and defaults
     (critical for reproducible file layout).
@@ -87,7 +83,5 @@ def test_validate_pipeline_detects_missing_inputs():
     )
 
     model = AnalysisConfig.model_validate(cfg)
-    with pytest.raises(ValueError) as ei:
+    with pytest.raises(ValueError, match="Input 'MISSING' not found"):
         model.validate_pipeline(SDataStub())
-
-    assert "Input 'MISSING' not found" in str(ei.value)

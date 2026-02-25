@@ -47,16 +47,16 @@ def test_validate_inputs_raises_on_missing_mask_or_channel(sdata_read):
     qc = QuantificationController(
         mask_keys={"cell": "instanseg_cell"}, markers_to_quantify=[ch]
     )
-    with pytest.raises(ValueError) as er:
+    with pytest.raises(ValueError, match=f"Channel '{ch}' not found in sdata"):
         qc.validate_sdata_as_input(sdata)
-    assert f"Channel '{ch}' not found in sdata" in str(er.value)
 
     mask = "x"
     qc = QuantificationController(mask_keys={"cell": mask}, markers_to_quantify=[ch])
 
-    with pytest.raises(ValueError) as er:
+    with pytest.raises(
+        ValueError, match=f"Mask '{mask}' not found in sdata. Masks present"
+    ):
         qc.validate_sdata_as_input(sdata)
-    assert f"Mask '{mask}' not found in sdata. Masks present" in str(er.value)
 
 
 def test_overwrite_semantics_respected_on_existing_table(sdata_read):
@@ -79,9 +79,10 @@ def test_overwrite_semantics_respected_on_existing_table(sdata_read):
         table_name=table_name,
         overwrite=False,
     )
-    with pytest.raises(ValueError) as er:
+    with pytest.raises(
+        ValueError, match=f"Table '{table_name}' already exists in sdata."
+    ):
         qc_no_over.run(sdata)
-    assert f"Table '{table_name}' already exists in sdata." in str(er.value)
 
     # overwrite=True -> should succeed
     qc_over = QuantificationController(
@@ -134,17 +135,16 @@ def test_init_raises_on_invalid_mask_to_annotate():
     Verifies that the controller raises a ValueError if `mask_to_annotate`
     is not one of the provided mask keys' values.
     """
-    with pytest.raises(ValueError) as er:
+    with pytest.raises(
+        ValueError,
+        match="mask_to_annotate 'invalid_mask' must be one of the masks to quantify",
+    ):
         QuantificationController(
             mask_keys={"cell": "cell_mask"}, mask_to_annotate="invalid_mask"
         )
-    assert (
-        "mask_to_annotate 'invalid_mask' must be one of the masks to quantify"
-        in str(er.value)
-    )
 
 
-def test_run_logs_error_on_write_failure(sdata_read, caplog):
+def test_run_logs_error_on_write_failure(sdata_read):
     """
     Verifies that if writing the table to disk fails, an error is logged.
     """
@@ -180,9 +180,10 @@ def test_find_ndims_columns_raises_on_duplicates():
     """
     qc = QuantificationController(mask_keys={})
     obs = pd.DataFrame(columns=["prop-0", "prop-0", "prop-1"])
-    with pytest.raises(ValueError) as er:
+    with pytest.raises(
+        ValueError, match="Duplicate dimension indices found for 'prop'"
+    ):
         qc.find_ndims_columns(list(obs.columns))
-    assert "Duplicate dimension indices found for 'prop'" in str(er.value)
 
 
 def test_quantify_all_channels_if_none_specified(sdata_read):
@@ -222,7 +223,8 @@ def test_get_channel_handles_3d_input_with_warning(sdata_read):
     channel_key = "DAPI"
 
     # Create a 3D numpy array
-    three_d_image = np.random.rand(3, 10, 10)
+    rng = np.random.default_rng()
+    three_d_image = rng.random((3, 10, 10))
 
     with patch(
         "plex_pipe.object_quantification.controller.logger.warning"
@@ -252,18 +254,18 @@ def test_get_channel_raises_on_unsupported_dims(sdata_read):
     channel_key = "DAPI"
 
     # Test with 4D
-    four_d_image = np.random.rand(3, 10, 10, 10)
+    rng = np.random.default_rng()
+    four_d_image = rng.random((3, 10, 10, 10))
     with patch("spatialdata.get_pyramid_levels", return_value=four_d_image):
-        with pytest.raises(ValueError) as er:
+        with pytest.raises(ValueError, match="not supported"):
             qc.get_channel(sdata, channel_key)
-        assert "not supported" in str(er.value)
 
     # Test with 1D
-    one_d_image = np.random.rand(10)
+    rng = np.random.default_rng()
+    one_d_image = rng.random(10)
     with patch("spatialdata.get_pyramid_levels", return_value=one_d_image):
-        with pytest.raises(ValueError) as er:
+        with pytest.raises(ValueError, match="not supported"):
             qc.get_channel(sdata, channel_key)
-        assert "not supported" in str(er.value)
 
 
 def test_get_channel_handles_2d_input_and_logs(sdata_read):
@@ -274,7 +276,8 @@ def test_get_channel_handles_2d_input_and_logs(sdata_read):
     qc = QuantificationController(mask_keys={"cell": "instanseg_cell"})
     channel_key = "DAPI"
 
-    two_d_image = np.random.rand(10, 10)
+    rng = np.random.default_rng()
+    two_d_image = rng.random((10, 10))
 
     with patch(
         "plex_pipe.object_quantification.controller.logger.info"
@@ -300,7 +303,8 @@ def test_get_channel_squeezes_singleton_dimensions(sdata_read):
     channel_key = "DAPI"
 
     # Image with singleton dimensions
-    squeezable_image = np.random.rand(1, 10, 1, 10)
+    rng = np.random.default_rng()
+    squeezable_image = rng.random((1, 10, 1, 10))
 
     with patch("spatialdata.get_pyramid_levels", return_value=squeezable_image):
         result = qc.get_channel(sdata, channel_key)

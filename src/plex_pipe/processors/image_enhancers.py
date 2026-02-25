@@ -4,7 +4,6 @@ import numpy as np
 from loguru import logger
 from pydantic import (
     Field,
-    ValidationInfo,
     model_validator,
 )
 
@@ -39,7 +38,7 @@ class Normalize(BaseOp):
         )
 
         @model_validator(mode="after")
-        def check_low_less_than_high(self, info: ValidationInfo):
+        def check_low_less_than_high(self):
             """Ensures the lower bound is strictly less than the upper bound."""
             if self.low >= self.high:
                 raise ValueError(

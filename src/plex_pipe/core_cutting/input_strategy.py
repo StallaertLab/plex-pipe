@@ -1,6 +1,6 @@
 import time
 from abc import ABC, abstractmethod
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from pathlib import Path
 
 from globus_sdk import (
@@ -10,6 +10,7 @@ from globus_sdk import (
 from loguru import logger
 
 from plex_pipe.core_cutting.channel_scanner import discover_channels
+from plex_pipe.utils.config_schema import AnalysisConfig
 from plex_pipe.utils.globus_utils import (
     GlobusConfig,
     create_globus_tc,
@@ -20,27 +21,19 @@ MAX_TRIES = 6
 BASE_DELAY = 2.0  # seconds
 MAX_DELAY = 60.0  # seconds
 
+ChannelMap = Mapping[str, str]
+
 
 class FileAvailabilityStrategy(ABC):
     """Strategy interface for ensuring image files are available."""
+
+    config: AnalysisConfig
+    channel_map: ChannelMap
 
     @abstractmethod
     def __init__(self, config):
 
         self.config = config
-        self.channel_map = self.create_channel_map()
-
-    def create_channel_map(self):
-        """Resolves which channels to use."""
-        channel_map = discover_channels(
-            self.config.general.image_dir,
-            include_channels=self.config.roi_cutting.include_channels,
-            exclude_channels=self.config.roi_cutting.exclude_channels,
-            use_markers=self.config.roi_cutting.use_markers,
-            ignore_markers=self.config.roi_cutting.ignore_markers,
-            gc=self.gc,
-        )
-        return channel_map
 
     @abstractmethod
     def yield_ready_channels(self) -> Iterator[tuple[str, str]]:
@@ -62,14 +55,23 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
     ) -> None:
         """ """
 
+        # build channel map
+        super().__init__(config)
         self.gc = gc
         self.tc = create_globus_tc(gc.client_id, gc.transfer_tokens)
-        self.pending_tasks = []
-        self.yielded_channels = set()
-        self.cleanup_enabled = cleanup_enabled
 
-        # build channel
-        super().__init__(config)
+        self.channel_map = discover_channels(
+            self.config.general.image_dir,
+            include_channels=self.config.roi_cutting.include_channels,
+            exclude_channels=self.config.roi_cutting.exclude_channels,
+            use_markers=self.config.roi_cutting.use_markers,
+            ignore_markers=self.config.roi_cutting.ignore_markers,
+            gc=self.gc,
+        )
+
+        self.pending_tasks: list[str] = []
+        self.yielded_channels: set[str] = set()
+        self.cleanup_enabled = cleanup_enabled
 
         # build transfer map
         self.build_transfer_map()
@@ -178,6 +180,14 @@ class LocalFileStrategy(FileAvailabilityStrategy):
 
         self.gc = None
         super().__init__(config)
+
+        self.channel_map = discover_channels(
+            self.config.general.image_dir,
+            include_channels=self.config.roi_cutting.include_channels,
+            exclude_channels=self.config.roi_cutting.exclude_channels,
+            use_markers=self.config.roi_cutting.use_markers,
+            ignore_markers=self.config.roi_cutting.ignore_markers,
+        )
 
     def get_image_paths(self):
         """In local mode, the channel map already contains the final paths."""

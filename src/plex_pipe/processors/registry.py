@@ -10,6 +10,13 @@ from plex_pipe.processors.base import BaseOp
 
 @dataclass
 class RegistryEntry:
+    """Stores a processor class and its configuration model.
+
+    Attributes:
+        processor_class: The class implementing the processor logic.
+        param_model: The Pydantic model defining the processor's parameters.
+    """
+
     processor_class: type[BaseOp]
     param_model: type[BaseModel]
 
@@ -20,7 +27,7 @@ Kind = Literal[
     "image_enhancer",
 ]
 
-REGISTRY: dict[Kind, dict[str, type[BaseOp]]] = {
+REGISTRY: dict[Kind, dict[str, RegistryEntry]] = {
     "mask_builder": {},
     "object_segmenter": {},
     "image_enhancer": {},
@@ -28,11 +35,17 @@ REGISTRY: dict[Kind, dict[str, type[BaseOp]]] = {
 
 
 def register(kind: Kind, name: str):
-    """
-    Decorator for plugin registration that also captures the Params model.
+    """Registers a processor class under a specific kind and name.
+
+    Args:
+        kind: The category of the processor (e.g., 'mask_builder').
+        name: The unique name for the processor within its category.
+
+    Returns:
+        A decorator that registers the class and returns it unmodified.
     """
 
-    def deco(cls: type[BaseOp]):
+    def deco(cls: type[BaseOp]) -> type[BaseOp]:
         # Get the parameter model from the class, defaulting to an empty one
         param_model = getattr(cls, "Params", BaseModel)
 
@@ -48,7 +61,19 @@ def register(kind: Kind, name: str):
 
 
 def build_processor(kind: Kind, name: str, **cfg: Any) -> BaseOp:
-    """Instantiate an operation by kind and name."""
+    """Instantiates a processor by its registered kind and name.
+
+    Args:
+        kind: The category of the processor.
+        name: The name of the processor.
+        **cfg: Configuration keyword arguments passed to the processor's constructor.
+
+    Returns:
+        An instance of the requested processor.
+
+    Raises:
+        ValueError: If the kind or name is not registered.
+    """
     if kind not in REGISTRY:
         available_kinds = ", ".join(sorted(REGISTRY))
         raise ValueError(

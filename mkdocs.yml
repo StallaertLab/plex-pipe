@@ -66,8 +66,8 @@ markdown_extensions:
   - attr_list
   - admonition
   - pymdownx.highlight
-  - pymdownx.details  # allows for collapsible notes
-  - pymdownx.superfences # allows nesting code blocks in notes
+  - pymdownx.details  # collapsible notes
+  - pymdownx.superfences # nesting code blocks in notes
   - pymdownx.inlinehilite # code colors inline
   - pymdownx.snippets #DRY
   - md_in_html

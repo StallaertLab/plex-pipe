@@ -23,24 +23,22 @@ class RoiPreparationController:
         mask_value: int = 0,
         max_pyramid_levels: int = 3,
         chunk_size: tuple[int, int, int] = (1, 256, 256),
-        downscale=2,
+        downscale: int = 2,
         temp_roi_delete: bool = True,
     ) -> None:
         """Initialize the controller.
 
         Args:
-            metadata_df (pandas.DataFrame): Table describing each core.
-            temp_dir (str): Directory for temporary core files.
-            output_dir (str): Destination for assembled ``.zarr`` outputs.
-            file_strategy (FileAvailabilityStrategy): Strategy used to obtain
-                image files.
-            margin (int, optional): Pixels of padding around each core.
-            mask_value (int, optional): Fill value for masked regions.
-            max_pyramid_levels (int, optional): Number of pyramid levels.
-            chunk_size (tuple[int, int, int], optional): Chunk size for the
-                data storage.
-            temp_roi_delete (bool, optional): Remove intermediate TIFFs
-                after assembly.
+            metadata_df: DataFrame containing ROI metadata.
+            file_strategy: Strategy for retrieving image files.
+            temp_dir: Directory for temporary core files.
+            output_dir: Destination for assembled Zarr outputs.
+            margin: Pixels of padding around each core.
+            mask_value: Fill value for masked regions.
+            max_pyramid_levels: Number of pyramid levels for the output.
+            chunk_size: Chunk dimensions (C, Y, X) for the Zarr array.
+            downscale: Downsampling factor between pyramid levels.
+            temp_roi_delete: Whether to remove intermediate TIFFs after assembly.
         """
 
         self.metadata_df = metadata_df
@@ -63,15 +61,15 @@ class RoiPreparationController:
             cleanup=temp_roi_delete,
         )
 
-        self.completed_channels = []
-        self.completed_cores = []
+        self.completed_channels: list[str] = []
+        self.completed_cores: list[str] = []
 
-    def cut_channel(self, channel, file_path):
-        """Cut all cores from a single channel image.
+    def cut_channel(self, channel: str, file_path: str | Path) -> None:
+        """Extract and save ROIs from a single channel image.
 
         Args:
-            channel (str): Name of the channel being processed.
-            file_path (str | Path): Path to the OME-TIFF file.
+            channel: Name of the channel being processed.
+            file_path: Path to the source OME-TIFF file.
         """
 
         full_img, store = read_ome_tiff(str(file_path))
@@ -88,11 +86,11 @@ class RoiPreparationController:
                 store.close()
                 logger.debug(f"Closed file handle for channel {channel}.")
 
-    def run(self, poll_interval: float = 10.0) -> None:
-        """Process all channels and assemble cores.
+    def run(self) -> None:
+        """Execute the ROI preparation pipeline.
 
-        This method blocks until all channels have been processed and the
-        corresponding cores have been assembled.
+        Iterates through available channels, cuts ROIs, and assembles them into
+        SpatialData Zarr stores.
         """
 
         logger.info("Starting ROI preparation controller...")

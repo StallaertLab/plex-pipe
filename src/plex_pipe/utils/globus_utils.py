@@ -15,23 +15,20 @@ class GlobusEndpoint:
 
         if root is None:
             if os.name == "nt":
-                self.mode = "multi_drive"
                 self.shared_root = None
             else:
-                self.mode = "rooted"
                 self.shared_root = Path.home().resolve()
         else:
-            self.mode = "rooted"
             self.shared_root = Path(root).resolve()
 
     def check_path_within_scope(self, path: Path) -> None:
         resolved = path.resolve()
-        if self.mode == "rooted":
+        if self.shared_root is not None:
             if not resolved.is_relative_to(self.shared_root):
                 raise ValueError(
                     f"Path {resolved} is outside Globus scope {self.shared_root}"
                 )
-        elif self.mode == "multi_drive" and not resolved.drive:
+        elif self.shared_root is None and not resolved.drive:
             raise ValueError(
                 f"Path {resolved} requires a drive letter for multi_drive."
             )
@@ -42,7 +39,7 @@ class GlobusEndpoint:
 
         if os.name == "nt" or p.drive:
             wp = PureWindowsPath(p)
-            if self.mode == "multi_drive":
+            if self.shared_root is None:
                 drive = wp.drive.replace(":", "").upper()
                 return str(PurePosixPath("/") / drive / Path(*wp.parts[1:]).as_posix())
             else:
@@ -50,20 +47,22 @@ class GlobusEndpoint:
                 return str(PurePosixPath("/") / rel_path.as_posix())
 
         # Linux/Mac Logic
-        if self.mode == "rooted":
+        if self.shared_root is not None:
             return str(PurePosixPath("/") / p.relative_to(self.shared_root).as_posix())
+
         return p.as_posix()
 
     def globus_to_local(self, globus_path: str) -> Path:
         gp = PurePosixPath(globus_path)
         if os.name == "nt" or (self.shared_root and self.shared_root.drive):
-            if self.mode == "multi_drive":
+            if self.shared_root is None:
                 drive = f"{gp.parts[1]}:\\"
                 return Path(drive) / Path(*gp.parts[2:])
             return self.shared_root / Path(*gp.parts[1:])
 
-        if self.mode == "rooted":
+        if self.shared_root is not None:
             return self.shared_root / Path(*gp.parts[1:])
+
         return Path(gp)
 
 

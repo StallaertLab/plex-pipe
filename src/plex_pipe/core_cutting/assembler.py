@@ -8,7 +8,7 @@ from spatialdata.models import Image2DModel
 
 
 class CoreAssembler:
-    """Assemble per-channel TIFFs into a ``SpatialData`` object."""
+    """Assemble per-channel TIFF images into a unified SpatialData Zarr store."""
 
     def __init__(
         self,
@@ -27,14 +27,17 @@ class CoreAssembler:
         """Initialize the assembler.
 
         Args:
-            temp_dir (str): Directory containing temporary per-core folders.
-            output_dir (str): Location where ``.zarr`` outputs are written.
-            max_pyramid_levels (int, optional): Maximum number of
-                multiscale levels. ``0`` disables pyramid creation.
-            downscale (int, optional): Downsampling factor per level.
-            allowed_channels (list[str] | None, optional): Restrict processing
-                to these channels. If ``None`` all channels are used.
-            cleanup (bool, optional): Remove intermediate TIFFs when ``True``.
+            temp_dir (str): Directory containing temporary core subdirectories.
+            output_dir (str): Destination directory for assembled Zarr stores.
+            max_pyramid_levels (int, optional): Maximum number of multiscale
+                pyramid levels. Set to 0 to disable.
+            downscale (int, optional): Downsampling factor between levels.
+            chunk_size (tuple[int, int, int], optional): Chunk dimensions
+                (C, Y, X) for the Zarr array.
+            allowed_channels (list[str] | None, optional): Channel names
+                to process. If None, all found channels are used.
+            cleanup (bool, optional): Whether to delete intermediate TIFF files
+                after assembly.
         """
         self.temp_dir = temp_dir
         self.output_dir = output_dir
@@ -45,17 +48,18 @@ class CoreAssembler:
         self.cleanup = cleanup
 
     def assemble_core(self, core_id: str) -> str:
-        """Assemble a single core from its per-channel TIFF images.
+        """Assemble a single core from per-channel TIFFs into a SpatialData Zarr store.
 
         Args:
-            core_id (str): Identifier of the core's temporary folder.
+            core_id (str): Unique identifier for the core, corresponding to its
+                subdirectory name.
 
         Returns:
-            str: Path to the written ``.zarr`` dataset.
+            str: Path to the generated Zarr store.
 
         Raises:
-            FileNotFoundError: If the temporary core folder is missing.
-            ValueError: If no TIFF files are found in the folder.
+            FileNotFoundError: If the core's temporary directory is missing.
+            ValueError: If no valid TIFF files are found in the directory.
         """
         core_path = os.path.join(self.temp_dir, core_id)
         if not os.path.exists(core_path):
@@ -117,11 +121,11 @@ class CoreAssembler:
         return output_path
 
     def _cleanup_core_files(self, core_path: str, channels: list[str]) -> None:
-        """Delete intermediate TIFF files for the given channels.
+        """Delete intermediate TIFF files for the specified channels.
 
         Args:
-            core_path (str): Temporary directory for the core.
-            channels (list[str]): Channel names to remove.
+            core_path (str): Path to the core's temporary directory.
+            channels (list[str]): List of channel names to delete.
         """
         for ch in channels:
             tiff_path = os.path.join(core_path, f"{ch}.tiff")

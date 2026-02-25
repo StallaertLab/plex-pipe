@@ -21,6 +21,15 @@ repos:
       - id: check-docstring-first
       - id: check-yaml
 
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-setuptools, types-PyYAML]
+        args: ["--config-file", "pyproject.toml"]
+        # restrict to src directory
+        files: ^src/
+
   # Final File Cleanup
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
