@@ -64,7 +64,7 @@ class RoiPreparationController:
         self.completed_channels: list[str] = []
         self.completed_cores: list[str] = []
 
-    def cut_channel(self, channel: str, file_path: str | Path) -> None:
+    def _cut_channel(self, channel: str, file_path: str | Path) -> None:
         """Extract and save ROIs from a single channel image.
 
         Args:
@@ -99,7 +99,7 @@ class RoiPreparationController:
 
             # Process the newly arrived image
             logger.info(f"Channel {channel} ready. Starting cutting...")
-            self.cut_channel(channel, path)
+            self._cut_channel(channel, path)
 
             # Cleanup - Strategy handles the temp file
             self.file_strategy.cleanup(Path(path))

@@ -4,8 +4,11 @@ import argparse
 import os
 import pickle as pkl
 import time
+from collections.abc import Callable
 from datetime import datetime
+from typing import Any
 
+import numpy as np
 import torch
 from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 from sam2.build_sam import build_sam2
@@ -13,14 +16,11 @@ from sam2.build_sam import build_sam2
 from plex_pipe.utils.im_utils import prepare_rgb_image
 
 
-def set_cuda():  # pragma: no cover
-    """Configure CUDA settings for SAM2 segmentation.
-
-    Args:
-        model_path (str): Path to the directory with the SAM2 model.
+def set_cuda() -> tuple[torch.device, str, str]:  # pragma: no cover
+    """Configures CUDA settings for SAM2 segmentation.
 
     Returns:
-        tuple[torch.device, str, str]: CUDA device, checkpoint path and model configuration path.
+        CUDA device, checkpoint path, and model configuration path.
     """
     assert torch.cuda.is_available()
 
@@ -32,28 +32,27 @@ def set_cuda():  # pragma: no cover
 
 
 def sam2_segment(
-    im_rgb,
-    build_sam2,
-    SAM2AutomaticMaskGenerator,
-    device,
-    sam2_checkpoint,
-    model_cfg,
-    points_per_side,
-):  # pragma: no cover
-    """Segment an RGB image using the SAM2 model.
+    im_rgb: np.ndarray,
+    build_sam2: Callable,
+    SAM2AutomaticMaskGenerator: Callable,
+    device: torch.device,
+    sam2_checkpoint: str,
+    model_cfg: str,
+    points_per_side: int,
+) -> list[dict[str, Any]]:  # pragma: no cover
+    """Segments an RGB image using the SAM2 model.
 
     Args:
-        im_rgb (numpy.ndarray): RGB image to segment.
-        build_sam2 (Callable): Function that builds a SAM2 model instance.
-        SAM2AutomaticMaskGenerator (Callable): Mask generator class.
-        device (torch.device): CUDA device used for inference.
-        sam2_checkpoint (str): Path to the SAM2 checkpoint file.
-        model_cfg (str): Path to the SAM2 configuration file.
-        points_per_side (int): Number of sampling points per side.
-
+        im_rgb: RGB image to segment.
+        build_sam2: Function that builds a SAM2 model instance.
+        SAM2AutomaticMaskGenerator: Mask generator class.
+        device: CUDA device used for inference.
+        sam2_checkpoint: Path to the SAM2 checkpoint file.
+        model_cfg: Path to the SAM2 configuration file.
+        points_per_side: Number of sampling points per side.
 
     Returns:
-        list[dict]: Segmentation masks for the input image.
+        List of segmentation masks for the input image.
     """
 
     # clear the cache
@@ -90,8 +89,8 @@ def sam2_segment(
     return masks
 
 
-def main():  # pragma: no cover
-
+def main() -> None:  # pragma: no cover
+    """Runs the SAM2 segmentation CLI."""
     # Create the argument parser
     parser = argparse.ArgumentParser()
 

@@ -1,5 +1,9 @@
 # API Reference
 
-This section contains the reference documentation for all modules in the pipeline.
+This section contains the reference documentation for the elements important for the user.
 
-::: plex_pipe.core_cutting.cutter
+---
+
+::: plex_pipe.core_cutting.controller
+
+---

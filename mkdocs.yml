@@ -59,6 +59,8 @@ plugins:
             show_root_toc_entry: false
             merge_init_into_class: true
             show_source: false
+            filters:
+              - "!^_"              # hide private members
             extra:
               show_symbol_type: true
 

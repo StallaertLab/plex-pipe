@@ -20,8 +20,9 @@ def scan_channels_from_list(
 ) -> dict[str, str]:
     """Build a channel map from a list of file paths.
 
-    Parses filenames to identify markers and rounds. Selects the latest round for
-    each marker, with a preference for round 001 for DAPI.
+    This function contains the core selection logic (marker parsing, round handling,
+    and filtering). By default it selects the latest round for
+    each marker (from available channels), with a preference for round 001 for DAPI.
 
     Args:
         files: List of file paths to process.
@@ -151,6 +152,10 @@ def discover_channels(
     gc: GlobusConfig | None = None,
 ) -> dict[str, str]:
     """Creates a channel map from local or Globus storage.
+
+    This is a convenience wrapper: it obtains a list of candidate OME-TIFF files
+    (locally from `image_dir_or_path`, or remotely via Globus when `gc` is provided),
+    then delegates marker/round selection to :func:`scan_channels_from_list`.
 
     Args:
         image_dir_or_path: Local directory path or Globus path to scan.

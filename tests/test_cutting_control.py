@@ -79,7 +79,7 @@ def test_cut_channel_logic(test_controller, mock_dependencies, mock_metadata):
     extracts cores, and writes temp files.
     """
     # Action
-    test_controller.cut_channel("DAPI", "/path/to/dapi.tif")
+    test_controller._cut_channel("DAPI", "/path/to/dapi.tif")
 
     # 1. Verify Image Loading
     mock_dependencies["read_ome_tiff"].assert_called_with("/path/to/dapi.tif")
@@ -100,7 +100,7 @@ def test_cut_channel_resource_safety(test_controller, mock_dependencies):
     test_controller.cutter.extract_core.side_effect = RuntimeError("Cutting failed!")
 
     with pytest.raises(RuntimeError):
-        test_controller.cut_channel("DAPI", "bad_file.tif")
+        test_controller._cut_channel("DAPI", "bad_file.tif")
 
     # The store.close() must still be called
     mock_dependencies["store"].close.assert_called_once()

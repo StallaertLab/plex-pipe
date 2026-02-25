@@ -2,27 +2,37 @@
 
 import os
 import pickle as pkl
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
 from shapely.geometry import Polygon
 
 
-def pre_select_objects(masks, im, min_area, max_area, min_iou, min_stability, min_int):
-    """
-    Function to pre-select objects based on area, iou, stability and intensity.
+def pre_select_objects(
+    masks: list[dict[str, Any]],
+    im: np.ndarray,
+    min_area: int,
+    max_area: int,
+    min_iou: float,
+    min_stability: float,
+    min_int: float,
+) -> list[dict[str, Any]]:
+    """Filter objects based on area, IoU, stability, and intensity.
 
     Args:
-        masks (list): The list of masks.
-        min_area (int): The minimum area of the object.
-        max_area (int): The maximum area of the object.
-        min_iou (float): The minimum iou of the object.
-        min_stability (float): The minimum stability of the object.
-        min_int (float): The minimum intensity of the object.
-    Returns:
-        list: The filtered list of masks.
-    """
+        masks: List of mask dictionaries.
+        im: Source image array.
+        min_area: Minimum area threshold.
+        max_area: Maximum area threshold.
+        min_iou: Minimum predicted IoU threshold.
+        min_stability: Minimum stability score threshold.
+        min_int: Minimum mean intensity threshold.
 
+    Returns:
+        List of filtered mask dictionaries.
+    """
     masks_filtered = []
 
     for item in masks:
@@ -50,15 +60,17 @@ def pre_select_objects(masks, im, min_area, max_area, min_iou, min_stability, mi
     return masks_filtered
 
 
-def do_boxes_overlap(bbox1, bbox2):
-    """
-    Check if two bounding boxes overlap.
+def do_boxes_overlap(
+    bbox1: list[int] | tuple[int, ...], bbox2: list[int] | tuple[int, ...]
+) -> bool:
+    """Check if two bounding boxes overlap.
 
     Args:
-        bbox1 (tuple): The first bounding box (x, y, w, h).
-        bbox2 (tuple): The second bounding box (x, y, w, h).
+        bbox1: The first bounding box (x, y, w, h).
+        bbox2: The second bounding box (x, y, w, h).
+
     Returns:
-        bool: True if the bounding boxes overlap, False otherwise.
+        True if the bounding boxes overlap, False otherwise.
     """
     x1_min, y1_min, w1, h1 = bbox1
     x2_min, y2_min, w2, h2 = bbox2
@@ -72,14 +84,14 @@ def do_boxes_overlap(bbox1, bbox2):
     )
 
 
-def remove_overlapping_objects(objects):
-    """
-    Remove objects with overlapping bounding boxes, keeping the one with the higher 'predicted_iou'.
+def remove_overlapping_objects(objects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Remove overlapping objects, keeping those with higher predicted IoU.
 
     Args:
-        objects (list): The list of objects to filter.
+        objects: List of object dictionaries containing 'bbox' and 'predicted_iou'.
+
     Returns:
-        list: The filtered list of objects
+        Filtered list of objects.
     """
     objects = sorted(
         objects, key=lambda x: x["predicted_iou"], reverse=True
@@ -97,14 +109,14 @@ def remove_overlapping_objects(objects):
     return remaining_objects
 
 
-def xywh_to_corners(xywh):
-    """
-    Function to convert xywh to corners.
+def xywh_to_corners(xywh: list[int] | np.ndarray) -> np.ndarray:
+    """Convert (x, y, w, h) format to corner coordinates.
 
     Args:
-        xywh (np.array): The xywh coordinates.
+        xywh: Bounding box in (x, y, w, h) format.
+
     Returns:
-        np.array: The corners of the bounding box.
+        Array of shape (4, 2) containing corner coordinates [row, col].
     """
     x, y, w, h = xywh
     return np.array(
@@ -118,17 +130,31 @@ def xywh_to_corners(xywh):
 
 
 def get_refined_rectangles(
-    masks, im, min_area, max_area, min_iou, min_stability, min_int
-):
+    masks: list[dict[str, Any]],
+    im: np.ndarray,
+    min_area: int,
+    max_area: int,
+    min_iou: float,
+    min_stability: float,
+    min_int: float,
+) -> list[np.ndarray]:
+    """Select and refine object rectangles based on quality metrics.
+
+    Filters objects by area, IoU, stability, and intensity, then performs
+    non-maximum suppression to remove overlaps.
+
+    Args:
+        masks: List of mask dictionaries.
+        im: Source image array.
+        min_area: Minimum area threshold.
+        max_area: Maximum area threshold.
+        min_iou: Minimum IoU threshold.
+        min_stability: Minimum stability score threshold.
+        min_int: Minimum intensity threshold.
+
+    Returns:
+        List of corner coordinate arrays for the refined rectangles.
     """
-    An envelope function to get refined rectangles.
-
-    It selects the objects based on area, iou, stability and intensity
-    and then removes the overlapping objects prioritizing objects with higher iou.
-
-    Finally objects are translated to the rectangles (corners).
-    """
-
     masks_pre_selected = pre_select_objects(
         masks, im, min_area, max_area, min_iou, min_stability, min_int
     )
@@ -140,16 +166,15 @@ def get_refined_rectangles(
     return rect_list
 
 
-def create_bbox(polygon):
-    """
-    Function to create a bounding box from a polygon.
+def create_bbox(polygon: np.ndarray) -> list[int]:
+    """Create a bounding box from polygon vertices.
 
     Args:
-        polygon: list of points in the polygon
-    Returns:
-        bbox: bounding box for the polygon
-    """
+        polygon: Array of (x, y) points.
 
+    Returns:
+        Bounding box as [x_min, x_max, y_min, y_max].
+    """
     x_min = int(np.min(polygon[:, 0]))
     x_max = int(np.max(polygon[:, 0]))
     y_min = int(np.min(polygon[:, 1]))
@@ -158,20 +183,19 @@ def create_bbox(polygon):
     return [x_min, x_max, y_min, y_max]
 
 
-def prepare_polygons(poly_data, req_level, org_im_shape):
-    """
-    Function to prepare the polygons for saving.
-    Polygons are rescaled to the original image size and trimmed to the image frame.
+def prepare_polygons(
+    poly_data: list[Any], req_level: int, org_im_shape: tuple[int, int]
+) -> list[np.ndarray | None]:
+    """Rescale polygons to original size and clip to image boundaries.
 
     Args:
-        poly_data: list of polygons
-        req_level: resolution level used for the polygon definition
-        org_im_shape: shape of the original image
+        poly_data: List of polygons (lists of vertices).
+        req_level: Resolution level used for the polygon definition.
+        org_im_shape: Shape of the original image (height, width).
 
     Returns:
-        trim_poly_list: list of rescaled and trimmed polygons
+        List of rescaled and trimmed polygons (as arrays), or None if empty.
     """
-
     # get vertices for the original image
     frame_vertices = xywh_to_corners([0, 0, org_im_shape[1], org_im_shape[0]])
     frame = Polygon(frame_vertices)
@@ -196,17 +220,15 @@ def prepare_polygons(poly_data, req_level, org_im_shape):
     return trim_poly_list
 
 
-def sort_cores(df):
-    """
-    Function to sort the cores in the dataframe
-    based on the row and column start values.
+def sort_cores(df: pd.DataFrame) -> pd.DataFrame:
+    """Sort cores in the DataFrame based on spatial position (row, then column).
 
     Args:
-        df: dataframe containing the cores
-    Returns:
-        df: dataframe with the sorted cores
-    """
+        df: DataFrame containing 'row_start' and 'column_start'.
 
+    Returns:
+        Sorted DataFrame.
+    """
     # Round the columns and sort
     df = (
         df.assign(
@@ -223,20 +245,23 @@ def sort_cores(df):
     return df
 
 
-def prepare_poly_df_for_saving(poly_data, poly_types, req_level, org_im_shape):
-    """
-    Function to prepare the dataframe with polygons for saving.
+def prepare_poly_df_for_saving(
+    poly_data: list[Any],
+    poly_types: list[str],
+    req_level: int,
+    org_im_shape: tuple[int, int],
+) -> pd.DataFrame:
+    """Create a DataFrame of polygons ready for saving.
 
     Args:
-        poly_data: list of polygons
-        poly_types: list of polygon types
-        req_level: resolution level used for the polygon definition
-        org_im_shape: shape of the original image
+        poly_data: List of polygon vertex data.
+        poly_types: List of polygon type strings.
+        req_level: Resolution level used for definition.
+        org_im_shape: Original image dimensions.
 
     Returns:
-        df: dataframe with the polygons
+        DataFrame containing ROI metadata and geometries.
     """
-
     # initialize the dataframe
     df = pd.DataFrame(
         columns=[
@@ -284,17 +309,16 @@ def prepare_poly_df_for_saving(poly_data, poly_types, req_level, org_im_shape):
     return df
 
 
-def get_visual_rectangles(df, req_level):
-    """
-    Function to get bounderies of the polygons from the dataframe and adjust them to the requested resolution level.
+def get_visual_rectangles(df: pd.DataFrame, req_level: int) -> list[np.ndarray]:
+    """Extract rectangle boundaries from DataFrame adjusted for resolution.
 
     Args:
-        df: dataframe with the polygons
-        req_level: requested resolution level
-    Returns:
-        rect_list: list of rectangles
-    """
+        df: DataFrame containing ROI metadata.
+        req_level: Requested resolution level for display.
 
+    Returns:
+        List of rectangle corner arrays.
+    """
     rect_list = df.apply(
         lambda x: xywh_to_corners(
             [
@@ -311,9 +335,17 @@ def get_visual_rectangles(df, req_level):
     return rect_list
 
 
-def read_in_saved_rois(save_path, IM_LEVEL):
-    """
-    Read in the saved rois from the given path.
+def read_in_saved_rois(
+    save_path: Path, IM_LEVEL: int
+) -> tuple[list[np.ndarray], list[np.ndarray], pd.DataFrame | None]:
+    """Load saved ROIs from disk.
+
+    Args:
+        save_path: Path to the saved ROI file.
+        IM_LEVEL: Image resolution level for scaling coordinates.
+
+    Returns:
+        Tuple containing list of rectangles, list of polygons, and the metadata DataFrame.
     """
     if os.path.exists(save_path.with_suffix(".pkl")):
         with open(save_path.with_suffix(".pkl"), "rb") as f:

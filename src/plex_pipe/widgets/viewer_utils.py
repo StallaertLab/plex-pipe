@@ -97,7 +97,7 @@ def display_saved_rois(viewer, IM_LEVEL, edge_width=2, save_path=None):
     """
     rect_list, poly_list, df = read_in_saved_rois(save_path, IM_LEVEL=IM_LEVEL)
 
-    if len(rect_list) > 0:
+    if df is not None:
         roi_names = df["roi_name"].tolist()
         shape_types = df.poly_type.to_list()
     else:
