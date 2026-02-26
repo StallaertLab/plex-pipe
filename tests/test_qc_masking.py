@@ -120,7 +120,6 @@ def test_build_qc_mask_broadcasting(mock_sdata):
     SPECIFICALLY to MarkerA columns, but NOT MarkerB columns.
     """
     masker = QcShapeMasker(table_name="quantification", qc_prefix="qc_exclude")
-    masker.sdata = mock_sdata
 
     # Run the build
     # Note: The code swaps coordinates: coords = coords[:, ::-1]
@@ -128,7 +127,7 @@ def test_build_qc_mask_broadcasting(mock_sdata):
     # QC Shape covers (0,0) to (20,20).
     # Regardless of swap (10,10) is inside.
 
-    final_mask = masker.build_qc_mask()
+    final_mask = masker.build_qc_mask(mock_sdata)
 
     # Shape check: (3 cells, 4 vars)
     assert final_mask.shape == (3, 4)
@@ -153,7 +152,6 @@ def test_build_qc_mask_coordinate_swap(mock_sdata):
     Verifies that coordinates are swapped before checking geometry.
     """
     masker = QcShapeMasker()
-    masker.sdata = mock_sdata
 
     # Modify data to have asymmetric coordinates
     # Cell 0: (y=5, x=100) -> Source swaps to (x=100, y=5)
@@ -168,7 +166,7 @@ def test_build_qc_mask_coordinate_swap(mock_sdata):
     # If inputs are (y, x), swapping makes them (x, y).
 
     # This test primarily ensures the line runs without crashing on dimension mismatch.
-    masker.build_qc_mask()
+    masker.build_qc_mask(mock_sdata)
 
 
 # --- Tests for Validation & Integration ---
@@ -177,10 +175,9 @@ def test_build_qc_mask_coordinate_swap(mock_sdata):
 def test_validate_sdata_missing_table(mock_sdata):
     """Verifies error if table name is wrong."""
     masker = QcShapeMasker(table_name="wrong_name")
-    masker.sdata = mock_sdata
 
     with pytest.raises(ValueError, match="Table wrong_name not present"):
-        masker.validate_sdata()
+        masker.validate_sdata(mock_sdata)
 
 
 def test_validate_sdata_missing_centroids(mock_sdata):
@@ -188,10 +185,9 @@ def test_validate_sdata_missing_centroids(mock_sdata):
     del mock_sdata["quantification"].obsm["centroid_cell"]
 
     masker = QcShapeMasker(table_name="quantification")
-    masker.sdata = mock_sdata
 
     with pytest.raises(ValueError, match="Centroids: centroid_cell not present"):
-        masker.validate_sdata()
+        masker.validate_sdata(mock_sdata)
 
 
 def test_run_integration(mock_sdata):

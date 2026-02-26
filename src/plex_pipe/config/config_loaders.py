@@ -3,20 +3,25 @@
 import copy
 import os
 import platform
+from pathlib import Path
+from typing import Any
 
 import yaml
 
 from plex_pipe.config.config_schema import AnalysisConfig
 
 
-def load_workstation_config(config_path=None):
-    """
-    Load workstation-specific configuration from a YAML file.
+def load_workstation_config(config_path: str | Path) -> dict[str, Any]:
+    """Loads workstation-specific configuration from a YAML file.
 
     Args:
-        config_path (str or Path): Path to the YAML configuration file.
+        config_path: Path to the YAML configuration file.
+
     Returns:
-        dict: Dictionary containing the workstation configuration.
+        A dictionary containing the workstation configuration.
+
+    Raises:
+        KeyError: If the 'workstations' key is missing in the configuration.
     """
     with open(config_path) as file:
         config = yaml.safe_load(file)
@@ -32,14 +37,14 @@ def load_workstation_config(config_path=None):
         raise KeyError("'workstations' key not found in the configuration file.")
 
 
-def load_config(settings_path):
-    """
-    Load analysis settings from a YAML file.
+def load_config(settings_path: str | Path) -> AnalysisConfig:
+    """Loads analysis settings from a YAML file.
 
     Args:
-        settings_path (str or Path): Path to the YAML settings file.
+        settings_path: Path to the YAML settings file.
+
     Returns:
-        dict: Dictionary containing the analysis settings.
+        The validated AnalysisConfig object.
     """
     with open(settings_path) as file:
         settings = yaml.safe_load(file)
@@ -63,8 +68,16 @@ def load_config(settings_path):
     return config
 
 
-def contains_placeholder(obj, placeholder="${input}"):
-    """Recursively check if the placeholder appears anywhere in the object."""
+def contains_placeholder(obj: Any, placeholder: str = "${input}") -> bool:
+    """Recursively checks if the placeholder appears anywhere in the object.
+
+    Args:
+        obj: The object to search (dict, list, or string).
+        placeholder: The placeholder string to look for. Defaults to "${input}".
+
+    Returns:
+        True if the placeholder is found, False otherwise.
+    """
     if isinstance(obj, dict):
         return any(contains_placeholder(v, placeholder) for v in obj.values())
     if isinstance(obj, list):
@@ -72,8 +85,16 @@ def contains_placeholder(obj, placeholder="${input}"):
     return isinstance(obj, str) and placeholder in obj
 
 
-def replace_placeholders(obj, mapping):
-    """Recursively substitute ${key} with mapping[key] in strings."""
+def replace_placeholders(obj: Any, mapping: dict[str, Any]) -> Any:
+    """Recursively substitutes ${key} with mapping[key] in strings.
+
+    Args:
+        obj: The object to process (dict, list, or string).
+        mapping: A dictionary mapping placeholder keys to replacement values.
+
+    Returns:
+        The object with placeholders replaced.
+    """
     if isinstance(obj, dict):
         return {k: replace_placeholders(v, mapping) for k, v in obj.items()}
     if isinstance(obj, list):
@@ -86,11 +107,20 @@ def replace_placeholders(obj, mapping):
     return obj
 
 
-def expand_pipeline(cfg, section="additional_elements"):
-    """
-    Expand any step where:
-      - input is a list
-      - and the step contains a placeholder like ${input}
+def expand_pipeline(
+    cfg: dict[str, Any], section: str = "additional_elements"
+) -> dict[str, Any]:
+    """Expands pipeline steps containing list inputs and placeholders.
+
+    If a step has a list as input and contains the "${input}" placeholder,
+    it is expanded into multiple steps, one for each input item.
+
+    Args:
+        cfg: The configuration dictionary.
+        section: The section key to expand. Defaults to "additional_elements".
+
+    Returns:
+        The configuration dictionary with the section expanded.
     """
     expanded = []
     for step in cfg.get(section, []):

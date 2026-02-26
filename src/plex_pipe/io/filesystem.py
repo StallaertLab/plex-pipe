@@ -7,15 +7,17 @@ import zarr
 from tifffile import TiffFile, imwrite
 
 
-def change_to_wsl_path(path):
-    """
-    Converts a Windows path to a WSL path and checks if the drive is mounted.
+def change_to_wsl_path(path: str) -> str:
+    """Converts a Windows path to a WSL path.
 
     Args:
-        path (str): The Windows path to convert.
+        path: The Windows path to convert.
 
     Returns:
-        str: The WSL path if the drive is mounted, or an error message if not.
+        The WSL path.
+
+    Raises:
+        ValueError: If the path is invalid or lacks a drive letter.
     """
     if ":" not in path:
         raise ValueError(
@@ -32,14 +34,14 @@ def change_to_wsl_path(path):
     return wsl_path
 
 
-def write_temp_tiff(array, core_id: str, channel: str, temp_dir: str):
-    """Save an array as ``temp/<core_id>/<channel>.tiff``.
+def write_temp_tiff(array: Any, core_id: str, channel: str, temp_dir: str) -> None:
+    """Saves an array as ``temp/<core_id>/<channel>.tiff``.
 
     Args:
-        array (numpy.ndarray): Image data to save.
-        core_id (str): Core identifier.
-        channel (str): Channel name.
-        temp_dir (str): Base directory for temporary files.
+        array: Image data to save.
+        core_id: Core identifier.
+        channel: Channel name.
+        temp_dir: Base directory for temporary files.
     """
     core_path = os.path.join(temp_dir, core_id)
     os.makedirs(core_path, exist_ok=True)
@@ -48,14 +50,14 @@ def write_temp_tiff(array, core_id: str, channel: str, temp_dir: str):
 
 
 def read_ome_tiff(path: str, level_num: int = 0) -> tuple[da.Array, Any]:
-    """Load an OME-TIFF (flat or pyramidal) as a Dask array.
+    """Loads an OME-TIFF (flat or pyramidal) as a Dask array.
 
     Args:
-        path (str): Path to the TIFF file.
-        level_num (int, optional): Multiscale level to read. Defaults to 0 (highest res).
+        path: Path to the TIFF file.
+        level_num: Multiscale level to read. Defaults to 0 (highest resolution).
 
     Returns:
-        tuple[da.Array, Any]: The image array and the underlying store.
+        A tuple containing the image array and the underlying store.
     """
     with TiffFile(path) as tif:
 
@@ -76,13 +78,13 @@ def read_ome_tiff(path: str, level_num: int = 0) -> tuple[da.Array, Any]:
 
 
 def list_local_files(image_dir: str | Path) -> list[str]:
-    """List ``*.tif*`` files within a directory.
+    """Lists ``*.tif*`` files within a directory.
 
     Args:
-        image_dir (str | Path): Directory to search.
+        image_dir: Directory to search.
 
     Returns:
-        list[str]: Sorted list of matching file paths.
+        A list of matching file paths.
     """
     image_dir = Path(image_dir)  # Ensures uniform behavior
     return [str(p) for p in image_dir.glob("*.tif*")]

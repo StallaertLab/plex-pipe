@@ -5,7 +5,6 @@ from typing import Any, Literal
 import numpy as np
 from loguru import logger
 from pydantic import (
-    BaseModel,
     ConfigDict,
     Field,
 )
@@ -146,7 +145,7 @@ class Cellpose4Segmenter(BaseOp):
     EXPECTED_OUTPUTS = 1
     OUTPUT_TYPE = OutputType.LABELS
 
-    class Params(BaseModel):
+    class Params(ProcessorParamsBase):
         """Parameters for the Cellpose segmenter."""
 
         diameter: float | None = Field(

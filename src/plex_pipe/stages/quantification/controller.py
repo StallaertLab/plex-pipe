@@ -19,11 +19,8 @@ from plex_pipe.stages.quantification.qc_shape_masker import QcShapeMasker
 class QuantificationController:
     """Orchestrates quantification of data within a SpatialData object.
 
-    This class is designed as a stateless service object. It holds configuration
-    for a quantification task (e.g., which channels and masks to use) and
-    provides a `run` method to execute it. The `SpatialData` object is passed
-    directly to the `run` method, ensuring that the controller remains
-    stateless.
+    Designed as a stateless service, this class configures and executes a
+    quantification task, processing channels and masks from a SpatialData object.
     """
 
     def __init__(
@@ -41,15 +38,14 @@ class QuantificationController:
         """Initializes the QuantificationController.
 
         Args:
-            mask_keys: Maps a mask suffix to its ``sdata.labels`` key. e.g. {'cell': 'cell_mask', 'nuc': 'nucleus_mask'}. Assumes that labels of objects correspond between the masks,
-            e.g. if a single cell has the nucleus and the cytoplasm mask
-            their labels should be the same.
-            table_name: Name for the output AnnData table within the SpatialData object.
-            mask_to_annotate: Label key to which the resulting table should be connected.
+            mask_keys: Maps a mask suffix to its ``sdata.labels`` key (e.g.,
+                {'cell': 'cell_mask'}). Assumes object labels correspond across masks.
+            table_name: Name for the output AnnData table.
+            mask_to_annotate: Label key to connect the resulting table to.
             markers_to_quantify: List of markers/channels to quantify.
-            add_qc_masks: If True, runs quality control masking after quantification.
-            qc_prefix: Prefix for the quality control exclusion columns.
-            overwrite: If True, allows overwriting an existing table of the same name.
+            add_qc_masks: If True, runs QC masking after quantification.
+            qc_prefix: Prefix for QC exclusion columns.
+            overwrite: If True, allows overwriting an existing table.
             morphological_properties: List of morphological properties to compute.
             intensity_properties: List of intensity properties to compute.
         """
@@ -92,10 +88,10 @@ class QuantificationController:
         """Validates that required masks and channels exist in the SpatialData object.
 
         Args:
-            sdata: The SpatialData object being processed.
+            sdata: The SpatialData object to validate.
 
         Raises:
-            ValueError: If a specified mask or channel key is not found in `sdata`.
+            ValueError: If a specified mask or channel key is missing.
         """
 
         # validate masks to quantify are present
@@ -122,13 +118,13 @@ class QuantificationController:
             )
 
     def _prepare_to_overwrite(self, sdata: sd.SpatialData) -> None:
-        """Deletes an existing table from the SpatialData object if overwrite is enabled.
+        """Deletes an existing table if overwrite is enabled.
 
         Args:
-            sdata: The SpatialData object being processed.
+            sdata: The SpatialData object.
 
         Raises:
-            ValueError: If the table already exists and ``self.overwrite`` is False.
+            ValueError: If the table exists and ``overwrite`` is False.
         """
 
         if self.table_name in sdata:
@@ -147,27 +143,26 @@ class QuantificationController:
     ############################################################################
 
     def _get_mask(self, sdata: sd.SpatialData, mask_key: str) -> np.ndarray:
-        """Retrieves a single label mask from a SpatialData object.
+        """Retrieves a single label mask as a NumPy array.
 
         Args:
-            sdata: The SpatialData object being processed.
-            mask_key: The key identifying the labels layer in the SpatialData object.
+            sdata: The SpatialData object.
+            mask_key: Key identifying the labels layer.
 
         Returns:
-            The label mask as a NumPy array.
+            The label mask array.
         """
         mask = np.array(sd.get_pyramid_levels(sdata[mask_key], n=0)).squeeze()
         return mask
 
     def _get_masks_dictionary(self, sdata: sd.SpatialData) -> dict[str, np.ndarray]:
-        """Creates and returns a dictionary of label masks from a SpatialData object.
+        """Creates a dictionary of label masks from the SpatialData object.
 
         Args:
-            sdata: The SpatialData object being processed.
+            sdata: The SpatialData object.
 
         Returns:
-            A dictionary where keys are the mask suffixes (e.g., 'cell') and
-            values are the corresponding label masks as NumPy arrays.
+            Dictionary mapping mask suffixes to label mask arrays.
         """
         return {
             suffix: self._get_mask(sdata, mask_key)
@@ -179,20 +174,16 @@ class QuantificationController:
     ############################################################################
 
     def _build_obs(self, masks: dict[str, np.ndarray]) -> pd.DataFrame:
-        """Calculates morphological properties for objects in each loaded mask.
+        """Calculates morphological properties for objects in each mask.
 
-        This method computes morphological features and centroid for every
-        labeled object found in the masks. Column names for the calculated
-        properties are suffixed with the corresponding mask key. For example,
-        the 'area' column for a mask with key 'cell' becomes 'area_cell'.
+        Computes features and centroids. Column names are suffixed with the
+        corresponding mask key (e.g., 'area_cell').
 
         Args:
-            masks: A dictionary where keys are the mask suffixes (e.g., 'cell') and
-                values are the corresponding label masks as NumPy arrays.
+            masks: Dictionary mapping mask suffixes to label mask arrays.
 
         Returns:
-            A pandas DataFrame where rows represent objects and columns represent
-            the calculated morphological features with descriptive names.
+            DataFrame of morphological features indexed by label.
         """
 
         morph_dfs = []
@@ -222,19 +213,16 @@ class QuantificationController:
     def _find_ndims_columns(self, names: list[str]) -> dict[str, list[tuple[int, str]]]:
         """Identifies and groups columns representing multi-dimensional data.
 
-        This function uses a regex to find column names that follow a specific
-        pattern (e.g., 'property-dimension_index') and groups them by property.
-        It validates that dimension indices are unique for each property.
+        Finds columns matching the pattern 'property-dimension' (e.g., 'centroid-0').
 
         Args:
-            names: A list of column names to search through.
+            names: List of column names to search.
 
         Returns:
-            A dictionary where keys are base property names (e.g., 'centroid')
-            and values are lists of (dimension_index, column_name) tuples.
+            Dictionary mapping base property names to lists of (dim_index, col_name).
 
         Raises:
-            ValueError: If duplicate dimension indices are found for a property.
+            ValueError: If duplicate dimension indices are found.
         """
         _ndims_regex = re.compile(
             r"^(?P<base>[^-]+)-(?P<dim>\d+)(?P<suffix>.*)?$"
@@ -271,23 +259,14 @@ class QuantificationController:
     ) -> tuple[dict[str, np.ndarray], list[str]]:
         """Builds multi-dimensional annotation dictionary (`obsm`) from obs columns.
 
-        This method identifies columns in the observation DataFrame (`obs`) that
-        represent different dimensions of a single property (e.g., 'centroid-0',
-        'centroid-1'). It then stacks these columns into a single NumPy array
-        for each property and stores them in a dictionary, suitable for assignment
-        to an AnnData `obsm` attribute.
+        Stacks dimensional columns into NumPy arrays for assignment to AnnData `obsm`.
 
         Args:
-            obs: The observation DataFrame containing morphological properties.
-            ndims_buckets: A dictionary mapping property names to lists of their
-                corresponding dimensional column names.
+            obs: DataFrame containing morphological properties.
+            ndims_buckets: Mapping of property names to dimensional columns.
 
         Returns:
-            A tuple containing:
-                - obsm: A dictionary where keys are property names and values are
-                  NumPy arrays of the stacked dimensional data.
-                - cols_to_drop: A list of column names from `obs` that have been
-                  consolidated into `obsm`.
+            Tuple containing the `obsm` dictionary and a list of columns to drop from `obs`.
         """
         obsm = {}
         cols_to_drop: list[str] = []
@@ -311,23 +290,20 @@ class QuantificationController:
     ############################################################################
 
     def _get_channel(self, sdata: sd.SpatialData, channel_key: str) -> np.ndarray:
-        """Extracts a 2D image array for a single channel from a SpatialData object.
+        """Extracts a 2D image array for a single channel.
 
-        This method retrieves the highest resolution level of the specified channel,
-        squeezes it to remove singleton dimensions, and returns it as a NumPy array.
-        If the resulting image has three dimensions, a warning is logged
-        and the mean is computed across the leading axis to produce a 2D array.
-        4D images are not supported.
+        Retrieves the highest resolution level. If 3D, computes the mean across
+        the leading axis. 4D images are not supported.
 
         Args:
-            sdata: The SpatialData object containing the image data.
-            channel_key: The key identifying the channel to retrieve.
+            sdata: The SpatialData object.
+            channel_key: Key identifying the channel.
 
         Returns:
-            A 2D NumPy array representing the channel's image data.
+            2D NumPy array of the image data.
 
         Raises:
-            ValueError: If the channel has 4 dimensions.
+            ValueError: If the channel has 4 or more dimensions.
         """
 
         img = np.array(sd.get_pyramid_levels(sdata[channel_key], n=0)).squeeze()
@@ -350,23 +326,17 @@ class QuantificationController:
     def _build_signal_df(
         self, sdata: sd.SpatialData, masks: dict[str, np.ndarray]
     ) -> pd.DataFrame:
-        """Quantifies channel intensities for each object across all specified masks.
+        """Quantifies channel intensities for objects across all masks.
 
-        This method calculates the mean and median intensity for every object defined
-        in the label masks. It iterates through each channel in `self.channels` and
-        each mask in the `masks` dictionary. The results are compiled into a
-        single DataFrame, which serves as the basis for the `X` matrix and `var`
-        annotations in the final AnnData table.
+        Calculates configured intensity metrics (e.g., mean, median) for every
+        object in the label masks across specified channels.
 
         Args:
-            sdata: The SpatialData object containing the image data.
-            masks: A dictionary where keys are mask suffixes (e.g., 'cell') and
-                values are the corresponding label masks as NumPy arrays.
+            sdata: The SpatialData object.
+            masks: Dictionary mapping mask suffixes to label mask arrays.
 
         Returns:
-            A pandas DataFrame where each row corresponds to an object label and
-            each column represents a specific intensity measurement (e.g.,
-            'channel_mean_intensity_mask').
+            DataFrame of intensity measurements indexed by label.
         """
 
         quant_dfs = []
@@ -423,19 +393,16 @@ class QuantificationController:
     ############################################################################
 
     def _build_adata(self, sdata: sd.SpatialData) -> ad.AnnData:
-        """Builds a complete AnnData object from a SpatialData object.
+        """Builds a complete AnnData object from the SpatialData object.
 
-        This method orchestrates the quantification process by calling helper
-        methods to compute morphological properties, restructure multi-dimensional
-        columns, and calculate signal intensities. It assembles these components
-        into a single AnnData object.
+        Orchestrates the computation of morphological properties, multi-dimensional
+        columns, and signal intensities.
 
         Args:
-            sdata: The SpatialData object to process.
+            sdata: The SpatialData object.
 
         Returns:
-            An AnnData object containing the quantified data (X), with observations
-            (obs), variables (var), and multi-dimensional annotations (obsm).
+            The constructed AnnData object with obs, var, and obsm.
         """
 
         # create mask dictionary
@@ -484,7 +451,7 @@ class QuantificationController:
     def _connect_adata_to_mask(
         self, sdata: sd.SpatialData, adata: ad.AnnData
     ) -> sd.SpatialData:
-        """Connects the AnnData table to a mask (mask_to_annotate) within the  SpatialData object.
+        """Connects the AnnData table to a mask within the SpatialData object.
 
         Args:
             sdata: The SpatialData object.
@@ -551,7 +518,7 @@ class QuantificationController:
         self,
         sdata: sd.SpatialData,
     ) -> None:
-        """Executes the quantification pipeline on the provided SpatialData object.
+        """Executes the quantification pipeline.
 
         Args:
             sdata: The SpatialData object to process.

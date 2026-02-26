@@ -1,3 +1,4 @@
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -15,7 +16,7 @@ from plex_pipe.ops.object_segmenters import (
 
 
 @pytest.fixture
-def mock_instanseg_lib():
+def mock_instanseg_lib() -> Any:
     """Mocks the 'instanseg' library."""
     with patch.dict("sys.modules", {"instanseg": MagicMock()}):
         mock_model = MagicMock()
@@ -25,7 +26,7 @@ def mock_instanseg_lib():
 
 
 @pytest.fixture
-def mock_cellpose_lib():
+def mock_cellpose_lib() -> Any:
     """Mocks the 'cellpose' library robustly."""
     # 1. Create the class mock
     mock_cellpose_model_cls = MagicMock()
@@ -55,7 +56,7 @@ def mock_cellpose_lib():
 # --- Tests for InstansegSegmenter ---
 
 
-def test_instanseg_init(mock_instanseg_lib):
+def test_instanseg_init(mock_instanseg_lib: Any) -> None:
     """Verifies initialization parameters are passed to the model."""
     mock_cls, _ = mock_instanseg_lib
 
@@ -70,7 +71,7 @@ def test_instanseg_init(mock_instanseg_lib):
     assert segmenter.EXPECTED_OUTPUTS == 2
 
 
-def test_instanseg_input_shaping(mock_instanseg_lib):
+def test_instanseg_input_shaping(mock_instanseg_lib: Any) -> None:
     """
     Verifies that inputs are standardized to (H, W, C).
     """
@@ -96,7 +97,7 @@ def test_instanseg_input_shaping(mock_instanseg_lib):
     assert passed_image.shape == (10, 10, 2)
 
 
-def test_instanseg_run_single_channel(mock_instanseg_lib):
+def test_instanseg_run_single_channel(mock_instanseg_lib: Any) -> None:
     """
     Verifies single channel 2D input handling.
     """
@@ -121,7 +122,7 @@ def test_instanseg_run_single_channel(mock_instanseg_lib):
 # --- Tests for Cellpose4Segmenter ---
 
 
-def test_cellpose_init(mock_cellpose_lib):
+def test_cellpose_init(mock_cellpose_lib: Any) -> None:
     """Verifies model initialization."""
     mock_cls, _ = mock_cellpose_lib
 
@@ -131,7 +132,7 @@ def test_cellpose_init(mock_cellpose_lib):
     mock_cls.assert_called_with(gpu=True)
 
 
-def test_cellpose_input_shaping(mock_cellpose_lib):
+def test_cellpose_input_shaping(mock_cellpose_lib: Any) -> None:
     """
     Verifies input standardization for Cellpose.
     """
@@ -153,7 +154,7 @@ def test_cellpose_input_shaping(mock_cellpose_lib):
     assert passed_image.shape == (2, 10, 10)
 
 
-def test_cellpose_input_truncation(mock_cellpose_lib):
+def test_cellpose_input_truncation(mock_cellpose_lib: Any) -> None:
     """
     Verifies warning and truncation if >2 channels passed (Cellpose limitation).
     """
@@ -177,7 +178,7 @@ def test_cellpose_input_truncation(mock_cellpose_lib):
         assert args[0].shape == (2, 10, 10)
 
 
-def test_cellpose_invalid_input(mock_cellpose_lib):
+def test_cellpose_invalid_input(mock_cellpose_lib: Any) -> None:
     """Verifies error on non-2D inputs."""
     segmenter = Cellpose4Segmenter()
 
@@ -191,13 +192,13 @@ def test_cellpose_invalid_input(mock_cellpose_lib):
 # --- Tests for Configuration Validation ---
 
 
-def test_instanseg_extra_params():
+def test_instanseg_extra_params() -> None:
     """Verifies that passing unknown params raises ValidationError."""
     with pytest.raises(ValueError, match="Parameters for 'instanseg' are not correct"):
         InstansegSegmenter(unknown_param=123)
 
 
-def test_cellpose_params_passed(mock_cellpose_lib):
+def test_cellpose_params_passed(mock_cellpose_lib: Any) -> None:
     """Verifies that params like diameter/flow_threshold reach the eval call."""
     _, mock_model = mock_cellpose_lib
     segmenter = Cellpose4Segmenter(diameter=50, flow_threshold=0.8)

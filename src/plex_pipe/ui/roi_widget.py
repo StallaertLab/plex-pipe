@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Any
+
 import napari
 from qtpy.QtWidgets import (
     QGroupBox,
@@ -17,9 +20,25 @@ from plex_pipe.ui.viewer_utils import (
 
 
 class RoiWidget(QWidget):
+    """Widget for defining and saving Regions of Interest (ROIs)."""
+
     def __init__(
-        self, napari_viewer, im_list, im_level, save_path, org_im_shape
+        self,
+        napari_viewer: napari.Viewer,
+        im_list: list[Any],
+        im_level: int,
+        save_path: Path,
+        org_im_shape: tuple[int, int],
     ) -> None:
+        """Initializes the RoiWidget.
+
+        Args:
+            napari_viewer: The napari viewer instance.
+            im_list: List of image arrays (multiscale or single).
+            im_level: The resolution level index used for ROIs.
+            save_path: Path where ROIs should be saved.
+            org_im_shape: Original shape of the image (height, width).
+        """
         super().__init__()
         self.viewer = napari_viewer
         self.im_list = im_list
@@ -55,10 +74,16 @@ class RoiWidget(QWidget):
         self.add_layers()
 
     @classmethod
-    def from_config(cls, viewer, config):
+    def from_config(cls, viewer: napari.Viewer, config: Any) -> "RoiWidget":
+        """Creates an RoiWidget instance from a configuration object.
 
-        from pathlib import Path
+        Args:
+            viewer: The napari viewer instance.
+            config: Configuration object containing image and ROI settings.
 
+        Returns:
+            An instance of RoiWidget.
+        """
         from plex_pipe.image.utils import (
             get_all_resolutions,
             get_org_im_shape,
@@ -87,8 +112,8 @@ class RoiWidget(QWidget):
             org_im_shape=org_im_shape,
         )
 
-    def add_layers(self):
-
+    def add_layers(self) -> None:
+        """Adds the image and ROI layers to the viewer."""
         self.viewer.add_image(self.im_list, name="signal")
 
         # add a red rectangle to frame the image
@@ -113,6 +138,11 @@ class RoiWidget(QWidget):
         )
 
     def create_edge_width_layout(self) -> QHBoxLayout:
+        """Creates the layout for the edge width control.
+
+        Returns:
+            A QHBoxLayout containing the label and spinbox.
+        """
         layout = QHBoxLayout()
 
         self.label = QLabel("Edge Width")
@@ -130,7 +160,12 @@ class RoiWidget(QWidget):
 
         return layout
 
-    def _on_width_change(self, value):
+    def _on_width_change(self, value: int) -> None:
+        """Updates the edge width of shape layers when the spinbox changes.
+
+        Args:
+            value: The new edge width value.
+        """
         self.edge_width = value
 
         for layer in self.viewer.layers:
@@ -138,12 +173,14 @@ class RoiWidget(QWidget):
                 layer.edge_width = self.edge_width
                 layer.refresh()
 
-    def _on_display_clicked(self):
+    def _on_display_clicked(self) -> None:
+        """Reloads and displays saved ROIs from disk."""
         display_saved_rois(
             self.viewer, IM_LEVEL=self.im_level, save_path=self.save_path
         )
 
-    def _on_save_clicked(self):
+    def _on_save_clicked(self) -> None:
+        """Saves the current ROIs from the viewer to disk."""
         save_rois_from_viewer(
             self.viewer,
             org_im_shape=self.org_im_shape,

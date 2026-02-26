@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 import spatialdata as sd
@@ -56,8 +57,11 @@ class ResourceBuildingController:
         self.keep = keep
         self.overwrite = overwrite
 
-    def validate_elements_present(self, sdata):
+    def _validate_elements_present(self, sdata: sd.SpatialData) -> None:
         """Checks if all specified input elements exist in the sdata object.
+
+        Args:
+            sdata: The SpatialData object to check.
 
         Raises:
             ValueError: If an input element is not found.
@@ -66,8 +70,11 @@ class ResourceBuildingController:
             if src not in sdata:
                 raise ValueError(f"Requested source mask '{src}' not found.")
 
-    def validate_resolution_present(self, sdata):
+    def _validate_resolution_present(self, sdata: sd.SpatialData) -> None:
         """Checks if inputs have the required resolution level.
+
+        Args:
+            sdata: The SpatialData object to check.
 
         Raises:
             ValueError: If an input element does not have the specified
@@ -86,17 +93,24 @@ class ResourceBuildingController:
             f"All channels have required resolution level: {self.resolution_level}"
         )
 
-    def validate_sdata_as_input(self, sdata):
-        """Runs all input validation checks."""
+    def validate_sdata_as_input(self, sdata: sd.SpatialData) -> None:
+        """Runs all input validation checks.
 
-        self.validate_elements_present(sdata)
-        self.validate_resolution_present(sdata)
+        Args:
+            sdata: The SpatialData object to validate.
+        """
 
-    def prepare_to_overwrite(self, sdata):
+        self._validate_elements_present(sdata)
+        self._validate_resolution_present(sdata)
+
+    def _prepare_to_overwrite(self, sdata: sd.SpatialData) -> None:
         """Handles existing output elements based on the `overwrite` flag.
 
         If an output name already exists and `overwrite` is False, it raises
         an error. If `overwrite` is True, it deletes the existing element.
+
+        Args:
+            sdata: The SpatialData object to modify.
 
         Raises:
             ValueError: If an output element exists and `overwrite` is False.
@@ -120,7 +134,7 @@ class ResourceBuildingController:
                         sdata.delete_element_from_disk(out_name)
                         logger.info(f"Existing element '{out_name}' deleted from disk.")
 
-    def bring_to_max_resolution(self, el):
+    def _bring_to_max_resolution(self, el: np.ndarray) -> np.ndarray:
         """Upscales an element to the base resolution (level 0).
 
         Args:
@@ -142,14 +156,14 @@ class ResourceBuildingController:
 
         return el_res0
 
-    def pack_into_model(self, el):
+    def _pack_into_model(self, el: np.ndarray) -> Any:
         """Packs a numpy array into the appropriate SpatialData model.
 
         Args:
             el: The numpy array to pack.
 
         Returns:
-            An `Image2DModel` or `Labels2DModel` instance.
+            An `Image2DModel` or `Labels2DModel` parsed object.
         """
         if self.builder.OUTPUT_TYPE.value == "labels":
             el_model = Labels2DModel.parse(
@@ -169,8 +183,11 @@ class ResourceBuildingController:
 
         return el_model
 
-    def run(self, sdata):
-        """Executes the full pipeline for the processor. It starts with running validation of a compatibility of a processor with the sdata object to process.
+    def run(self, sdata: sd.SpatialData) -> sd.SpatialData:
+        """Executes the full pipeline for the processor.
+
+        Starts with running validation of a compatibility of a processor with the
+        sdata object to process.
 
         Args:
             sdata: The SpatialData object to process.
@@ -190,7 +207,7 @@ class ResourceBuildingController:
         self.validate_sdata_as_input(sdata)
 
         # Handle overwiting
-        self.prepare_to_overwrite(sdata)
+        self._prepare_to_overwrite(sdata)
 
         # Build
         data_sources = [
@@ -218,10 +235,10 @@ class ResourceBuildingController:
 
             # bring to max resolution level
             if self.resolution_level > 0:
-                el = self.bring_to_max_resolution(el)
+                el = self._bring_to_max_resolution(el)
 
             # pack into the data model
-            el_model = self.pack_into_model(el)
+            el_model = self._pack_into_model(el)
 
             # forced cleanup
             del el

@@ -29,16 +29,18 @@ class OutputType(str, Enum):
 
 
 class ProcessorParamsBase(BaseModel):
-    """
-    A base model for processor parameters that logs a warning for any
-    optional parameter that is not explicitly provided by the user.
-    """
+    """Base model for processor parameters that logs warnings for missing optional parameters."""
 
     @model_validator(mode="before")
     @classmethod
-    def _log_missing_optional_params(cls, data: dict) -> dict:
-        """
-        Checks for optional fields that are missing from the input data and logs a warning that their default value will be used.
+    def _log_missing_optional_params(cls, data: dict[str, Any]) -> dict[str, Any]:
+        """Checks for optional fields that are missing from the input data and logs a warning.
+
+        Args:
+            data: The input dictionary of parameters.
+
+        Returns:
+            The input dictionary.
         """
 
         for field_name, field_info in cls.model_fields.items():
@@ -85,7 +87,7 @@ class BaseOp(ABC):
 
     Params: type[BaseModel] = _NoParamsModel
 
-    def __init__(self, **cfg: Any):
+    def __init__(self, **cfg: Any) -> None:
         """Initialize the operation with keyword configuration.
 
         Args:
@@ -105,7 +107,11 @@ class BaseOp(ABC):
         self.validate_config()
 
     def validate_config(self) -> None:
-        """Validate configuration using the class's 'Params' model."""
+        """Validates configuration using the class's 'Params' model.
+
+        Raises:
+            ValueError: If the configuration is invalid according to the Params model.
+        """
         try:
             self.params = self.Params(**self.cfg)
         except ValidationError as e:

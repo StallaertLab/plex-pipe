@@ -3,11 +3,17 @@ from itertools import groupby
 import numpy as np
 import spatialdata as sd
 from loguru import logger
-from shapely import Point
+from shapely import Point, Polygon
 from shapely.strtree import STRtree
 
 
 class QcShapeMasker:
+    """Applies Quality Control (QC) masks based on spatial shapes.
+
+    This class identifies cells or objects that fall within specific exclusion
+    regions (defined as shapes in the SpatialData object) and marks them in the
+    AnnData table.
+    """
 
     def __init__(
         self,
@@ -15,8 +21,17 @@ class QcShapeMasker:
         qc_prefix: str = "qc_exclude",
         object_name: str | None = "cell",
         layer_name: str | None = "qc_mask",
-        write_to_disk=False,
+        write_to_disk: bool = False,
     ) -> None:
+        """Initializes the QcShapeMasker.
+
+        Args:
+            table_name: Name of the AnnData table in the SpatialData object.
+            qc_prefix: Prefix for the QC shape elements in SpatialData.
+            object_name: Suffix for the centroid column (e.g., 'cell' for 'centroid_cell').
+            layer_name: Name of the layer to add to the AnnData object.
+            write_to_disk: If True, saves the updated table to disk.
+        """
 
         self.table_name = table_name
         self.qc_prefix = qc_prefix
@@ -24,10 +39,18 @@ class QcShapeMasker:
         self.layer_name = layer_name
         self.write_to_disk = write_to_disk
 
-    def validate_sdata(self):
+    def validate_sdata(self, sdata: sd.SpatialData) -> None:
+        """Validates that the SpatialData object contains the required table and centroids.
+
+        Args:
+            sdata: The SpatialData object to validate.
+
+        Raises:
+            ValueError: If the table or centroids are missing.
+        """
 
         # check the table present in sdata
-        if self.table_name in self.sdata:
+        if self.table_name in sdata:
             logger.info(f"Table {self.table_name} present in the spatialdata object.")
         else:
             msg = f"Table {self.table_name} not present in the spatialdata object."
@@ -36,7 +59,7 @@ class QcShapeMasker:
 
         # check that the centroids of the selected object are present in obsm
         expected_name = f"centroid_{self.object_name}"
-        if expected_name in list(self.sdata[self.table_name].obsm.keys()):
+        if expected_name in list(sdata[self.table_name].obsm.keys()):
             logger.info(
                 f"Centroids: {expected_name} present in the anndata table {self.table_name}."
             )
@@ -45,19 +68,37 @@ class QcShapeMasker:
             logger.error(msg)
             raise ValueError(msg)
 
-    def rewrite_table(self):
+    def rewrite_table(self, sdata: sd.SpatialData) -> None:
+        """Overwrites the AnnData table on disk with the updated version.
+
+        Args:
+            sdata: The SpatialData object containing the table.
+
+        Raises:
+            Exception: If writing to disk fails.
+        """
 
         # it's not dask backed so standard overwrite should work
 
         try:
-            self.sdata.delete_element_from_disk(self.table_name)
-            self.sdata.write_element(self.table_name, overwrite=True)
-            logger.success(f"Table '{self.table_name}' written to {self.sdata.path}.")
+            sdata.delete_element_from_disk(self.table_name)
+            sdata.write_element(self.table_name, overwrite=True)
+            logger.success(f"Table '{self.table_name}' written to {sdata.path}.")
         except Exception as e:
             logger.error(f"Failed to write table '{self.table_name}': {e}")
             raise
 
-    def check_belonging(self, points, polys):
+    def check_belonging(self, points: list[Point], polys: list[Polygon]) -> np.ndarray:
+        """Checks which points are contained within any of the provided polygons.
+
+        Args:
+            points: A list of shapely Point objects.
+            polys: A list of shapely Polygon objects defining exclusion zones.
+
+        Returns:
+            A boolean numpy array where False indicates the point is inside a polygon
+            (excluded) and True indicates it is outside (kept).
+        """
 
         # Build spatial index over polygons
         tree = STRtree(polys)
@@ -89,20 +130,30 @@ class QcShapeMasker:
 
         return mask
 
-    def build_qc_mask(self):
+    def build_qc_mask(self, sdata: sd.SpatialData) -> np.ndarray:
+        """Constructs the QC mask for the entire AnnData table.
+
+        Iterates through markers/channels in the table, looks for corresponding
+        QC shapes (e.g., 'qc_exclude_DAPI'), and creates a boolean mask where
+        False indicates exclusion.
+
+        Args:
+            sdata: The SpatialData object.
+
+        Returns:
+            A boolean numpy array of shape (n_obs, n_vars).
+        """
 
         coords = np.asarray(
-            self.sdata[self.table_name].obsm[f"centroid_{self.object_name}"],
+            sdata[self.table_name].obsm[f"centroid_{self.object_name}"],
             dtype=float,
         )
         coords = coords[:, ::-1]  # swap to match Interactive
         points = [Point(xy) for xy in coords]
 
-        mask = np.ones(self.sdata[self.table_name].X.shape, dtype="bool")
+        mask = np.ones(sdata[self.table_name].X.shape, dtype="bool")
 
-        markers = [
-            x.split("_")[0] for x in self.sdata[self.table_name].var.index.tolist()
-        ]
+        markers = [x.split("_")[0] for x in sdata[self.table_name].var.index.tolist()]
 
         found_any_qc = False
         # group by marker
@@ -112,14 +163,14 @@ class QcShapeMasker:
             start, end = cols[0], cols[-1] + 1
 
             shapes_key = f"{self.qc_prefix}_{marker}"
-            if shapes_key not in self.sdata:
+            if shapes_key not in sdata:
                 # no QC shapes for this marker
                 logger.debug(
                     f"No QC shapes found for marker '{marker}' (key: {shapes_key})."
                 )
                 continue
 
-            shapes_gdf = self.sdata[shapes_key]
+            shapes_gdf = sdata[shapes_key]
             polys = list(shapes_gdf.geometry.values)
             if not polys:
                 logger.debug(
@@ -145,22 +196,22 @@ class QcShapeMasker:
 
         return mask
 
-    def run(
-        self,
-        sdata: sd.SpatialData,
-    ) -> None:
+    def run(self, sdata: sd.SpatialData) -> None:
+        """Executes the QC masking process.
 
-        self.sdata = sdata
+        Args:
+            sdata: The SpatialData object to process.
+        """
 
         # validate input
-        self.validate_sdata()
+        self.validate_sdata(sdata)
 
         # add qc_mask
-        mask = self.build_qc_mask()
+        mask = self.build_qc_mask(sdata)
 
         # add mask to anndata
-        self.sdata[self.table_name].layers[self.layer_name] = mask
+        sdata[self.table_name].layers[self.layer_name] = mask
 
         # save to disk if requested
         if self.write_to_disk:
-            self.rewrite_table()
+            self.rewrite_table(sdata)

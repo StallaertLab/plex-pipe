@@ -1,6 +1,6 @@
 # API Reference
 
-This section contains the reference documentation for the elements important for the user.
+This section contains the reference documentation for the controllers of the pipeline steps.
 
 ---
 
@@ -8,9 +8,11 @@ This section contains the reference documentation for the elements important for
 
 ---
 
+::: plex_pipe.stages.resource_building.controller
+
 
 ---
 
-
+::: plex_pipe.stages.quantification.controller
 
 ---

@@ -38,8 +38,15 @@ class Normalize(BaseOp):
         )
 
         @model_validator(mode="after")
-        def check_low_less_than_high(self):
-            """Ensures the lower bound is strictly less than the upper bound."""
+        def check_low_less_than_high(self) -> Normalize.Params:
+            """Ensures the lower bound is strictly less than the upper bound.
+
+            Returns:
+                The validated parameters object.
+
+            Raises:
+                ValueError: If low is greater than or equal to high.
+            """
             if self.low >= self.high:
                 raise ValueError(
                     f"'low' ({self.low}) must be less than 'high' ({self.high})."
@@ -47,7 +54,19 @@ class Normalize(BaseOp):
 
             return self
 
-    def run(self, img):
+    def run(self, img: np.ndarray) -> np.ndarray:
+        """Performs percentile-based normalization on the image.
+
+        Args:
+            img: Input image array.
+
+        Returns:
+            The normalized image array (float32), clipped to [0, 1].
+
+        Raises:
+            TypeError: If the input is not array-like.
+            ValueError: If percentiles result in a zero or invalid range.
+        """
         # Must be array-like
         if not hasattr(img, "__array__"):
             raise TypeError(
@@ -98,7 +117,18 @@ class DenoiseWithMedian(BaseOp):
             description="The radius of the disk-shaped kernel for the median filter.",
         )
 
-    def run(self, img):
+    def run(self, img: np.ndarray) -> np.ndarray:
+        """Applies a median filter to the image.
+
+        Args:
+            img: Input image array.
+
+        Returns:
+            The denoised image array.
+
+        Raises:
+            TypeError: If the input is not array-like.
+        """
         # Must be array-like
         if not hasattr(img, "__array__"):
             raise TypeError(
@@ -122,8 +152,19 @@ class MeanOfImages(BaseOp):
     EXPECTED_OUTPUTS = 1
     OUTPUT_TYPE = OutputType.IMAGE  # produces a single averaged image
 
-    def run(self, *images):
-        """Compute elementwise mean over all provided images."""
+    def run(self, *images: np.ndarray) -> np.ndarray:
+        """Computes the element-wise mean of multiple image arrays.
+
+        Args:
+            *images: Variable number of input image arrays.
+
+        Returns:
+            The mean image array (float32).
+
+        Raises:
+            ValueError: If no images are provided, if inputs are scalars, or if shapes mismatch.
+            TypeError: If inputs are not array-like.
+        """
 
         # --- validation ---
         if len(images) == 0:

@@ -52,6 +52,7 @@ plugins:
   - search
   - macros
   - mkdocstrings:
+      default_handler: python
       handlers:
         python:
           paths: [src]

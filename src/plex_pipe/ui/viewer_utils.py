@@ -1,6 +1,7 @@
 """Napari viewer helpers for displaying and saving ROI layers."""
 
 from pathlib import Path
+from typing import Any
 
 import napari
 from qtpy.QtWidgets import QFileDialog
@@ -12,18 +13,20 @@ from plex_pipe.stages.roi_definition.roi_utils import (
 )
 
 
-def redo_cores_layer(viewer, data=None, edge_width=2, shape_type="polygon"):
-    """Create or replace the ``cores`` layer in a viewer.
+def redo_cores_layer(
+    viewer: napari.Viewer,
+    data: list[Any] | None = None,
+    edge_width: int = 2,
+    shape_type: str | list[str] = "polygon",
+) -> None:
+    """Creates or replaces the ``ROIs`` layer in a viewer.
 
     Args:
-        viewer (napari.Viewer): Viewer instance to update.
-        data (list, optional): Vertices describing the shapes. Defaults to ``[]``.
-        shape_type (str, optional): Napari shape type. Defaults to ``"polygon"``.
-
-    Returns:
-        None
+        viewer: Viewer instance to update.
+        data: Vertices describing the shapes. Defaults to None.
+        edge_width: Width of the shape edges. Defaults to 2.
+        shape_type: Napari shape type(s). Defaults to "polygon".
     """
-
     if "ROIs" in viewer.layers:
         viewer.layers.remove("ROIs")
 
@@ -47,19 +50,14 @@ def redo_bbox_layer(
     text: list[str] | None = None,
     edge_width: int = 2,
 ) -> None:
-    """Create or replace the ``bounding_boxes`` layer in a viewer.
+    """Creates or replaces the ``bounding_boxes`` layer in a viewer.
 
     Args:
-        viewer (napari.Viewer): Viewer instance to update.
-        data (list[list[float]], optional): Rectangle coordinates.
-            Defaults to an empty list.
-        text (list[str], optional): Labels shown next to rectangles.
-            Defaults to an empty list.
-
-    Returns:
-        None
+        viewer: Viewer instance to update.
+        data: Rectangle coordinates. Defaults to None.
+        text: Labels shown next to rectangles. Defaults to None.
+        edge_width: Width of the shape edges. Defaults to 2.
     """
-
     if "bounding_boxes" in viewer.layers:
         viewer.layers.remove("bounding_boxes")
 
@@ -84,16 +82,19 @@ def redo_bbox_layer(
     viewer.layers["bounding_boxes"].editable = False
 
 
-def display_saved_rois(viewer, IM_LEVEL, edge_width=2, save_path=None):
-    """Load ROI annotations from disk and show them in the viewer.
+def display_saved_rois(
+    viewer: napari.Viewer,
+    IM_LEVEL: int,
+    save_path: Path,
+    edge_width: int = 2,
+) -> None:
+    """Loads ROI annotations from disk and shows them in the viewer.
 
     Args:
-        viewer (napari.Viewer): Viewer instance where layers are added.
-        IM_LEVEL (int): Image pyramid level used when the ROIs were saved.
-        save_path (str, optional): File path of the saved ROIs. Defaults to ``None``.
-
-    Returns:
-        None
+        viewer: Viewer instance where layers are added.
+        IM_LEVEL: Image pyramid level used when the ROIs were saved.
+        edge_width: Width of the shape edges. Defaults to 2.
+        save_path: File path of the saved ROIs. Defaults to None.
     """
     rect_list, poly_list, df = read_in_saved_rois(save_path, IM_LEVEL=IM_LEVEL)
 
@@ -109,19 +110,20 @@ def display_saved_rois(viewer, IM_LEVEL, edge_width=2, save_path=None):
     redo_cores_layer(viewer, poly_list, edge_width=edge_width, shape_type=shape_types)
 
 
-def save_rois_from_viewer(viewer, org_im_shape, req_level, save_path=None):
-    """Save ROIs drawn in the viewer to disk and update the displayed layers.
+def save_rois_from_viewer(
+    viewer: napari.Viewer,
+    org_im_shape: tuple[int, int],
+    req_level: int,
+    save_path: str | Path | None = None,
+) -> None:
+    """Saves ROIs drawn in the viewer to disk and updates the displayed layers.
 
     Args:
-        viewer (napari.Viewer): Viewer containing a ``cores`` shapes layer.
-        org_im_shape (tuple[int, int]): Shape of the original image.
-        req_level (int): Resolution level at which the ROIs are defined.
-        save_path (str, optional): Destination CSV file path. Defaults to ``None``.
-
-    Returns:
-        None
+        viewer: Viewer containing a ``ROIs`` shapes layer.
+        org_im_shape: Shape of the original image (height, width).
+        req_level: Resolution level at which the ROIs are defined.
+        save_path: Destination file path. Defaults to None.
     """
-
     if "ROIs" in viewer.layers:
 
         # get the saving path if not provided

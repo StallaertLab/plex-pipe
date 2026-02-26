@@ -32,7 +32,19 @@ class SubtractionBuilder(BaseOp):
     EXPECTED_OUTPUTS = 1
     OUTPUT_TYPE = OutputType.LABELS
 
-    def run(self, mask_cell, mask_nucleus):
+    def run(self, mask_cell: np.ndarray, mask_nucleus: np.ndarray) -> np.ndarray:
+        """Subtracts the nucleus mask from the cell mask.
+
+        Args:
+            mask_cell: The mask representing the whole cell.
+            mask_nucleus: The mask representing the nucleus.
+
+        Returns:
+            The resulting mask with the nucleus region zeroed out.
+
+        Raises:
+            ValueError: If the input masks have different shapes.
+        """
         if mask_cell.shape != mask_nucleus.shape:
             raise ValueError("Source masks must have the same shape for subtraction.")
         result = mask_cell.copy()
@@ -52,7 +64,19 @@ class MultiplicationBuilder(BaseOp):
     EXPECTED_OUTPUTS = 1
     OUTPUT_TYPE = OutputType.LABELS
 
-    def run(self, mask1, mask2):
+    def run(self, mask1: np.ndarray, mask2: np.ndarray) -> np.ndarray:
+        """Multiplies two masks element-wise (intersection).
+
+        Args:
+            mask1: The first input mask.
+            mask2: The second input mask.
+
+        Returns:
+            The intersection of the two masks.
+
+        Raises:
+            ValueError: If the input masks have different shapes.
+        """
         if mask1.shape != mask2.shape:
             raise ValueError("Source masks must have the same shape.")
         result = mask1 * mask2
@@ -106,15 +130,30 @@ class RingBuilder(BaseOp):
         )
 
         @model_validator(mode="after")
-        def check_radii_are_valid(self):
-            """Ensures the outer radius is strictly greater than the inner radius."""
+        def check_radii_are_valid(self) -> RingBuilder.Params:
+            """Ensures the outer radius is strictly greater than the inner radius.
+
+            Returns:
+                The validated parameters object.
+
+            Raises:
+                ValueError: If rad_bigger is not strictly greater than rad_smaller.
+            """
             if self.rad_bigger <= self.rad_smaller:
                 raise ValueError(
                     f"outer radius ({self.rad_bigger}) must be strictly greater than inner radius ({self.rad_smaller})"
                 )
             return self
 
-    def run(self, mask):
+    def run(self, mask: np.ndarray) -> np.ndarray:
+        """Generates a ring mask based on the configured radii.
+
+        Args:
+            mask: The input label mask.
+
+        Returns:
+            The generated ring mask.
+        """
         r_large = self.params.rad_bigger
         r_small = self.params.rad_smaller
 
@@ -127,13 +166,14 @@ class RingBuilder(BaseOp):
             # distance_transform_edt calculates distance to the nearest 0 (the boundaries)
             dist_map = ndi.distance_transform_edt(~boundaries)
 
-        def get_bound(radius):
+        def get_bound(radius: int) -> np.ndarray:
             if radius == 0:
                 return mask.copy()
             elif radius > 0:
                 return expand_labels(mask, radius)
             else:
                 # Mask pixels that are too close to ANY boundary (including neighbor labels)
+                assert dist_map is not None  # because mypy is stupid
                 return np.where(dist_map >= abs(radius), mask, 0)
 
         mask_larger = get_bound(r_large)
@@ -198,8 +238,15 @@ class BlobBuilder(BaseOp):
                 )
             return v
 
-    def run(self, source):
+    def run(self, source: np.ndarray) -> np.ndarray:
+        """Generates a blob mask from the input source.
 
+        Args:
+            source: The input image or mask.
+
+        Returns:
+            The generated binary blob mask (as int).
+        """
         orig_shape = source.shape
         binary_mask = source > 0
 

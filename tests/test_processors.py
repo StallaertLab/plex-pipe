@@ -70,7 +70,7 @@ def test_validate_elements_missing(controller, mock_sdata):
     """Verifies error raised when input element is missing from sdata."""
     # sdata is empty
     with pytest.raises(ValueError, match="Requested source mask 'input_img' not found"):
-        controller.validate_elements_present(mock_sdata)
+        controller._validate_elements_present(mock_sdata)
 
 
 def test_validate_resolution_missing(controller, mock_sdata):
@@ -82,7 +82,7 @@ def test_validate_resolution_missing(controller, mock_sdata):
     mock_sdata._elements["input_img"] = mock_element
 
     with pytest.raises(ValueError, match="does not have resolution level 1"):
-        controller.validate_resolution_present(mock_sdata)
+        controller._validate_resolution_present(mock_sdata)
 
 
 # --- Tests for Overwrite Logic ---
@@ -94,7 +94,7 @@ def test_prepare_to_overwrite_error(controller, mock_sdata):
     mock_sdata._elements["output_label"] = "existing_data"
 
     with pytest.raises(ValueError, match="already exists"):
-        controller.prepare_to_overwrite(mock_sdata)
+        controller._prepare_to_overwrite(mock_sdata)
 
 
 def test_prepare_to_overwrite_success(mock_sdata):
@@ -106,7 +106,7 @@ def test_prepare_to_overwrite_success(mock_sdata):
     mock_sdata._elements["out"] = "existing_data"
     mock_sdata.elements_paths_on_disk.return_value = ["path/to/out"]
 
-    controller.prepare_to_overwrite(mock_sdata)
+    controller._prepare_to_overwrite(mock_sdata)
 
     # Should be removed from sdata dict
     assert "out" not in mock_sdata._elements
@@ -126,7 +126,7 @@ def test_bring_to_max_resolution(controller):
     # 10x10 input
     small_arr = np.zeros((10, 10))
 
-    upscaled = controller.bring_to_max_resolution(small_arr)
+    upscaled = controller._bring_to_max_resolution(small_arr)
 
     # Should be 20x20
     assert upscaled.shape == (20, 20)
@@ -138,7 +138,7 @@ def test_pack_into_model_labels(MockLabelsModel, controller):
     controller.builder.OUTPUT_TYPE.value = "labels"
     data = np.zeros((100, 100))
 
-    controller.pack_into_model(data)
+    controller._pack_into_model(data)
 
     MockLabelsModel.parse.assert_called_once()
     # Check dims argument
@@ -152,7 +152,7 @@ def test_pack_into_model_image(MockImageModel, controller):
     controller.builder.OUTPUT_TYPE.value = "image"
     data = np.zeros((100, 100))
 
-    controller.pack_into_model(data)
+    controller._pack_into_model(data)
 
     MockImageModel.parse.assert_called_once()
     # Check that data was expanded to have 'c' dim: data[None]

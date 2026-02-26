@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Literal
 
@@ -34,7 +35,7 @@ REGISTRY: dict[Kind, dict[str, RegistryEntry]] = {
 }
 
 
-def register(kind: Kind, name: str):
+def register(kind: Kind, name: str) -> Callable[[type[BaseOp]], type[BaseOp]]:
     """Registers a processor class under a specific kind and name.
 
     Args:

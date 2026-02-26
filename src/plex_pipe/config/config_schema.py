@@ -30,6 +30,8 @@ from loguru import logger
 
 
 class GeneralSettings(BaseModel):
+    """Configuration for general analysis settings."""
+
     image_dir: str
     analysis_name: str
     analysis_dir: str
@@ -37,12 +39,16 @@ class GeneralSettings(BaseModel):
 
 
 class RoiDefinitionSettings(BaseModel):
+    """Configuration for ROI definition."""
+
     detection_image: str
     roi_info_file_path: str | None = None
     im_level: float | None = None
 
 
 class RoiCuttingSettings(BaseModel):
+    """Configuration for ROI cutting and processing."""
+
     roi_dir_tif: str | None = None
     roi_dir_output: str | None = None
     include_channels: list[str] = Field(default_factory=list)
@@ -56,6 +62,8 @@ class RoiCuttingSettings(BaseModel):
 
 
 class QcSettings(BaseModel):
+    """Configuration for Quality Control settings."""
+
     prefix: str
 
 
@@ -73,6 +81,8 @@ DEFAULT_intensity_properties = ["mean", "median"]
 
 
 class QuantTask(BaseModel):
+    """Configuration for a quantification task."""
+
     name: str
     masks: dict[str, str]
     layer_connection: str | None = None
@@ -84,12 +94,22 @@ class QuantTask(BaseModel):
     @field_validator("morphological_properties")
     @classmethod
     def ensure_label_in_features(cls, v: list[str]) -> list[str]:
+        """Ensures that 'label' is included in morphological properties.
+
+        Args:
+            v: List of morphological properties.
+
+        Returns:
+            The list with 'label' included.
+        """
         if "label" not in v:
             v.append("label")
         return v
 
 
 class StorageSettings(BaseModel):
+    """Configuration for storage settings."""
+
     chunk_size: list[int] | None = [1, 512, 512]
     max_pyramid_level: int | None = 4
     downscale: int | None = 2
@@ -99,6 +119,8 @@ class StorageSettings(BaseModel):
 # Pipeline Step Models (for 'additional_elements')
 ###################################################################
 class BaseStep(BaseModel):
+    """Base configuration for a pipeline step."""
+
     category: Kind
     type: str
     input: str | list[str]
@@ -107,7 +129,11 @@ class BaseStep(BaseModel):
 
 
 def create_step_models() -> list[type[BaseModel]]:
-    """Dynamically creates Pydantic models for each registered processor."""
+    """Dynamically creates Pydantic models for each registered processor.
+
+    Returns:
+        A list of dynamically created Pydantic models representing pipeline steps.
+    """
     all_step_models = []
     for kind, processors in REGISTRY.items():
         for name, entry in processors.items():
@@ -160,8 +186,10 @@ class AnalysisConfig(BaseModel):
 
     @model_validator(mode="after")
     def _resolve_paths(self) -> AnalysisConfig:
-        """
-        This validator resolves paths and sets defaults.
+        """Resolves paths and sets default values based on the analysis directory.
+
+        Returns:
+            The updated configuration object with resolved paths.
         """
         base_dir_str = self.general.analysis_dir
         analysis_dir = Path(base_dir_str) / self.general.analysis_name
@@ -196,12 +224,14 @@ class AnalysisConfig(BaseModel):
         return self
 
     def validate_pipeline(self, sdata: SpatialData) -> None:
-        """
-        Validates the pipeline's data flow against a SpatialData object.
+        """Validates the pipeline's data flow against a SpatialData object.
 
         This method checks that for every step:
         1. All required inputs exist.
         2. Inputs can be from the initial SpatialData object or outputs of prior steps.
+
+        Args:
+            sdata: The SpatialData object to validate against.
 
         Raises:
             ValueError: If an input is not found at any stage.

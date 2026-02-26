@@ -18,7 +18,11 @@ from plex_pipe.stages.quantification.metrics import METRIC_REGISTRY
 
 
 def generate_processors_docs() -> str:
-    """Generates Markdown documentation for all registered processors."""
+    """Generates Markdown documentation for all registered processors.
+
+    Returns:
+        A string containing the generated Markdown documentation.
+    """
 
     output = ["# Available Processors"]
     output.append(
@@ -109,7 +113,11 @@ def generate_processors_docs() -> str:
 
 
 def generate_metrics_docs() -> str:
-    """Generates a Markdown table for the quantification metrics."""
+    """Generates a Markdown table for the quantification metrics.
+
+    Returns:
+        A string containing the generated Markdown table.
+    """
     output = [""]
     output.append("| Feature Name | Source / Implementation | Description |")
     output.append("| :--- | :--- | :--- |")
@@ -132,8 +140,15 @@ def generate_metrics_docs() -> str:
 
 def update_file_with_markers(
     file_path: Path, content: str, start_marker: str, end_marker: str
-):
-    """Replaces content between markers or appends it if markers are missing."""
+) -> None:
+    """Replaces content between markers in a file, or appends it if markers are missing.
+
+    Args:
+        file_path: Path to the file to update.
+        content: The new content to insert.
+        start_marker: The start marker string.
+        end_marker: The end marker string.
+    """
     if not file_path.exists():
         print(f"Warning: {file_path} not found. Skipping update.")
         return
@@ -159,6 +174,7 @@ def update_file_with_markers(
 
 
 def main() -> None:
+    """Main entry point for generating documentation."""
     docs_dir = Path(__file__).parents[3] / "docs"
 
     # Lazy Update for Processors

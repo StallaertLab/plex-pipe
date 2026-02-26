@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -126,7 +127,9 @@ def test_display_saved_rois_found(
     rect_list, poly_list, df = mock_roi_data
     mock_read.return_value = (rect_list, poly_list, df)
 
-    viewer_utils.display_saved_rois(mock_viewer, IM_LEVEL=0, save_path="dummy.csv")
+    viewer_utils.display_saved_rois(
+        mock_viewer, IM_LEVEL=0, save_path=Path("dummy.csv")
+    )
 
     mock_redo_bbox.assert_called_once_with(
         mock_viewer, rect_list, edge_width=2, text=df["roi_name"].tolist()
@@ -145,7 +148,9 @@ def test_display_saved_rois_empty(mock_read, mock_viewer):
     # Return empty lists
     mock_read.return_value = ([], [], None)
 
-    viewer_utils.display_saved_rois(mock_viewer, IM_LEVEL=0)
+    viewer_utils.display_saved_rois(
+        mock_viewer, IM_LEVEL=0, save_path=Path("dummy.pkl")
+    )
 
     mock_viewer.add_shapes.assert_called_with(
         [],
