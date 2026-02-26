@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from plex_pipe.core_cutting.cutter import CoreCutter
+from plex_pipe.stages.roi_preparation.cutter import CoreCutter
 
 # --- Fixtures ---
 

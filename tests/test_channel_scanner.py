@@ -1,5 +1,5 @@
-import plex_pipe.core_cutting.channel_scanner as channel_scanner
-from plex_pipe.core_cutting.channel_scanner import (
+import plex_pipe.stages.roi_preparation.channel_scanner as channel_scanner
+from plex_pipe.stages.roi_preparation.channel_scanner import (
     scan_channels_from_list,
 )
 

@@ -1,10 +1,10 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import numpy as np
 import pytest
 
 # Import module under test
-import plex_pipe.utils.im_utils as im_utils
+import plex_pipe.image.utils as utils
 
 # --- Fixtures ---
 
@@ -27,24 +27,7 @@ def mock_zarr_structure():
     }
 
 
-@patch("plex_pipe.utils.im_utils.imread")
-@patch("plex_pipe.utils.im_utils.zarr.open")
-def test_get_zarr_levels_num(mock_zarr_open, mock_imread, mock_zarr_structure):
-    """
-    Verifies it correctly counts the number of resolution levels in OME-Zarr metadata.
-    """
-    # Setup mock Zarr group
-    mock_group = MagicMock()
-    mock_group.attrs.asdict.return_value = mock_zarr_structure
-    mock_zarr_open.return_value = mock_group
-
-    count = im_utils.get_zarr_levels_num("test.zarr")
-
-    # We defined 3 datasets in the fixture
-    assert count == 3
-
-
-@patch("plex_pipe.utils.im_utils.get_small_image")
+@patch("plex_pipe.image.utils.get_small_image")
 def test_prepare_rgb_image_math(mock_get_small):
     """
     Verifies the math of contrast stretching and RGB conversion.
@@ -57,7 +40,7 @@ def test_prepare_rgb_image_math(mock_get_small):
 
     # Request normalization with explicit intensity limits
     # Pixels < 10 become 0, Pixels > 90 become 255.
-    rgb = im_utils.prepare_rgb_image("dummy", int_min=10, int_max=90)
+    rgb = utils.prepare_rgb_image("dummy", int_min=10, int_max=90)
 
     # 1. Check Output Shape: Must be (H, W, 3)
     assert rgb.shape == (10, 10, 3)

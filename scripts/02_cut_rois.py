@@ -5,15 +5,15 @@ from datetime import datetime
 import pandas as pd
 from loguru import logger
 
-from plex_pipe.core_cutting.controller import (
+from plex_pipe.config.config_loaders import load_config
+from plex_pipe.io.globus import GlobusConfig
+from plex_pipe.stages.roi_preparation.controller import (
     RoiPreparationController,
 )
-from plex_pipe.core_cutting.input_strategy import (
+from plex_pipe.stages.roi_preparation.file_strategy import (
     GlobusFileStrategy,
     LocalFileStrategy,
 )
-from plex_pipe.utils.config_loaders import load_config
-from plex_pipe.utils.globus_utils import GlobusConfig
 
 
 def configure_logging(config):

@@ -1,5 +1,5 @@
-from plex_pipe.utils.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config
 
-from . import processors
+from . import ops
 
-__all__ = ["processors", "load_config"]
+__all__ = ["ops", "load_config"]

@@ -58,6 +58,7 @@ plugins:
           options:
             show_root_toc_entry: false
             merge_init_into_class: true
+            members_order: source
             show_source: false
             filters:
               - "!^_"              # hide private members

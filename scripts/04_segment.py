@@ -6,9 +6,11 @@ from datetime import datetime
 import spatialdata as sd
 from loguru import logger
 
-from plex_pipe.processors import build_processor
-from plex_pipe.processors.controller import ResourceBuildingController
-from plex_pipe.utils.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config
+from plex_pipe.ops import build_processor
+from plex_pipe.stages.resource_building.controller import (
+    ResourceBuildingController,
+)
 
 
 def configure_logging(settings):

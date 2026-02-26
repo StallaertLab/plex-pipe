@@ -1,6 +1,6 @@
 import pytest
 
-import plex_pipe.utils.config_loaders as config_loaders
+import plex_pipe.config.config_loaders as config_loaders
 
 
 @pytest.fixture

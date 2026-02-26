@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 
 # Import module under test
-import plex_pipe.core_definition.roi_utils as roi_utils
+import plex_pipe.stages.roi_definition.roi_utils as roi_utils
 
 # --- Fixtures ---
 

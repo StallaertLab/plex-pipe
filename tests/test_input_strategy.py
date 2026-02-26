@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from globus_sdk import GlobusAPIError
 
-from plex_pipe.core_cutting.input_strategy import (
+from plex_pipe.stages.roi_preparation.file_strategy import (
     GlobusFileStrategy,
     LocalFileStrategy,
 )
@@ -27,15 +27,21 @@ def mock_config():
 
 @pytest.fixture
 def mock_discover_channels():
-    with patch("plex_pipe.core_cutting.input_strategy.discover_channels") as mock:
+    with patch(
+        "plex_pipe.stages.roi_preparation.file_strategy.discover_channels"
+    ) as mock:
         yield mock
 
 
 @pytest.fixture
 def mock_globus_utils():
     with (
-        patch("plex_pipe.core_cutting.input_strategy.create_globus_tc") as mock_tc,
-        patch("plex_pipe.core_cutting.input_strategy.GlobusConfig") as mock_gc_cls,
+        patch(
+            "plex_pipe.stages.roi_preparation.file_strategy.create_globus_tc"
+        ) as mock_tc,
+        patch(
+            "plex_pipe.stages.roi_preparation.file_strategy.GlobusConfig"
+        ) as mock_gc_cls,
     ):
         yield mock_tc, mock_gc_cls
 

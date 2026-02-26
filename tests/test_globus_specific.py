@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from plex_pipe.utils.globus_utils import (
+from plex_pipe.io.globus import (
     GlobusConfig,
     GlobusEndpoint,
     list_globus_tifs,
@@ -104,7 +104,7 @@ def test_globus_config_missing_key(mock_yaml_config):
 # --- 3. Testing Globus SDK Integration (Mocked) ---
 
 
-@patch("plex_pipe.utils.globus_utils.create_globus_tc")
+@patch("plex_pipe.io.globus.create_globus_tc")
 def test_list_globus_tifs(mock_create_tc, mock_yaml_config):
     # Setup Mock TransferClient
     mock_tc = MagicMock()

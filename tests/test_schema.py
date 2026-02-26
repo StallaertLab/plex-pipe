@@ -44,7 +44,7 @@ def test_resolves_paths_and_defaults():
     Verifies the 'after' model_validator computes derived paths and defaults
     (critical for reproducible file layout).
     """
-    from plex_pipe.utils.config_schema import AnalysisConfig
+    from plex_pipe.config.config_schema import AnalysisConfig
 
     cfg = base_cfg()
     model = AnalysisConfig.model_validate(cfg)
@@ -63,7 +63,7 @@ def test_validate_pipeline_detects_missing_inputs():
     Validates that pipeline steps cannot consume non-existent layers; this
     fails fast before running operations, preventing wasted computation.
     """
-    from plex_pipe.utils.config_schema import AnalysisConfig
+    from plex_pipe.config.config_schema import AnalysisConfig
 
     # Stub with minimal interface used by validate_pipeline()
     class SDataStub:

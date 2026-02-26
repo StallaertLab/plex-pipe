@@ -4,6 +4,13 @@ This section contains the reference documentation for the elements important for
 
 ---
 
-::: plex_pipe.core_cutting.controller
+::: plex_pipe.stages.roi_preparation.controller
+
+---
+
+
+---
+
+
 
 ---

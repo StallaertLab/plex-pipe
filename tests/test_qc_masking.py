@@ -7,7 +7,7 @@ from anndata import AnnData
 from shapely.geometry import Point, Polygon
 
 # Import the class under test
-from plex_pipe.object_quantification.qc_shape_masker import QcShapeMasker
+from plex_pipe.stages.quantification.qc_shape_masker import QcShapeMasker
 
 # --- Fixtures ---
 

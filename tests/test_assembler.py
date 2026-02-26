@@ -6,7 +6,7 @@ import pytest
 import spatialdata as sd
 import tifffile
 
-from plex_pipe.core_cutting.assembler import CoreAssembler
+from plex_pipe.stages.roi_preparation.assembler import CoreAssembler
 
 
 def _write_tiff(path: Path, shape=(8, 8), dtype=np.uint16, value=1):

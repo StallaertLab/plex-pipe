@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 import spatialdata as sd
 
-from plex_pipe.object_quantification.controller import QuantificationController
+from plex_pipe.stages.quantification.controller import QuantificationController
 
 
 @pytest.fixture(scope="session")
@@ -160,7 +160,7 @@ def test_run_logs_error_on_write_failure(sdata_read):
     )
 
     with patch(
-        "plex_pipe.object_quantification.controller.logger.error"
+        "plex_pipe.stages.quantification.controller.logger.error"
     ) as mock_logger_error:
         with patch.object(
             sdata, "write_element", side_effect=Exception("Disk is full")
@@ -183,7 +183,7 @@ def test_find_ndims_columns_raises_on_duplicates():
     with pytest.raises(
         ValueError, match="Duplicate dimension indices found for 'prop'"
     ):
-        qc.find_ndims_columns(list(obs.columns))
+        qc._find_ndims_columns(list(obs.columns))
 
 
 def test_quantify_all_channels_if_none_specified(sdata_read):
@@ -227,10 +227,10 @@ def test_get_channel_handles_3d_input_with_warning(sdata_read):
     three_d_image = rng.random((3, 10, 10))
 
     with patch(
-        "plex_pipe.object_quantification.controller.logger.warning"
+        "plex_pipe.stages.quantification.controller.logger.warning"
     ) as mock_logger_warning:
         with patch("spatialdata.get_pyramid_levels", return_value=three_d_image):
-            result = qc.get_channel(sdata, channel_key)
+            result = qc._get_channel(sdata, channel_key)
 
             # Check that the result is 2D
             assert result.ndim == 2
@@ -258,14 +258,14 @@ def test_get_channel_raises_on_unsupported_dims(sdata_read):
     four_d_image = rng.random((3, 10, 10, 10))
     with patch("spatialdata.get_pyramid_levels", return_value=four_d_image):
         with pytest.raises(ValueError, match="not supported"):
-            qc.get_channel(sdata, channel_key)
+            qc._get_channel(sdata, channel_key)
 
     # Test with 1D
     rng = np.random.default_rng()
     one_d_image = rng.random(10)
     with patch("spatialdata.get_pyramid_levels", return_value=one_d_image):
         with pytest.raises(ValueError, match="not supported"):
-            qc.get_channel(sdata, channel_key)
+            qc._get_channel(sdata, channel_key)
 
 
 def test_get_channel_handles_2d_input_and_logs(sdata_read):
@@ -280,10 +280,10 @@ def test_get_channel_handles_2d_input_and_logs(sdata_read):
     two_d_image = rng.random((10, 10))
 
     with patch(
-        "plex_pipe.object_quantification.controller.logger.info"
+        "plex_pipe.stages.quantification.controller.logger.info"
     ) as mock_logger_info:
         with patch("spatialdata.get_pyramid_levels", return_value=two_d_image):
-            result = qc.get_channel(sdata, channel_key)
+            result = qc._get_channel(sdata, channel_key)
 
             assert result.ndim == 2
             assert result.shape == (10, 10)
@@ -307,7 +307,7 @@ def test_get_channel_squeezes_singleton_dimensions(sdata_read):
     squeezable_image = rng.random((1, 10, 1, 10))
 
     with patch("spatialdata.get_pyramid_levels", return_value=squeezable_image):
-        result = qc.get_channel(sdata, channel_key)
+        result = qc._get_channel(sdata, channel_key)
 
         # Should be squeezed to 2D
         assert result.ndim == 2
@@ -324,7 +324,7 @@ def test_run_calls_qc_masker_if_enabled(sdata_read):
     new_table = "qc_test_table"
 
     with patch(
-        "plex_pipe.object_quantification.controller.QcShapeMasker"
+        "plex_pipe.stages.quantification.controller.QcShapeMasker"
     ) as mock_qc_masker:
         qc = QuantificationController(
             mask_keys={"cell": mask_key},
@@ -354,7 +354,7 @@ def test_run_does_not_call_qc_masker_if_disabled(sdata_read):
     new_table = "no_qc_test_table"
 
     with patch(
-        "plex_pipe.object_quantification.controller.QcShapeMasker"
+        "plex_pipe.stages.quantification.controller.QcShapeMasker"
     ) as mock_qc_masker:
         qc = QuantificationController(
             mask_keys={"cell": mask_key},

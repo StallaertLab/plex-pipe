@@ -2,7 +2,7 @@
 import pytest
 from pydantic import ConfigDict
 
-from plex_pipe.processors.base import BaseOp, OutputType, ProcessorParamsBase
+from plex_pipe.ops.base import BaseOp, OutputType, ProcessorParamsBase
 
 
 # Test helper: minimal correct class

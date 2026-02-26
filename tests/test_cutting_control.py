@@ -5,10 +5,12 @@ import pandas as pd
 import pytest
 
 # Import module under test
-from plex_pipe.core_cutting.controller import (
+from plex_pipe.stages.roi_preparation.controller import (
     RoiPreparationController as controller,
 )
-from plex_pipe.core_cutting.input_strategy import FileAvailabilityStrategy
+from plex_pipe.stages.roi_preparation.file_strategy import (
+    FileAvailabilityStrategy,
+)
 
 # --- Fixtures ---
 
@@ -32,11 +34,15 @@ def mock_dependencies():
     Mocks Cutter, Assembler, and File Strategy.
     """
     with (
-        patch("plex_pipe.core_cutting.controller.CoreCutter") as MockCutter,
-        patch("plex_pipe.core_cutting.controller.CoreAssembler") as MockAssembler,
-        patch("plex_pipe.core_cutting.controller.read_ome_tiff") as mock_read,
-        patch("plex_pipe.core_cutting.controller.write_temp_tiff") as mock_write,
-        patch("plex_pipe.core_cutting.controller.os.makedirs"),
+        patch("plex_pipe.stages.roi_preparation.controller.CoreCutter") as MockCutter,
+        patch(
+            "plex_pipe.stages.roi_preparation.controller.CoreAssembler"
+        ) as MockAssembler,
+        patch("plex_pipe.stages.roi_preparation.controller.read_ome_tiff") as mock_read,
+        patch(
+            "plex_pipe.stages.roi_preparation.controller.write_temp_tiff"
+        ) as mock_write,
+        patch("plex_pipe.stages.roi_preparation.controller.os.makedirs"),
     ):
 
         # Setup specific mock behaviors

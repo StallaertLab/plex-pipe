@@ -6,7 +6,7 @@ import pytest
 # Import module under test
 # We assume the registry decorator logic works or is tested elsewhere,
 # so we import the classes directly.
-from plex_pipe.processors.object_segmenters import (
+from plex_pipe.ops.object_segmenters import (
     Cellpose4Segmenter,
     InstansegSegmenter,
 )
@@ -164,7 +164,7 @@ def test_cellpose_input_truncation(mock_cellpose_lib):
     # Pass 3 images
     in1 = np.zeros((10, 10))
 
-    with patch("plex_pipe.processors.object_segmenters.logger") as mock_logger:
+    with patch("plex_pipe.ops.object_segmenters.logger") as mock_logger:
         segmenter.run(in1, in1, in1)
 
         # Should warn

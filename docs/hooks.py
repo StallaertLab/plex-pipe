@@ -9,7 +9,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 def on_pre_build(config, **kwargs):  # noqa: ARG001
     """Generate the processors documentation before the build starts."""
-    from plex_pipe.utils.docs_generator import main as generate_docs
+    from plex_pipe._dev_tools.docs_generator import main as generate_docs
 
     print("Running dynamic docs generators...")
     generate_docs()

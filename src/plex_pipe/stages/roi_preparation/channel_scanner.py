@@ -1,0 +1,178 @@
+import os
+import re
+from collections.abc import Sequence
+
+from loguru import logger
+
+from plex_pipe.io.filesystem import list_local_files
+from plex_pipe.io.globus import (
+    GlobusConfig,
+    list_globus_tifs,
+)
+
+
+def scan_channels_from_list(
+    files: Sequence[str],
+    include_channels: list[str] | None = None,
+    exclude_channels: list[str] | None = None,
+    use_markers: list[str] | None = None,
+    ignore_markers: list[str] | None = None,
+) -> dict[str, str]:
+    """Build a channel map from a list of file paths.
+
+    This function contains the core selection logic (marker parsing, round handling,
+    and filtering). By default it selects the latest round for
+    each marker (from available channels), with a preference for round 001 for DAPI.
+
+    Args:
+        files: List of file paths to process.
+        include_channels: Specific channel names to include, bypassing selection.
+        exclude_channels: Specific channel names to exclude.
+        use_markers: List of marker names to keep.
+        ignore_markers: List of marker names to discard.
+
+    Returns:
+        Dictionary mapping marker names to file paths.
+
+    Raises:
+        ValueError: If no valid OME-TIFF files are found.
+    """
+
+    include_channels = include_channels or []
+    exclude_channels = exclude_channels or []
+    use_markers = use_markers or []
+    ignore_markers = ignore_markers or []
+
+    image_dict: dict[str, str] = {}
+
+    for filepath in files:
+        fname = os.path.basename(filepath)
+
+        match = re.match(r"[^_]+_(\d+)\.0\.4_R000_([^_]+)_(.*)\.tif{1,2}", fname)
+        if not match:
+            continue
+
+        round_num_str, dye_or_marker, _ = match.groups()
+        round_num = int(round_num_str)
+
+        if "DAPI" in dye_or_marker.upper():
+            marker = "DAPI"
+        else:
+            parts = fname.split("_")
+
+            h_parts = parts[4].split("-")
+            marker = "-".join(h_parts[:-1]) if len(h_parts) > 1 else h_parts[0]
+
+        channel_name = f"{round_num:03d}_{marker}"
+        image_dict[channel_name] = filepath
+
+    # sort the discovered channels
+    image_dict = dict(sorted(image_dict.items()))
+
+    if not image_dict:
+        msg = f"No valid .0.4 TIF(F) files found in {files}"
+        raise ValueError(msg)
+
+    logger.info(f"Discovered {len(image_dict)} channels:")
+    for key, val in image_dict.items():
+        logger.info(f"{key} <- {val}")
+
+    grouped: dict[str, list[tuple[int, str]]] = {}
+    for ch in image_dict:
+        if "_" not in ch:
+            continue
+        round_prefix, base = ch.split("_", 1)
+        grouped.setdefault(base, []).append((int(round_prefix), ch))
+
+    result: dict[str, str] = {}
+
+    for base, items in grouped.items():
+        items.sort()
+
+        included = [name for _, name in items if name in include_channels]
+        if included:
+            for name in included:
+                result[base] = image_dict[name]
+            continue
+
+        items = [(r, name) for r, name in items if name not in exclude_channels]
+        if not items:
+            continue
+
+        if base.upper() == "DAPI":
+            preferred = [name for _, name in items if name == "001_DAPI"]
+            if preferred:
+                result["DAPI"] = image_dict[preferred[0]]
+        else:
+            _, name = items[-1]
+            result[base] = image_dict[name]
+
+    # Apply filters on markers
+    if use_markers:
+        for m in use_markers:
+            if m not in result:
+                logger.warning(f"Requested use_marker '{m}' not found.")
+
+        result = {base: path for base, path in result.items() if base in use_markers}
+        logger.info(f"Restricting to use_markers = {use_markers}")
+        logger.info(f"Final filtered channels: {list(result.keys())}")
+
+    if ignore_markers:
+        for m in ignore_markers:
+            if m not in result:
+                logger.warning(f"Requested ignore_marker '{m}' not found.")
+
+        result = {
+            base: path for base, path in result.items() if base not in ignore_markers
+        }
+        logger.info(f"Ignoring markers = {ignore_markers}")
+        logger.info(f"Final filtered channels: {list(result.keys())}")
+
+    # Gather a list of unused channels
+    unused = {k: v for k, v in image_dict.items() if v not in result.values()}
+
+    # Final report
+    logger.info(f"Final selected channels {len(result)}:")
+    for ch in sorted(result, key=str.casefold):
+        logger.info(f"  Channel: {ch} <- {result[ch]}")
+
+    logger.info(f"OME-TIFF files not used in final channel selection {len(unused)}:")
+    for ch, file in sorted(unused.items()):
+        logger.info(f"  Unused: Channel {ch} <- {file}")
+
+    return result
+
+
+def discover_channels(
+    image_dir_or_path: str,
+    include_channels: list[str] | None = None,
+    exclude_channels: list[str] | None = None,
+    use_markers: list[str] | None = None,
+    ignore_markers: list[str] | None = None,
+    gc: GlobusConfig | None = None,
+) -> dict[str, str]:
+    """Creates a channel map from local or Globus storage.
+
+    This is a convenience wrapper: it obtains a list of candidate OME-TIFF files
+    (locally from `image_dir_or_path`, or remotely via Globus when `gc` is provided),
+    then delegates marker/round selection to :func:`scan_channels_from_list`.
+
+    Args:
+        image_dir_or_path: Local directory path or Globus path to scan.
+        include_channels: Specific channel names to include.
+        exclude_channels: Specific channel names to exclude.
+        use_markers: List of marker names to keep.
+        ignore_markers: List of marker names to discard.
+        gc: Globus configuration. If provided, scans via Globus API.
+
+    Returns:
+        Dictionary mapping marker names to file paths.
+    """
+    if gc is not None:
+        files = list_globus_tifs(gc, image_dir_or_path)
+    else:
+        files = list_local_files(image_dir_or_path)
+
+    return scan_channels_from_list(
+        files, include_channels, exclude_channels, use_markers, ignore_markers
+    )

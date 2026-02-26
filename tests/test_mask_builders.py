@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 # Import module under test
-from plex_pipe.processors.mask_builders import (
+from plex_pipe.ops.mask_builders import (
     BlobBuilder,
     MultiplicationBuilder,
     RingBuilder,
@@ -165,9 +165,9 @@ def test_blob_builder_params():
     assert builder.params.work_shape == (100, 100)
 
 
-@patch("plex_pipe.processors.mask_builders.resize")
-@patch("plex_pipe.processors.mask_builders.opening")
-@patch("plex_pipe.processors.mask_builders.closing")
+@patch("plex_pipe.ops.mask_builders.resize")
+@patch("plex_pipe.ops.mask_builders.opening")
+@patch("plex_pipe.ops.mask_builders.closing")
 def test_blob_builder_workflow(mock_closing, mock_opening, mock_resize):
     """
     Verifies the pipeline sequence:

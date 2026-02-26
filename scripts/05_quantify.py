@@ -6,8 +6,8 @@ from datetime import datetime
 import spatialdata as sd
 from loguru import logger
 
-from plex_pipe.object_quantification.controller import QuantificationController
-from plex_pipe.utils.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config
+from plex_pipe.stages.quantification.controller import QuantificationController
 
 
 def configure_logging(settings):
