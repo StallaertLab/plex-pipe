@@ -75,7 +75,7 @@ gui = [
     "napari>=0.6.6",
     "napari-spatialdata>0.5.7",
 ]
-all-default = [
+all = [
     "plex_pipe[jupyter,globus,gui,segmentation-default]"
 ]
 all-cuda = [
@@ -101,7 +101,7 @@ dev = [
 # Full dev env on a machine without an NVIDIA GPU (Mac, laptop, CI): uv sync --group all-dev-default
 all-dev-default = [
     { include-group = "dev" },
-    "plex_pipe[all-default]",
+    "plex_pipe[all]",
 ]
 # Full dev env on an NVIDIA/CUDA machine (HPC, Windows GPU box): uv sync --group all-dev-cuda
 all-dev-cuda = [
