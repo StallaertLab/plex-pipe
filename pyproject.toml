@@ -32,22 +32,21 @@ classifiers = [
 dependencies = [
     "anndata>=0.11.4",
     "dask[array]>=2024.4",
-    "imagecodecs>=2024.9.22",
+    "imagecodecs>=2024.6.1",
     "loguru>=0.7.3",
-    "numpy>2.0",
-    "opencv-python>=4.11",
-    "pandas>=2.3.0",
+    "numpy>=2.0",
+    "opencv-python>=4.9",
+    "pandas>=2.1",
     "pydantic>=2.7.6",
     "pyyaml>=6.0.2",
-    "scikit-image>=0.25.2",
-    "scipy>=1.15.3",
-    "shapely>=2.1.1",
+    "scikit-image>=0.24",
+    "scipy>=1.11",
+    "shapely>=2.0",
     "spatialdata>0.7",
-    "tifffile>=2025.1.10",
+    "tifffile>=2024.7.2",
     "zarr>3.0",
     "fsspec>=2024.6.1",
     "dearrayer>=0.1.0",
-    "ipykernel>=6.31.0",
 ]
 
 [project.optional-dependencies]
@@ -61,7 +60,6 @@ globus = [
 segmentation-cpu= [
     "torch",
     "torchvision",
-    "scanpy",
     "cellpose>=4.0",
     "instanseg-torch>=0.0.9",
 ]
@@ -73,7 +71,7 @@ segmentation-gpu= [
 ]
 gui = [
     "qtpy>=2.4.0",
-    "PyQt5>=5.15.2",
+    "PySide6>=6.7",
     "napari>=0.6.6",
     "napari-spatialdata>0.5.7",
 ]
@@ -106,22 +104,36 @@ all-dev-gpu = [
 # =============================================================================
 
 [tool.uv]
-override-dependencies = [
-    "PyQt5==5.15.10",
-    "PyQt5-Qt5==5.15.2"
+# segmentation-cpu and segmentation-gpu install different torch builds, so they
+# must never resolve together. Declaring them conflicting lets uv resolve a
+# separate torch for each instead of collapsing to one (CUDA) build.
+conflicts = [
+    [{ extra = "segmentation-cpu" }, { extra = "segmentation-gpu" }],
 ]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [[tool.uv.index]]
 name = "pytorch-gpu"
 url = "https://download.pytorch.org/whl/cu126"
 explicit = true
 
+# torch / torchvision source routing:
+#   - GPU extra on Linux/Windows -> CUDA (cu126) wheels
+#   - CPU extra on Linux/Windows -> CPU-only wheels
+#   - macOS (any) -> falls through to default PyPI (arm64 CPU/MPS build);
+#     CUDA does not exist on Apple Silicon, so no pytorch index applies there.
 [tool.uv.sources]
 torch = [
-  { index = "pytorch-gpu", marker = "extra == 'segmentation-gpu'" },
+  { index = "pytorch-gpu", extra = "segmentation-gpu", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cpu", extra = "segmentation-cpu", marker = "sys_platform != 'darwin'" },
 ]
 torchvision = [
-  { index = "pytorch-gpu", marker = "extra == 'segmentation-gpu'" },
+  { index = "pytorch-gpu", extra = "segmentation-gpu", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cpu", extra = "segmentation-cpu", marker = "sys_platform != 'darwin'" },
 ]
 
 # =============================================================================
