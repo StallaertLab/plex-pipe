@@ -170,7 +170,7 @@ class ResourceBuildingController:
                 data=el.astype(np.int32),
                 dims=("y", "x"),
                 scale_factors=[self.downscale] * (self.pyramid_levels - 1),
-                chunks=self.chunk_size[1:],
+                chunks=tuple(self.chunk_size[1:]),
             )
         elif self.builder.OUTPUT_TYPE.value == "image":
 
@@ -178,7 +178,7 @@ class ResourceBuildingController:
                 data=el[None],
                 dims=("c", "y", "x"),
                 scale_factors=[self.downscale] * (self.pyramid_levels - 1),
-                chunks=self.chunk_size,
+                chunks=tuple(self.chunk_size),
             )
 
         return el_model
