@@ -57,13 +57,7 @@ jupyter = [
 globus = [
     "globus-sdk>= 3.59.0",
 ]
-segmentation-default = [
-    "torch",
-    "torchvision",
-    "cellpose>=4.0",
-    "instanseg-torch>=0.0.9",
-]
-segmentation-cuda = [
+segmentation = [
     "torch",
     "torchvision",
     "cellpose>=4.0",
@@ -76,10 +70,15 @@ gui = [
     "napari-spatialdata>0.5.7",
 ]
 all = [
-    "plex_pipe[jupyter,globus,gui,segmentation-default]"
+    "plex_pipe[jupyter,globus,gui,segmentation]"
 ]
+# Same as `all`, but torch/torchvision are listed DIRECTLY so [tool.uv.sources]
+# can route them to the CUDA index (uv only honours `extra =` routing for
+# packages that are direct members of the extra). Dev-only; not for PyPI users.
 all-cuda = [
-    "plex_pipe[jupyter,globus,gui,segmentation-cuda]"
+    "torch",
+    "torchvision",
+    "plex_pipe[jupyter,globus,gui,segmentation]"
 ]
 
 [dependency-groups]
@@ -98,54 +97,34 @@ dev = [
     "mypy>=1.19.1",
     "types-pyyaml>=6.0.12.20250915",
 ]
-# Full dev env on a machine without an NVIDIA GPU (Mac, laptop, CI): uv sync --group all-dev-default
-all-dev-default = [
-    { include-group = "dev" },
-    "plex_pipe[all]",
-]
-# Full dev env on an NVIDIA/CUDA machine (HPC, Windows GPU box): uv sync --group all-dev-cuda
-all-dev-cuda = [
-    { include-group = "dev" },
-    "plex_pipe[all-cuda]",
-]
 
 # =============================================================================
 # UV CONFIGURATION
 # =============================================================================
 
 [tool.uv]
-# segmentation-default (standard PyTorch build) and segmentation-cuda (CUDA build)
-# install different torch wheels, so they must never resolve together. Declaring
-# them conflicting lets uv resolve a separate torch for each instead of
-# collapsing to one build.
+# `all` (platform-default torch) and `all-cuda` (CUDA torch) install different
+# torch builds, so they must never resolve together. The conflict lets uv keep a
+# separate torch for each instead of collapsing everything onto the CUDA build
+# (which would break macOS, where no cu126 wheel exists).
 conflicts = [
-    [{ extra = "segmentation-default" }, { extra = "segmentation-cuda" }],
+    [{ extra = "all" }, { extra = "all-cuda" }],
 ]
-
-[[tool.uv.index]]
-name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-explicit = true
 
 [[tool.uv.index]]
 name = "pytorch-cuda"
 url = "https://download.pytorch.org/whl/cu126"
 explicit = true
 
-# torch / torchvision source routing:
-#   - cuda extra on Linux/Windows    -> CUDA (cu126) wheels
-#   - default extra on Linux/Windows -> CPU-only wheels
-#   - macOS (any)                    -> falls through to plain PyPI (arm64
-#     CPU + MPS build); CUDA does not exist on Apple Silicon, so no pytorch
-#     index applies there.
+# Route torch/torchvision to the CUDA (cu126) index ONLY for `all-cuda`, and never
+# on macOS (no CUDA on Apple Silicon). `all` is deliberately NOT routed — it takes
+# plain PyPI torch: CUDA on Linux, CPU on Windows, CPU+MPS on macOS.
 [tool.uv.sources]
 torch = [
-  { index = "pytorch-cuda", extra = "segmentation-cuda", marker = "sys_platform != 'darwin'" },
-  { index = "pytorch-cpu", extra = "segmentation-default", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cuda", extra = "all-cuda", marker = "sys_platform != 'darwin'" },
 ]
 torchvision = [
-  { index = "pytorch-cuda", extra = "segmentation-cuda", marker = "sys_platform != 'darwin'" },
-  { index = "pytorch-cpu", extra = "segmentation-default", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cuda", extra = "all-cuda", marker = "sys_platform != 'darwin'" },
 ]
 
 # =============================================================================
