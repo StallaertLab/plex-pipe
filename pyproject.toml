@@ -57,13 +57,13 @@ jupyter = [
 globus = [
     "globus-sdk>= 3.59.0",
 ]
-segmentation-cpu= [
+segmentation-default = [
     "torch",
     "torchvision",
     "cellpose>=4.0",
     "instanseg-torch>=0.0.9",
 ]
-segmentation-gpu= [
+segmentation-cuda = [
     "torch",
     "torchvision",
     "cellpose>=4.0",
@@ -75,15 +75,16 @@ gui = [
     "napari>=0.6.6",
     "napari-spatialdata>0.5.7",
 ]
-all-cpu = [
-    "plex_pipe[jupyter,globus,gui,segmentation-cpu]"
+all-default = [
+    "plex_pipe[jupyter,globus,gui,segmentation-default]"
 ]
-all-gpu = [
-    "plex_pipe[jupyter,globus,gui,segmentation-gpu]"
+all-cuda = [
+    "plex_pipe[jupyter,globus,gui,segmentation-cuda]"
 ]
 
 [dependency-groups]
-all-dev-gpu = [
+# Shared dev tooling (no torch/project extras here so it stays platform-neutral).
+dev = [
     "black>=23.3.0",
     "ruff>=0.0.241",
     "tox>=4.12.0",
@@ -92,11 +93,20 @@ all-dev-gpu = [
     "mkdocs>=1.5.0",
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
-    "pre-commit>=3.6.0",
-    "plex_pipe[all-gpu]",
     "mkdocs-macros-plugin>=1.5.0",
+    "pre-commit>=3.6.0",
     "mypy>=1.19.1",
     "types-pyyaml>=6.0.12.20250915",
+]
+# Full dev env on a machine without an NVIDIA GPU (Mac, laptop, CI): uv sync --group all-dev-default
+all-dev-default = [
+    { include-group = "dev" },
+    "plex_pipe[all-default]",
+]
+# Full dev env on an NVIDIA/CUDA machine (HPC, Windows GPU box): uv sync --group all-dev-cuda
+all-dev-cuda = [
+    { include-group = "dev" },
+    "plex_pipe[all-cuda]",
 ]
 
 # =============================================================================
@@ -104,11 +114,12 @@ all-dev-gpu = [
 # =============================================================================
 
 [tool.uv]
-# segmentation-cpu and segmentation-gpu install different torch builds, so they
-# must never resolve together. Declaring them conflicting lets uv resolve a
-# separate torch for each instead of collapsing to one (CUDA) build.
+# segmentation-default (standard PyTorch build) and segmentation-cuda (CUDA build)
+# install different torch wheels, so they must never resolve together. Declaring
+# them conflicting lets uv resolve a separate torch for each instead of
+# collapsing to one build.
 conflicts = [
-    [{ extra = "segmentation-cpu" }, { extra = "segmentation-gpu" }],
+    [{ extra = "segmentation-default" }, { extra = "segmentation-cuda" }],
 ]
 
 [[tool.uv.index]]
@@ -117,23 +128,24 @@ url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
 [[tool.uv.index]]
-name = "pytorch-gpu"
+name = "pytorch-cuda"
 url = "https://download.pytorch.org/whl/cu126"
 explicit = true
 
 # torch / torchvision source routing:
-#   - GPU extra on Linux/Windows -> CUDA (cu126) wheels
-#   - CPU extra on Linux/Windows -> CPU-only wheels
-#   - macOS (any) -> falls through to default PyPI (arm64 CPU/MPS build);
-#     CUDA does not exist on Apple Silicon, so no pytorch index applies there.
+#   - cuda extra on Linux/Windows    -> CUDA (cu126) wheels
+#   - default extra on Linux/Windows -> CPU-only wheels
+#   - macOS (any)                    -> falls through to plain PyPI (arm64
+#     CPU + MPS build); CUDA does not exist on Apple Silicon, so no pytorch
+#     index applies there.
 [tool.uv.sources]
 torch = [
-  { index = "pytorch-gpu", extra = "segmentation-gpu", marker = "sys_platform != 'darwin'" },
-  { index = "pytorch-cpu", extra = "segmentation-cpu", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cuda", extra = "segmentation-cuda", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cpu", extra = "segmentation-default", marker = "sys_platform != 'darwin'" },
 ]
 torchvision = [
-  { index = "pytorch-gpu", extra = "segmentation-gpu", marker = "sys_platform != 'darwin'" },
-  { index = "pytorch-cpu", extra = "segmentation-cpu", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cuda", extra = "segmentation-cuda", marker = "sys_platform != 'darwin'" },
+  { index = "pytorch-cpu", extra = "segmentation-default", marker = "sys_platform != 'darwin'" },
 ]
 
 # =============================================================================

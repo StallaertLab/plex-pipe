@@ -13,11 +13,11 @@ Use this if you want to import `plex-pipe` into your own scripts.
 # Create a virtual environment
 uv venv --python 3.12
 
-# Install for CPU-only
-uv pip install "plex_pipe[all-cpu] @ git+https://github.com/StallaertLab/plex-pipe.git"
+# Default build (CPU on all platforms; Apple Silicon also gets Metal/MPS GPU)
+uv pip install "plex_pipe[all-default] @ git+https://github.com/StallaertLab/plex-pipe.git"
 
-# OR: Install with GPU support (requires CUDA 12.6 compatible drivers)
-uv pip install "plex_pipe[all-gpu] @ git+https://github.com/StallaertLab/plex-pipe.git"
+# OR: CUDA build for NVIDIA GPUs (requires CUDA 12.6 compatible drivers)
+uv pip install "plex_pipe[all-cuda] @ git+https://github.com/StallaertLab/plex-pipe.git"
 ```
 
 ---
@@ -31,11 +31,11 @@ git clone https://github.com/StallaertLab/plex-pipe.git
 cd plex-pipe
 # Build the environment based on your hardware:
 
-# For CPU-only:
-uv sync --extra all-cpu
+# Default build (CPU on all platforms; Apple Silicon also gets Metal/MPS GPU):
+uv sync --extra all-default
 
-# OR: Install with GPU support (requires CUDA 12.6 compatible drivers)
-uv sync --extra all-gpu
+# OR: CUDA build for NVIDIA GPUs (requires CUDA 12.6 compatible drivers):
+uv sync --extra all-cuda
 ```
 
 !!! note Windows Encoding Fix
