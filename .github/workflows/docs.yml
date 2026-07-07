@@ -36,7 +36,7 @@ jobs:
         run: git fetch origin gh-pages --depth=1 || true
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v8
+        uses: astral-sh/setup-uv@v8.1.0
 
       # Core package + docs toolchain only (no extras); enough to build the API docs.
       - name: Install docs dependencies
