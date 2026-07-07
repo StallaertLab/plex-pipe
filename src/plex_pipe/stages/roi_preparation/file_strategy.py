@@ -3,11 +3,11 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterator, Mapping
 from pathlib import Path
 
-from globus_sdk import (
-    GlobusAPIError,
-    TransferData,
-)
 from loguru import logger
+
+# NOTE: `globus_sdk` (the `globus` extra) is imported lazily inside the methods
+# that use it, so `import plex_pipe` — and `LocalFileStrategy` — work without the
+# extra installed. Only `GlobusFileStrategy`'s transfer methods need it.
 
 from plex_pipe.config.config_schema import AnalysisConfig
 from plex_pipe.io.globus import (
@@ -114,6 +114,7 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
         Raises:
             RuntimeError: If the Globus API submission fails.
         """
+        from globus_sdk import GlobusAPIError, TransferData
 
         channels = list(self.transfer_map.items())
 
@@ -150,6 +151,8 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
         Raises:
             GlobusAPIError: If a non-retryable Globus API error occurs.
         """
+        from globus_sdk import GlobusAPIError
+
         remaining_channels = set(self.channel_map.keys())
         self.yielded_channels = set()
 

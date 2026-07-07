@@ -82,21 +82,27 @@ all-cuda = [
 ]
 
 [dependency-groups]
+# Documentation toolchain only. Kept as its own group so the docs CI can install
+# JUST these (+ the core package) — no torch/napari extras, no test tooling.
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "mkdocs-macros-plugin>=1.5.0",
+    "mike>=2.2.0",
+]
 # Shared dev tooling (no torch/project extras here so it stays platform-neutral).
+# Includes the `docs` group so a full dev sync still gets the docs tools too.
 dev = [
     "black>=23.3.0",
     "ruff>=0.0.241",
     "tox>=4.12.0",
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
-    "mkdocs>=1.5.0",
-    "mkdocs-material>=9.5.0",
-    "mkdocstrings[python]>=0.24.0",
-    "mkdocs-macros-plugin>=1.5.0",
     "pre-commit>=3.6.0",
     "mypy>=1.19.1",
     "types-pyyaml>=6.0.12.20250915",
-    "mike>=2.2.0",
+    { include-group = "docs" },
 ]
 
 # =============================================================================

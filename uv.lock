@@ -3966,6 +3966,13 @@ dev = [
     { name = "tox" },
     { name = "types-pyyaml" },
 ]
+docs = [
+    { name = "mike" },
+    { name = "mkdocs" },
+    { name = "mkdocs-macros-plugin" },
+    { name = "mkdocs-material" },
+    { name = "mkdocstrings", extra = ["python"] },
+]
 
 [package.metadata]
 requires-dist = [
@@ -4021,6 +4028,13 @@ dev = [
     { name = "ruff", specifier = ">=0.0.241" },
     { name = "tox", specifier = ">=4.12.0" },
     { name = "types-pyyaml", specifier = ">=6.0.12.20250915" },
+]
+docs = [
+    { name = "mike", specifier = ">=2.2.0" },
+    { name = "mkdocs", specifier = ">=1.5.0" },
+    { name = "mkdocs-macros-plugin", specifier = ">=1.5.0" },
+    { name = "mkdocs-material", specifier = ">=9.5.0" },
+    { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24.0" },
 ]
 
 [[package]]

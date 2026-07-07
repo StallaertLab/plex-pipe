@@ -1,0 +1,56 @@
+# Build and publish the documentation with mike (versioned MkDocs).
+#   * push to main   -> refresh the rolling `dev` docs
+#   * push a v* tag  -> publish the release docs as `X.Y` and move the `latest` alias
+name: docs
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+# mike commits the built site to the gh-pages branch.
+permissions:
+  contents: write
+
+# Prevent concurrent deploys from clobbering gh-pages.
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history for mike and setuptools_scm
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch existing docs branch
+        run: git fetch origin gh-pages --depth=1 || true
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8
+
+      # Core package + docs toolchain only (no extras); enough to build the API docs.
+      - name: Install docs dependencies
+        run: uv sync --group docs
+
+      # Tag build: publish X.Y (docs are versioned by minor) and update `latest`.
+      - name: Deploy release docs
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          DOCS_VERSION="$(echo "${GITHUB_REF_NAME#v}" | cut -d. -f1,2)"
+          uv run mike deploy --push --update-aliases "$DOCS_VERSION" latest
+          uv run mike set-default --push latest
+
+      # Main build: refresh the rolling `dev` docs.
+      - name: Deploy dev docs
+        if: github.ref == 'refs/heads/main'
+        run: uv run mike deploy --push dev

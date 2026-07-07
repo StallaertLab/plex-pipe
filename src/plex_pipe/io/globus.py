@@ -1,10 +1,16 @@
+from __future__ import annotations
+
 import os
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
-import globus_sdk
 import yaml
-from globus_sdk import GlobusAPIError
+
+# NOTE: `globus_sdk` is an OPTIONAL dependency (the `globus` extra). It is
+# imported lazily inside the functions that need it so that `import plex_pipe`
+# works without the extra installed. `from __future__ import annotations` keeps
+# the `globus_sdk.*` type hints below as strings, so they are never evaluated at
+# import time.
 
 
 class GlobusEndpoint:
@@ -163,6 +169,7 @@ def create_globus_tc(
     Returns:
         An authenticated TransferClient.
     """
+    import globus_sdk
 
     auth_client = globus_sdk.NativeAppAuthClient(client_id)
 
@@ -194,6 +201,8 @@ def globus_dir_exists(
     Returns:
         True if the directory exists, False otherwise.
     """
+    from globus_sdk import GlobusAPIError
+
     try:
         tc.operation_ls(endpoint_id, path=path)
         return True
