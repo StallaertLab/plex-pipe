@@ -1,5 +1,5 @@
 site_name: PlexPipe
-site_url: https://stallaertlab.github.io/plex_pipe/
+site_url: https://stallaertlab.github.io/plex-pipe/
 repo_url: https://github.com/StallaertLab/plex-pipe
 repo_name: StallaertLab/plex-pipe
 strict: true  # fail the build on any warning (broken links, pages missing from nav, etc.)
