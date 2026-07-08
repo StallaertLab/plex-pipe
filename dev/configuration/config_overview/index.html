@@ -673,6 +673,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#schema-version-and-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Version and Migration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#path-format" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1008,6 +1019,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#schema-version-and-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Version and Migration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#path-format" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1073,6 +1095,18 @@ It provides parameters for all stages of the pipeline divided into sections corr
 </ul>
 </li>
 </ul>
+<hr />
+<h2 id="schema-version-and-migration">Schema Version and Migration</h2>
+<p>Every configuration carries a <strong><code>schema_version</code></strong> at the top of the file, recording which version of the config format the file was written for. <strong>The current schema version is <code>1</code>.</strong></p>
+<p>This version is a plain incrementing counter, independent of the PlexPipe package version. It changes only when the config <em>format</em> changes, which is rare, so most releases leave it untouched.</p>
+<p><strong>Loading an older config.</strong> If you load a file written for an older schema, or one with no <code>schema_version</code> (treated as the original version <code>0</code>), PlexPipe upgrades it in memory automatically and logs what it changed. Your pipeline runs without you editing anything by hand.</p>
+<p><strong>Saving the upgraded file.</strong> The automatic upgrade does not modify your file on disk. To write out the upgraded version, call <code>migrate_config</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">plex_pipe</span>
+<span class="n">plex_pipe</span><span class="o">.</span><span class="n">migrate_config</span><span class="p">(</span><span class="s2">&quot;analysis_old.yaml&quot;</span><span class="p">)</span>  <span class="c1"># writes analysis_old_v1.yaml</span>
+</code></pre></div>
+<p>By default this writes a new file and leaves your original untouched. Pass a second argument to set a specific output path.</p>
+<p><strong>A config that is too new.</strong> If you load a config written for a schema newer than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe.</p>
+<p>The full set of fields for the current schema is documented in the <a href="../reference/">Reference</a>.</p>
 <hr />
 <h2 id="path-format">Path Format</h2>
 <p>When entering file paths in this configuration file, always use the forward slash (/) as the folder separator, even on Windows.
