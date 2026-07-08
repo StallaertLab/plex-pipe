@@ -17,6 +17,7 @@ from pydantic import (
     model_validator,
 )
 
+from plex_pipe.config.config_migrations import CURRENT_SCHEMA_VERSION
 from plex_pipe.ops.registry import REGISTRY, Kind
 
 if TYPE_CHECKING:
@@ -59,6 +60,22 @@ class RoiCuttingSettings(BaseModel):
     mask_value: int | None = 0
     transfer_cleanup_enabled: bool | None = False
     roi_cleanup_enabled: bool | None = False
+
+    @field_validator(
+        "include_channels",
+        "exclude_channels",
+        "use_markers",
+        "ignore_markers",
+        mode="before",
+    )
+    @classmethod
+    def _none_to_empty_list(cls, v: object) -> object:
+        """Treat a blank YAML key (parsed as ``None``) as an empty list.
+
+        Hand-authored configs commonly leave these as a bare ``key:``, which YAML
+        parses to ``None``; that means the same as "no channels/markers here".
+        """
+        return [] if v is None else v
 
 
 class QcSettings(BaseModel):
@@ -163,12 +180,15 @@ else:
 
 
 class AnalysisConfig(BaseModel):
-    """The root model for the entire Track Gardener configuration.
+    """The root model for the entire plex_pipe analysis configuration.
 
     This class acts as the main entry point for parsing and validating the
-    complete YAML configuration file.
+    complete YAML configuration file. ``schema_version`` is a migration-
+    generation counter (see ``config_migrations.py``); the loader guarantees it
+    equals the current schema version before this model is validated.
     """
 
+    schema_version: int = CURRENT_SCHEMA_VERSION
     general: GeneralSettings
     roi_definition: RoiDefinitionSettings
     roi_cutting: RoiCuttingSettings

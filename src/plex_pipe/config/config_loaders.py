@@ -7,7 +7,13 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from loguru import logger
+from pydantic import ValidationError
 
+from plex_pipe.config.config_migrations import (
+    CURRENT_SCHEMA_VERSION,
+    migrate_to_current,
+)
 from plex_pipe.config.config_schema import AnalysisConfig
 
 
@@ -45,15 +51,26 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
 
     Returns:
         The validated AnalysisConfig object.
+
+    Raises:
+        ValueError: If the config is a newer schema than this build understands,
+            or if it fails validation (raised with a human-readable message).
     """
     with open(settings_path) as file:
         settings = yaml.safe_load(file)
+
+    # Version check + in-memory migration of older configs (writes nothing to
+    # disk; logs a hint pointing at migrate_config if a migration happened).
+    settings, _ = migrate_to_current(settings)
 
     # expand placeholders
     settings = expand_pipeline(settings)
 
     # Validate and get the "blueprint" object
-    config = AnalysisConfig.model_validate(settings)
+    try:
+        config = AnalysisConfig.model_validate(settings)
+    except ValidationError as exc:
+        raise ValueError(_format_validation_error(settings_path, exc)) from exc
 
     # create dirs necessary for the analysis
     for p in [
@@ -66,6 +83,75 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
         os.makedirs(p, exist_ok=True)
 
     return config
+
+
+def _format_validation_error(
+    settings_path: str | Path, exc: ValidationError
+) -> str:
+    """Turn a Pydantic ValidationError into a short, human-readable message.
+
+    Args:
+        settings_path: The config file that failed, for context.
+        exc: The Pydantic validation error.
+
+    Returns:
+        A plain-text summary listing each problem as ``section.field: message``.
+    """
+    lines = [f"Config '{settings_path}' is not valid for schema "
+             f"v{CURRENT_SCHEMA_VERSION}:"]
+    for err in exc.errors():
+        location = ".".join(str(part) for part in err["loc"]) or "<root>"
+        lines.append(f"  - {location}: {err['msg']}")
+    lines.append(
+        "If this is an older config, migrate it first: "
+        "plex_pipe.migrate_config(<path>)."
+    )
+    return "\n".join(lines)
+
+
+def migrate_config(
+    in_path: str | Path, out_path: str | Path | None = None
+) -> Path | None:
+    """Read an old config, migrate it to the current schema, and write it out.
+
+    Writes the upgraded config to a **new** file by default (never overwrites
+    the original unless ``out_path`` is explicitly set to the same path).
+
+    Args:
+        in_path: Path to the config file to migrate.
+        out_path: Where to write the migrated config. Defaults to
+            ``<stem>_v<CURRENT>.<suffix>`` next to the input.
+
+    Returns:
+        The path written, or ``None`` if the config was already current.
+    """
+    in_path = Path(in_path)
+    with open(in_path) as file:
+        raw = yaml.safe_load(file)
+
+    migrated, start_version = migrate_to_current(raw)
+
+    if start_version == CURRENT_SCHEMA_VERSION:
+        logger.info(
+            f"{in_path} is already schema v{CURRENT_SCHEMA_VERSION}; "
+            f"nothing to migrate."
+        )
+        return None
+
+    if out_path is None:
+        out_path = in_path.with_name(
+            f"{in_path.stem}_v{CURRENT_SCHEMA_VERSION}{in_path.suffix}"
+        )
+    out_path = Path(out_path)
+
+    with open(out_path, "w") as file:
+        yaml.safe_dump(migrated, file, sort_keys=False)
+
+    logger.info(
+        f"Migrated {in_path} (schema v{start_version} -> "
+        f"v{CURRENT_SCHEMA_VERSION}) -> {out_path}"
+    )
+    return out_path
 
 
 def contains_placeholder(obj: Any, placeholder: str = "${input}") -> bool:

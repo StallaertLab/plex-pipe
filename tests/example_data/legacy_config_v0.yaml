@@ -1,0 +1,174 @@
+# configuration file for the analysis pipeline
+
+################################################################################
+# basic settings
+################################################################################
+
+######################################################
+# general settings
+######################################################
+general:
+  image_dir: "/CellDive/BLCA-1/BLCA-1_Final"
+  analysis_name: "BLCA-1_Analysis"
+  local_analysis_dir: "C:/BLCA"
+  remote_analysis_dir: "/ix1/kkedziora/BLCA"
+  log_dir: null # => ${analysis_dir}/logs
+
+######################################################
+# core detection
+######################################################
+core_detection:
+  detection_image: "BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif"
+  core_info_file_path: null # => ${analysis_dir}/cores.csv
+
+  im_level: 6 # level to read the image for core definition
+  min_area: 2000  # minimum area of a core
+  max_area: 20000  # maximum area of a core
+  min_iou: 0.8  # SAM2 setting
+  min_st: 0.9  # SAM2 setting
+  min_int: 15  # SAM2 setting
+  frame: 4  # number of pixels to add to the bounding box of a roi
+
+######################################################
+# core cutting
+######################################################
+core_cutting:
+  cores_dir_tif: null # => ${analysis_dir}/cores
+  cores_dir_output: null # => ${analysis_dir}/temp
+
+  include_channels:
+  exclude_channels:
+    - 008_ECad
+  use_markers: 
+  ignore_markers:
+    - Antibody1
+    - TNFa
+    - Snail1
+    - SKP2
+    - ProgRc
+    - Plk1
+    - PH3
+    - PDL1
+    - p65
+    - p130
+    - p-p130
+    - p-Cdc6
+    - LAG3
+    - IL-8
+    - HER2
+    - ERa
+    - EpCAM
+    - E2F1
+    - cycD3
+    - cycB2
+    - CDC25C
+    - CD86
+    - CD73
+    - CD69
+    - CD62L
+    - CD56
+    - CD4
+    - CD25
+    - CD19
+    - CD27
+    - CCR7
+    - cCASP3
+  margin: 0
+  mask_value: 0
+  transfer_cleanup_enabled: True
+  core_cleanup_enabled: True
+
+######################################################
+# segmentation
+######################################################
+
+additional_elements:
+
+# add pre-processed images (category: 'image_filter')
+  - category: image_filter
+    type: normalize
+    input: [DAPI, CD45, CD44, HLA1, NaKATPase, CD11C, pCK26, pS6, HES1]
+    output: "${input}_norm"
+    parameters:
+      low: 1
+      high: 99.8
+    keep: false
+
+# segmentation (category: 'object_segmenter')
+  - category: object_segmenter
+    type: instanseg
+    parameters:
+      model: fluorescence_nuclei_and_cells
+      pixel_size: 0.3
+      resolve_cell_and_nucleus: true
+      cleanup_fragments: true 
+      clean_cache: true
+      normalise: false
+    input:
+      - DAPI_norm
+      - HLA1_norm
+      - CD44_norm
+      - NaKATPase_norm
+      - CD11C_norm
+      - CD45_norm
+      - pCK26_norm
+      - pS6_norm
+      - HES1_norm
+    output: 
+      - instanseg_nucleus
+      - instanseg_cell
+    keep: true
+  
+#----------------------------------------------
+  - category: mask_builder
+    type: ring
+    input: 
+        - instanseg_nucleus
+    output: ring
+    parameters:
+      outer: 8
+      inner: 2
+    keep: true
+#----------------------------------------------
+  - category: mask_builder
+    type: subtract
+    input: 
+      - instanseg_cell
+      - instanseg_nucleus
+    output: cytoplasm
+    keep: true
+
+######################################################
+# qc
+######################################################
+
+qc:
+  prefix: qc_exclude
+
+######################################################
+# quantification
+######################################################
+
+quant:
+  - name: instanseg_table
+    masks: 
+      nucleus: instanseg_nucleus
+      cell: instanseg_cell
+      ring: ring
+      cyto: cytoplasm
+    layer_connection: instanseg_cell
+    qc_to_layer: True
+
+################################################################################
+# advanced settings
+################################################################################
+
+######################################################
+# storage settings
+######################################################
+
+sdata_storage:
+  chunk_size: [1, 512, 512]
+  max_pyramid_level: 3
+  downscale: 2
+ 

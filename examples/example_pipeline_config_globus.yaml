@@ -1,5 +1,9 @@
 # configuration file for the analysis pipeline
 
+# Schema version of this config — a migration-generation counter (see
+# config_migrations.py). Absent => treated as legacy (v0) and auto-migrated.
+schema_version: 1
+
 ######################################################
 # general settings
 ######################################################
