@@ -36,9 +36,9 @@ LEGACY_VERSION = 0
 def _detect_version(raw: dict) -> int:
     """Read the integer ``schema_version`` from a raw config dict.
 
-    A missing key means :data:`LEGACY_VERSION` (0). Kept as a single helper so
-    the comparison logic lives in one place — the only thing that would change
-    if we ever moved from integers to another scheme.
+    A missing key means :data:`LEGACY_VERSION` (0). Kept as a single helper so the
+    comparison logic lives in one place: the only place that would need to change
+    if the versioning scheme ever moved away from plain integers.
 
     Args:
         raw: The raw config dictionary (parsed YAML).

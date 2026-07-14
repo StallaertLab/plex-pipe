@@ -47,6 +47,7 @@ dependencies = [
     "zarr>3.0",
     "fsspec>=2024.6.1",
     "dearrayer>=0.1.0",
+    "pooch>=1.8",
 ]
 
 [project.optional-dependencies]
