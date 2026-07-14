@@ -15,6 +15,8 @@ update :data:`EXAMPLE_DATA_TAG` and :data:`EXAMPLE_DATA_SHA256`.
 
 from __future__ import annotations
 
+import shutil
+import zipfile
 from pathlib import Path
 
 import pooch
@@ -51,37 +53,78 @@ _REGISTRY = pooch.create(
 _IMAGE_SUFFIXES = (".tif", ".tiff")
 
 
-def fetch_example() -> Path:
+def _unpack_images_into(archive: Path, dest: Path) -> list[Path]:
+    """Extract the image files from ``archive`` into ``dest``.
+
+    The archive's internal folder structure is flattened, so the images land
+    directly in ``dest``. Files already present are left untouched, which makes
+    repeated calls cheap and safe to re-run.
+
+    Args:
+        archive: Path to the downloaded zip archive.
+        dest: Directory to write the images into.
+
+    Returns:
+        Sorted paths of the images now present in ``dest``.
+    """
+    unpacked: list[Path] = []
+    with zipfile.ZipFile(archive) as zf:
+        for member in zf.namelist():
+            name = Path(member).name
+            if not name or Path(name).suffix.lower() not in _IMAGE_SUFFIXES:
+                continue
+            target = dest / name
+            if not target.exists():
+                with zf.open(member) as source, open(target, "wb") as output:
+                    shutil.copyfileobj(source, output)
+            unpacked.append(target)
+    return sorted(unpacked)
+
+
+def fetch_example(dest: str | Path | None = None) -> Path:
     """Download and unpack the example dataset, returning its image directory.
 
     The dataset contains DAPI plus three markers (bCat, CD45, NaKATPase) across
     two TMA cores at full resolution: raw intensities, without annotations.
 
-    On the first call the archive is downloaded from the data release, validated
-    against :data:`EXAMPLE_DATA_SHA256`, and unzipped into a local cache.
-    Subsequent calls reuse the cache and require no network access. The cache is
-    disposable: if it is deleted, the next call downloads the archive again.
+    On the first call the archive is downloaded from the data release and
+    validated against :data:`EXAMPLE_DATA_SHA256`. Subsequent calls reuse the
+    cached archive and require no network access. The cache is disposable: if it
+    is deleted, the next call downloads the archive again.
+
+    Args:
+        dest: Directory to unpack the images into. Supplying a path means a
+            config whose ``general.image_dir`` already points at that directory
+            works unchanged, which keeps the config file the single source of
+            truth for where the data lives. When omitted, the images are
+            unpacked into the local cache and that location is returned instead.
 
     Returns:
         Path to the directory holding the example ``.tiff`` images, suitable for
         use as the config's ``general.image_dir``.
 
     Raises:
-        RuntimeError: If the archive unpacks without any images, indicating a
-            corrupt archive or a change to its internal layout.
+        RuntimeError: If the archive contains no images, indicating a corrupt
+            archive or a change to its internal layout.
     """
-    paths = _REGISTRY.fetch(EXAMPLE_DATA_ARCHIVE, processor=pooch.Unzip())
+    if dest is None:
+        paths = _REGISTRY.fetch(EXAMPLE_DATA_ARCHIVE, processor=pooch.Unzip())
+        images = sorted(
+            Path(p) for p in paths if Path(p).suffix.lower() in _IMAGE_SUFFIXES
+        )
+        image_dir = images[0].parent if images else None
+    else:
+        image_dir = Path(dest)
+        image_dir.mkdir(parents=True, exist_ok=True)
+        archive = Path(_REGISTRY.fetch(EXAMPLE_DATA_ARCHIVE))
+        images = _unpack_images_into(archive, image_dir)
 
-    images = sorted(
-        Path(p) for p in paths if Path(p).suffix.lower() in _IMAGE_SUFFIXES
-    )
-    if not images:
+    if not images or image_dir is None:
         raise RuntimeError(
             f"No {' / '.join(_IMAGE_SUFFIXES)} images found in "
             f"{EXAMPLE_DATA_ARCHIVE}. The archive may be corrupt, or its "
             f"internal layout may have changed."
         )
 
-    image_dir = images[0].parent
     logger.info(f"Example data ready: {len(images)} images in {image_dir}")
     return image_dir

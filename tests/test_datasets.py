@@ -8,6 +8,7 @@ recorded hash.
 """
 
 import re
+import zipfile
 
 from plex_pipe.datasets import (
     EXAMPLE_DATA_ARCHIVE,
@@ -15,6 +16,7 @@ from plex_pipe.datasets import (
     EXAMPLE_DATA_SHA256,
     EXAMPLE_DATA_TAG,
     _REGISTRY,
+    _unpack_images_into,
 )
 
 
@@ -46,3 +48,38 @@ def test_resolved_asset_url_is_exact():
         "https://github.com/StallaertLab/plex-pipe/releases/download/"
         "example-data-v1/plexpipe_example_data.zip"
     )
+
+
+def test_unpack_writes_images_flat_into_dest(tmp_path):
+    """Images land directly in the destination, with the archive folder stripped."""
+    archive = tmp_path / "example.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("input/a.tiff", b"aaa")
+        zf.writestr("input/b.tif", b"bbb")
+        zf.writestr("input/notes.txt", b"not an image")
+
+    dest = tmp_path / "images"
+    dest.mkdir()
+    unpacked = _unpack_images_into(archive, dest)
+
+    assert [p.name for p in unpacked] == ["a.tiff", "b.tif"]
+    assert (dest / "a.tiff").read_bytes() == b"aaa"
+    # The archive's internal folder is flattened away.
+    assert not (dest / "input").exists()
+    # Non-image members are ignored.
+    assert not (dest / "notes.txt").exists()
+
+
+def test_unpack_leaves_existing_files_alone(tmp_path):
+    """Re-running the unpack is cheap: files already present are not rewritten."""
+    archive = tmp_path / "example.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("input/a.tiff", b"aaa")
+
+    dest = tmp_path / "images"
+    dest.mkdir()
+    _unpack_images_into(archive, dest)
+    (dest / "a.tiff").write_bytes(b"already here")
+
+    _unpack_images_into(archive, dest)
+    assert (dest / "a.tiff").read_bytes() == b"already here"
