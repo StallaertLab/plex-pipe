@@ -149,6 +149,10 @@ where = ["src"]
 
 [tool.setuptools_scm]
 write_to = "src/plex_pipe/_version.py"
+# Only version tags (v0.1.0) define the package version. Without --match, the
+# data-release tag `example-data-v1` is parsed as version 1, and the package
+# version jumps to 2.dev* -- which would sort above the real 0.1.0 release.
+git_describe_command = "git describe --dirty --tags --long --match v[0-9]*"
 
 [tool.black]
 line-length = 79
