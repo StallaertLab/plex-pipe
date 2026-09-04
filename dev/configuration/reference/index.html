@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1188,7 +1188,7 @@
 <h2 id="roi-definition">ROI Definition</h2>
 <p>This section configures the automatic detection of tissue cores. It specifies the image used for detection and the parameters for the Segment Anything Model (SAM2) to accurately identify core boundaries.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">core_detection</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">detection_image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif&quot;</span>
+<span class="w">  </span><span class="nt">detection_image</span><span class="p">:</span><span class="w"> </span><span class="s">"BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif"</span>
 <span class="w">  </span><span class="nt">core_info_file_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">  </span><span class="nt">im_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
 </code></pre></div>
@@ -1325,7 +1325,7 @@ These masks are used to filter out artifacts or unwanted regions from downstream
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">category</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">image_enhancer</span>
 <span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">normalize</span>
 <span class="w">    </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">DAPI</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">HLA1</span><span class="p p-Indicator">]</span>
-<span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${input}_norm&quot;</span>
+<span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="s">"${input}_norm"</span>
 <span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">low</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">      </span><span class="nt">high</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">99.8</span>
@@ -1561,7 +1561,7 @@ Example below specifies only a single AnnData table to be created ('instanseg_ta
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

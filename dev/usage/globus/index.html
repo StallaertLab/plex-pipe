@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1138,20 +1138,20 @@ The machine running this software pulls raw data from a Source (e.g. storage ser
 <p>To get started, a skeleton file containing the required structure and placeholders is provided in the <a href="https://github.com/StallaertLab/plex-pipe/tree/main/examples">examples folder</a> of the repository.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">gc</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># Get this from developers.globus.org (looks like a UUID)</span>
-<span class="w">  </span><span class="nt">client_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;00000000-0000-0000-0000-000000000000&quot;</span>
+<span class="w">  </span><span class="nt">client_id</span><span class="p">:</span><span class="w"> </span><span class="s">"00000000-0000-0000-0000-000000000000"</span>
 
 <span class="w">  </span><span class="nt">collections</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">remote_source</span><span class="p">:</span>
-<span class="w">      </span><span class="c1"># Find this on the Globus Web App under &#39;Collection Search&#39;</span>
-<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;source-collection-uuid-here&quot;</span>
-<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/path/to/remote/data&quot;</span>
+<span class="w">      </span><span class="c1"># Find this on the Globus Web App under 'Collection Search'</span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">"source-collection-uuid-here"</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="s">"/path/to/remote/data"</span>
 
 <span class="w">    </span><span class="nt">local_workstation</span><span class="p">:</span>
-<span class="w">      </span><span class="c1"># Find this on the Globus Web App under &#39;Collection Search&#39;</span>
+<span class="w">      </span><span class="c1"># Find this on the Globus Web App under 'Collection Search'</span>
 <span class="w">      </span><span class="c1"># The UUID of your Globus Connect Personal endpoint</span>
-<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;destination-collection-uuid-here&quot;</span>
-<span class="w">      </span><span class="c1"># Windows: null (for multi-drive) or specify the entry point, e.g. &quot;C:/&quot;</span>
-<span class="w">      </span><span class="c1"># Linux: null (for Home) or specify the entry point, e.g. &quot;/home/user/data&quot;</span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="s">"destination-collection-uuid-here"</span>
+<span class="w">      </span><span class="c1"># Windows: null (for multi-drive) or specify the entry point, e.g. "C:/"</span>
+<span class="w">      </span><span class="c1"># Linux: null (for Home) or specify the entry point, e.g. "/home/user/data"</span>
 <span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </code></pre></div>
 <hr />
@@ -1205,7 +1205,7 @@ This allows you to define your <code>analysis_dir</code> and <code>image_dir</co
 </li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="nt">transfer_tokens</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">refresh_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Agv100Yp9K7D8z2L_m5N6b3V4c1X9z0A_B2C3D4E5F6G&quot;</span><span class="w"> </span><span class="c1"># replace with your actual refresh token</span>
+<span class="w">  </span><span class="nt">refresh_token</span><span class="p">:</span><span class="w"> </span><span class="s">"Agv100Yp9K7D8z2L_m5N6b3V4c1X9z0A_B2C3D4E5F6G"</span><span class="w"> </span><span class="c1"># replace with your actual refresh token</span>
 </code></pre></div>
 <div class="admonition warning security notice">
 <p class="admonition-title">Warning</p>
@@ -1274,7 +1274,7 @@ This allows you to define your <code>analysis_dir</code> and <code>image_dir</co
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
