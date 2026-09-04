@@ -77,7 +77,10 @@ class CoreAssembler:
 
         # save to drive
         output_path = os.path.join(self.output_dir, f"{core_id}.zarr")
-        sdata.write(output_path, overwrite=True)
+        # consolidate_metadata=False so that each subsequent write_element
+        # does not rewrite the top-level consolidated metadata. Metadata is
+        # consolidated once, after the channel loop, instead.
+        sdata.write(output_path, overwrite=True, consolidate_metadata=False)
 
         for fname in channel_files:
             channel_name = os.path.splitext(fname)[0]
@@ -105,6 +108,13 @@ class CoreAssembler:
 
             # release memory
             del sdata[channel_name]
+
+        # Consolidate metadata a single time, after all channels are written.
+        # Because the store and its elements are written with consolidation
+        # off, this removes the per-channel top-level metadata rewrite, which
+        # is a frequent source of Windows PermissionError (WinError 5) when
+        # many small elements are written in rapid succession.
+        sdata.write_consolidated_metadata()
 
         # log the info
         logger.info(f"ROI '{core_id}' assembled with channels: {used_channels}")
