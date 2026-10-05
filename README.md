@@ -12,7 +12,7 @@
 </picture>
 
 
-**PlexPipe turns raw multiplexed whole-slide images into quantitative single-cell data.** It starts from a set of individual TIFF files, typically one per marker, reading the information it needs from their file names. The images are expected to be analysis-ready, already stitched and background-corrected, so PlexPipe concentrates on everything downstream: outlining regions of interest, segmenting cells, and producing a single-cell feature table ready for the [scverse](https://scverse.org/) ecosystem.
+**PlexPipe turns raw multiplexed whole-slide images into quantitative single-cell data.** It takes the individual analysis-ready TIFF files and moves them through five modular steps, from outlining regions of interest to a single-cell feature table ready for downstream analysis in the [scverse](https://scverse.org/) ecosystem.
 
 PlexPipe runs one step at a time, each driven by a single configuration file that holds the parameters for the whole workflow. Two steps, ROI definition and quality control, open a [napari](https://napari.org/) viewer, because they need a person to outline the regions of interest and mark imaging artefacts for exclusion.
 
@@ -42,18 +42,13 @@ uv sync --extra all
 
 ## Try it on example data
 
-The notebooks run on a small example dataset, and the first notebook downloads it for you with `fetch_example()`, so you can go from a fresh clone to a running pipeline without hunting for data. 
+The notebooks run on a small example dataset, and the first notebook downloads it for you with `fetch_example()`, so you can go from a fresh clone to a running pipeline without hunting for data.
 
 Start with `01_roi_definition_demo.ipynb` and work through to `05`. Stages 1 and 3 open a napari window for the interactive steps; the rest run automatically from the shared configuration file.
 
 ## Execution modes
 
 For smaller datasets and prototyping, run the notebooks or standalone scripts locally. For large-scale parallel processing on HPC, use the Nextflow version, [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow).
-
-
-## Documentation
-
-Full documentation is available at:  [![Docs](https://img.shields.io/badge/docs-online-blue)](https://stallaertlab.github.io/plex-pipe/)
 
 ## Status
 
@@ -63,7 +58,7 @@ PlexPipe is in active development (alpha). Interfaces and the configuration sche
 
 PlexPipe is one of several open pipelines for turning multiplexed images into single-cell data:
 
-- [MCMICRO](https://mcmicro.org/) 
+- [MCMICRO](https://mcmicro.org/)
 - [Harpy](https://github.com/saeyslab/harpy)
 - [Sopa](https://prism-oncology.github.io/sopa/)
 - [Spatialproteomics](https://github.com/sagar87/spatialproteomics)
