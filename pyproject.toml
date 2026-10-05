@@ -30,7 +30,10 @@ classifiers = [
 # =============================================================================
 
 dependencies = [
-    "anndata>=0.11.4",
+    # Upper cap: napari-spatialdata 0.7.2 calls the private AnnData._get_X,
+    # which anndata 0.13 removed. Fixed on napari-spatialdata main (unreleased).
+    # Drop the cap once a release > 0.7.2 ships. See tracking issue.
+    "anndata>=0.11.4,<0.13",
     "dask[array]>=2024.4",
     "imagecodecs>=2024.6.1",
     "loguru>=0.7.3",
