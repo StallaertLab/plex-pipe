@@ -18,6 +18,7 @@ from pydantic import (
 )
 
 from plex_pipe.config.config_migrations import CURRENT_SCHEMA_VERSION
+from plex_pipe.io.channel_manifest import NAMING_PRESETS
 from plex_pipe.ops.registry import REGISTRY, Kind
 
 if TYPE_CHECKING:
@@ -30,13 +31,61 @@ from loguru import logger
 ###################################################################
 
 
+#: Naming presets accepted in ``general.file_naming``, built from the registered
+#: presets (``plex_pipe.io.channel_manifest.NAMING_PRESETS``), the same way
+#: pipeline steps are built from the processor REGISTRY.
+if TYPE_CHECKING:
+    FileNamingPreset = str
+else:
+    FileNamingPreset = Literal[tuple(NAMING_PRESETS)]
+
+#: Preset used when neither ``file_naming`` nor ``channel_manifest`` is set.
+DEFAULT_FILE_NAMING = "celldive"
+
+
 class GeneralSettings(BaseModel):
-    """Configuration for general analysis settings."""
+    """Configuration for general analysis settings.
+
+    The input files are described by exactly one of:
+
+    * ``file_naming``: a naming preset that builds the channel manifest from
+      file names in ``image_dir`` (default ``celldive``), or
+    * ``channel_manifest``: path to a CSV listing every file with its marker
+      and round (see ``channel_manifest.read_manifest`` for the format).
+    """
 
     image_dir: str
     analysis_name: str
     analysis_dir: str
     log_dir: Path | None = None
+    file_naming: FileNamingPreset | None = None
+    channel_manifest: str | None = None
+
+    @field_validator("file_naming", "channel_manifest", mode="before")
+    @classmethod
+    def _blank_to_none(cls, v: object) -> object:
+        """Treat a blank YAML value (``key:`` or ``""``) as not set."""
+        if v is None or (isinstance(v, str) and not v.strip()):
+            return None
+        return v
+
+    @model_validator(mode="after")
+    def _resolve_channel_source(self) -> GeneralSettings:
+        """Require at most one channel source; default to the Cell DIVE preset.
+
+        Raises:
+            ValueError: If both ``file_naming`` and ``channel_manifest`` are set.
+        """
+        if self.file_naming is not None and self.channel_manifest is not None:
+            raise ValueError(
+                "Set either 'file_naming' (a naming preset) or "
+                "'channel_manifest' (a CSV path), not both. "
+                f"Got file_naming={self.file_naming!r}, "
+                f"channel_manifest={self.channel_manifest!r}."
+            )
+        if self.channel_manifest is None and self.file_naming is None:
+            self.file_naming = DEFAULT_FILE_NAMING
+        return self
 
 
 class RoiDefinitionSettings(BaseModel):
