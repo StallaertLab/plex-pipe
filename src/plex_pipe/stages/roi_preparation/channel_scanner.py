@@ -11,6 +11,7 @@ from plex_pipe.io.globus import (
 from plex_pipe.io.channel_manifest import (
     ChannelRecord,
     build_manifest,
+    read_manifest,
 )
 
 #: Marker treated as the nuclear reference: one round is kept (the earliest).
@@ -168,8 +169,66 @@ def scan_channels_from_list(
     )
 
     # records store base names; map back to the paths that were listed
-    path_by_name = {os.path.basename(str(f).replace("\\", "/")): f for f in files}
+    path_by_name = _paths_by_name(files)
     return {m: path_by_name[r.file] for m, r in selected.items()}
+
+
+def scan_channels_from_manifest(
+    manifest_path: str,
+    files: Sequence[str],
+    include_channels: list[str] | None = None,
+    exclude_channels: list[str] | None = None,
+    use_markers: list[str] | None = None,
+    ignore_markers: list[str] | None = None,
+) -> dict[str, str]:
+    """Build a channel map from a user-provided manifest CSV.
+
+    The manifest says which marker and round each file holds; ``files`` (the
+    listing of ``image_dir``) is used to check that every listed file exists
+    and to return full paths.
+
+    Args:
+        manifest_path: Path to the manifest CSV.
+        files: Paths of the files present in ``image_dir``.
+        include_channels: Specific channel names to include, bypassing selection.
+        exclude_channels: Specific channel names to exclude.
+        use_markers: List of marker names to keep.
+        ignore_markers: List of marker names to discard.
+
+    Returns:
+        Dictionary mapping marker names to file paths (as given in ``files``).
+
+    Raises:
+        ManifestError: If the manifest is malformed.
+        ValueError: If the manifest lists files that are not in ``image_dir``.
+    """
+    records = read_manifest(manifest_path)
+    path_by_name = _paths_by_name(files)
+
+    missing = [r.file for r in records if r.file not in path_by_name]
+    if missing:
+        raise ValueError(
+            f"Channel manifest {manifest_path} lists {len(missing)} file(s) not "
+            f"found in image_dir: {missing}. The 'file' column must hold file "
+            f"names in image_dir."
+        )
+
+    in_manifest = {r.file for r in records}
+    unlisted = sorted(n for n in path_by_name if n not in in_manifest)
+    if unlisted:
+        logger.info(f"Files in image_dir not listed in the manifest {len(unlisted)}:")
+        for name in unlisted:
+            logger.info(f"  Not in manifest: {name}")
+
+    selected = select_channels(
+        records, include_channels, exclude_channels, use_markers, ignore_markers
+    )
+    return {m: path_by_name[r.file] for m, r in selected.items()}
+
+
+def _paths_by_name(files: Sequence[str]) -> dict[str, str]:
+    """Map base names (local, Windows or remote POSIX paths) to listed paths."""
+    return {os.path.basename(str(f).replace("\\", "/")): f for f in files}
 
 
 def discover_channels(
@@ -179,12 +238,15 @@ def discover_channels(
     use_markers: list[str] | None = None,
     ignore_markers: list[str] | None = None,
     gc: GlobusConfig | None = None,
+    file_naming: str | None = "celldive",
+    channel_manifest: str | None = None,
 ) -> dict[str, str]:
     """Creates a channel map from local or Globus storage.
 
-    This is a convenience wrapper: it obtains a list of candidate OME-TIFF files
-    (locally from `image_dir_or_path`, or remotely via Globus when `gc` is provided),
-    then delegates marker/round selection to :func:`scan_channels_from_list`.
+    Lists the TIFF files in `image_dir_or_path` (locally, or remotely via Globus
+    when `gc` is provided), builds the channel manifest, then applies the
+    selection rules. The manifest comes from `channel_manifest` (a CSV) when
+    given, otherwise from the file names via the `file_naming` preset.
 
     Args:
         image_dir_or_path: Local directory path or Globus path to scan.
@@ -193,6 +255,9 @@ def discover_channels(
         use_markers: List of marker names to keep.
         ignore_markers: List of marker names to discard.
         gc: Globus configuration. If provided, scans via Globus API.
+        file_naming: Naming preset used when no manifest is given.
+        channel_manifest: Path to a manifest CSV; takes precedence over
+            `file_naming`.
 
     Returns:
         Dictionary mapping marker names to file paths.
@@ -202,6 +267,17 @@ def discover_channels(
     else:
         files = list_local_files(image_dir_or_path)
 
-    return scan_channels_from_list(
-        files, include_channels, exclude_channels, use_markers, ignore_markers
+    rules = (include_channels, exclude_channels, use_markers, ignore_markers)
+
+    if channel_manifest is not None:
+        logger.info(
+            f"Channel source: manifest {channel_manifest} "
+            f"(image_dir: {image_dir_or_path})"
+        )
+        return scan_channels_from_manifest(channel_manifest, files, *rules)
+
+    preset = file_naming or "celldive"
+    logger.info(
+        f"Channel source: naming preset '{preset}' (image_dir: {image_dir_or_path})"
     )
+    return scan_channels_from_list(files, *rules, preset=preset)

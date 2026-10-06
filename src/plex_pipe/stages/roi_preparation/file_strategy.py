@@ -39,6 +39,32 @@ class FileAvailabilityStrategy(ABC):
         """
         self.config = config
 
+    def _discover_channel_map(self, gc: GlobusConfig | None = None) -> ChannelMap:
+        """Build the channel map from the config (shared by all strategies).
+
+        Uses ``general.channel_manifest`` if set, otherwise the
+        ``general.file_naming`` preset, then applies the ``roi_cutting``
+        selection rules.
+
+        Args:
+            gc: Globus configuration, for listing a remote ``image_dir``.
+
+        Returns:
+            Mapping of marker name to (local or remote) file path.
+        """
+        general = self.config.general
+        cutting = self.config.roi_cutting
+        return discover_channels(
+            general.image_dir,
+            include_channels=cutting.include_channels,
+            exclude_channels=cutting.exclude_channels,
+            use_markers=cutting.use_markers,
+            ignore_markers=cutting.ignore_markers,
+            gc=gc,
+            file_naming=general.file_naming,
+            channel_manifest=general.channel_manifest,
+        )
+
     @abstractmethod
     def yield_ready_channels(self) -> Iterator[tuple[str, str | Path]]:
         """Yield (channel, local_path) tuples as they become available."""
@@ -69,14 +95,7 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
         self.gc = gc
         self.tc = create_globus_tc(gc.client_id, gc.transfer_tokens)
 
-        self.channel_map = discover_channels(
-            self.config.general.image_dir,
-            include_channels=self.config.roi_cutting.include_channels,
-            exclude_channels=self.config.roi_cutting.exclude_channels,
-            use_markers=self.config.roi_cutting.use_markers,
-            ignore_markers=self.config.roi_cutting.ignore_markers,
-            gc=self.gc,
-        )
+        self.channel_map = self._discover_channel_map(gc=self.gc)
 
         self.pending_tasks: list[str] = []
         self.yielded_channels: set[str] = set()
@@ -216,13 +235,7 @@ class LocalFileStrategy(FileAvailabilityStrategy):
         self.gc = None
         super().__init__(config)
 
-        self.channel_map = discover_channels(
-            self.config.general.image_dir,
-            include_channels=self.config.roi_cutting.include_channels,
-            exclude_channels=self.config.roi_cutting.exclude_channels,
-            use_markers=self.config.roi_cutting.use_markers,
-            ignore_markers=self.config.roi_cutting.ignore_markers,
-        )
+        self.channel_map = self._discover_channel_map()
 
     def yield_ready_channels(self) -> Iterator[tuple[str, str]]:
         """Yield all discovered local channels.

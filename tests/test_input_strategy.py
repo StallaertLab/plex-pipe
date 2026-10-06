@@ -17,6 +17,8 @@ def mock_config():
     """Mocks the configuration object passed to strategies."""
     cfg = MagicMock()
     cfg.general.image_dir = "/data/images"
+    cfg.general.file_naming = "celldive"
+    cfg.general.channel_manifest = None
     cfg.roi_cutting.include_channels = None
     cfg.roi_cutting.exclude_channels = None
     cfg.roi_cutting.use_markers = None
@@ -92,6 +94,29 @@ def test_local_strategy_cleanup(mock_config, mock_discover_channels):
         mock_unlink.assert_not_called()
 
 
+def test_local_strategy_passes_channel_source_and_rules(
+    mock_config, mock_discover_channels
+):
+    """Verifies the config's channel source and selection rules reach discovery."""
+    mock_config.general.file_naming = None
+    mock_config.general.channel_manifest = "/data/channels.csv"
+    mock_config.roi_cutting.ignore_markers = ["bCat"]
+    mock_discover_channels.return_value = {}
+
+    LocalFileStrategy(mock_config)
+
+    mock_discover_channels.assert_called_once_with(
+        "/data/images",
+        include_channels=None,
+        exclude_channels=None,
+        use_markers=None,
+        ignore_markers=["bCat"],
+        gc=None,
+        file_naming=None,
+        channel_manifest="/data/channels.csv",
+    )
+
+
 # --- GlobusFileStrategy Tests ---
 
 
@@ -129,6 +154,13 @@ def test_globus_strategy_init_and_map(
     }
 
     strategy = GlobusFileStrategy(mock_config, mock_gc)
+
+    # Discovery runs once, over Globus, with the config's channel source
+    mock_discover_channels.assert_called_once()
+    kwargs = mock_discover_channels.call_args.kwargs
+    assert kwargs["gc"] is mock_gc
+    assert kwargs["file_naming"] == "celldive"
+    assert kwargs["channel_manifest"] is None
 
     # Check Transfer Client creation
     mock_create_tc.assert_called_with("client-id", mock_gc.transfer_tokens)
