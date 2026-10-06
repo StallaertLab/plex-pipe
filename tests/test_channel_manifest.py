@@ -25,6 +25,11 @@ from plex_pipe.stages.roi_preparation.channel_manifest import (
         ("p_002.0.4_R000_dye_CD3-01_x.ome.tif", ("CD3", 2)),
         ("p_002.0.4_R000_dye_CD3_x.ome.tif", ("CD3", 2)),
         ("p_002.0.4_R000_dye_A-B-C_x.ome.tif", ("A-B", 2)),
+        # no "_..." part after the marker
+        ("p_002.0.4_R000_dye_CK7-01.ome.tif", ("CK7", 2)),
+        ("p_002.0.4_R000_dye_Ki-67-AF488.ome.tif", ("Ki-67", 2)),
+        # legacy parser returned "CD3.ome.tif" here; the extension is now dropped
+        ("p_002.0.4_R000_dye_CD3.ome.tif", ("CD3", 2)),
         # not Cell DIVE
         ("notes.txt", None),
         ("sample_cycle1_CD45.tif", None),

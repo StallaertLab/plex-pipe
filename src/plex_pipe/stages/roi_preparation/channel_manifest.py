@@ -60,12 +60,14 @@ class ChannelRecord:
 
 # Cell DIVE: [Prefix]_[Round].0.4_R000_[Dye]_[Marker]-[Suffix]_....ome.tif
 # A dye segment containing "DAPI" (any case) marks a DAPI image; otherwise the
-# marker is the segment after the dye with its last "-suffix" removed.
+# marker is the segment after the dye with its last "-suffix" removed. The
+# trailing "_..." part is optional (e.g. "..._Cy3_CK7-01.ome.tif").
 _CELLDIVE_DAPI = re.compile(
     r"^[^_]+_(?P<round>\d+)\.0\.4_R000_[^_]*(?i:dapi)[^_]*_.*\.tiff?$"
 )
 _CELLDIVE_MARKER = re.compile(
-    r"^[^_]+_(?P<round>\d+)\.0\.4_R000_[^_]+_(?P<marker>[^_]+?)(?:-[^-_]*)?_.*\.tiff?$"
+    r"^[^_]+_(?P<round>\d+)\.0\.4_R000_[^_]+_(?P<marker>[^_]+?)"
+    r"(?:-[^-_]*)?(?:_.*)?(?:\.ome)?\.tiff?$"
 )
 
 

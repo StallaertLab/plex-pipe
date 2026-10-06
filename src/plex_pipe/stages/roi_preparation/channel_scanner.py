@@ -1,6 +1,5 @@
 import os
-import re
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 
 from loguru import logger
 
@@ -9,103 +8,80 @@ from plex_pipe.io.globus import (
     GlobusConfig,
     list_globus_tifs,
 )
+from plex_pipe.stages.roi_preparation.channel_manifest import (
+    ChannelRecord,
+    build_manifest,
+)
+
+#: Marker treated as the nuclear reference: one round is kept (the earliest).
+REFERENCE_MARKER = "DAPI"
 
 
-def scan_channels_from_list(
-    files: Sequence[str],
+def select_channels(
+    records: Iterable[ChannelRecord],
     include_channels: list[str] | None = None,
     exclude_channels: list[str] | None = None,
     use_markers: list[str] | None = None,
     ignore_markers: list[str] | None = None,
-) -> dict[str, str]:
-    """Build a channel map from a list of file paths.
+) -> dict[str, ChannelRecord]:
+    """Apply the channel selection rules to a manifest.
 
-    This function contains the core selection logic (marker parsing, round handling,
-    and filtering). By default it selects the latest round for
-    each marker (from available channels), with a preference for round 001 for DAPI.
+    By default the latest round is kept for each marker, except for DAPI, where
+    the earliest available round is kept. ``include_channels`` and
+    ``exclude_channels`` (channel names such as ``002_CD3``) override this per
+    marker; ``use_markers`` and ``ignore_markers`` then filter whole markers.
+    See ``docs/configuration/channel-selection.md``.
 
     Args:
-        files: List of file paths to process.
-        include_channels: Specific channel names to include, bypassing selection.
-        exclude_channels: Specific channel names to exclude.
-        use_markers: List of marker names to keep.
-        ignore_markers: List of marker names to discard.
+        records: The complete manifest (every input file).
+        include_channels: Channel names to keep, bypassing round selection.
+        exclude_channels: Channel names to drop before round selection.
+        use_markers: If given, keep only these markers.
+        ignore_markers: Markers to drop.
 
     Returns:
-        Dictionary mapping marker names to file paths.
+        Dictionary mapping marker name to the selected record.
 
     Raises:
-        ValueError: If no valid OME-TIFF files are found.
+        ValueError: If the manifest is empty.
     """
-
     include_channels = include_channels or []
     exclude_channels = exclude_channels or []
     use_markers = use_markers or []
     ignore_markers = ignore_markers or []
 
-    image_dict: dict[str, str] = {}
+    records = sorted(records, key=lambda r: r.channel)
+    if not records:
+        raise ValueError("Channel manifest is empty: no input files to select from.")
 
-    for filepath in files:
-        fname = os.path.basename(filepath)
+    logger.info(f"Discovered {len(records)} channels:")
+    for r in records:
+        logger.info(f"{r.channel} <- {r.file}")
 
-        match = re.match(r"[^_]+_(\d+)\.0\.4_R000_([^_]+)_(.*)\.tif{1,2}", fname)
-        if not match:
-            continue
+    grouped: dict[str, list[ChannelRecord]] = {}
+    for r in records:
+        grouped.setdefault(r.marker, []).append(r)
 
-        round_num_str, dye_or_marker, _ = match.groups()
-        round_num = int(round_num_str)
+    result: dict[str, ChannelRecord] = {}
 
-        if "DAPI" in dye_or_marker.upper():
-            marker = "DAPI"
-        else:
-            parts = fname.split("_")
+    for marker, items in grouped.items():
+        items.sort(key=lambda r: r.round)
 
-            h_parts = parts[4].split("-")
-            marker = "-".join(h_parts[:-1]) if len(h_parts) > 1 else h_parts[0]
-
-        channel_name = f"{round_num:03d}_{marker}"
-        image_dict[channel_name] = filepath
-
-    # sort the discovered channels
-    image_dict = dict(sorted(image_dict.items()))
-
-    if not image_dict:
-        msg = f"No valid .0.4 TIF(F) files found in {files}"
-        raise ValueError(msg)
-
-    logger.info(f"Discovered {len(image_dict)} channels:")
-    for key, val in image_dict.items():
-        logger.info(f"{key} <- {val}")
-
-    grouped: dict[str, list[tuple[int, str]]] = {}
-    for ch in image_dict:
-        if "_" not in ch:
-            continue
-        round_prefix, base = ch.split("_", 1)
-        grouped.setdefault(base, []).append((int(round_prefix), ch))
-
-    result: dict[str, str] = {}
-
-    for base, items in grouped.items():
-        items.sort()
-
-        included = [name for _, name in items if name in include_channels]
+        included = [r for r in items if r.channel in include_channels]
         if included:
-            for name in included:
-                result[base] = image_dict[name]
+            for r in included:
+                result[marker] = r
             continue
 
-        items = [(r, name) for r, name in items if name not in exclude_channels]
+        items = [r for r in items if r.channel not in exclude_channels]
         if not items:
             continue
 
-        if base.upper() == "DAPI":
-            preferred = [name for _, name in items if name == "001_DAPI"]
-            if preferred:
-                result["DAPI"] = image_dict[preferred[0]]
+        if marker.upper() == REFERENCE_MARKER:
+            # earliest round (001 for Cell DIVE); keyed as "DAPI"
+            result[REFERENCE_MARKER] = items[0]
         else:
-            _, name = items[-1]
-            result[base] = image_dict[name]
+            result[marker] = items[-1]
 
     # Apply filters on markers
     if use_markers:
@@ -113,7 +89,7 @@ def scan_channels_from_list(
             if m not in result:
                 logger.warning(f"Requested use_marker '{m}' not found.")
 
-        result = {base: path for base, path in result.items() if base in use_markers}
+        result = {m: r for m, r in result.items() if m in use_markers}
         logger.info(f"Restricting to use_markers = {use_markers}")
         logger.info(f"Final filtered channels: {list(result.keys())}")
 
@@ -122,25 +98,78 @@ def scan_channels_from_list(
             if m not in result:
                 logger.warning(f"Requested ignore_marker '{m}' not found.")
 
-        result = {
-            base: path for base, path in result.items() if base not in ignore_markers
-        }
+        result = {m: r for m, r in result.items() if m not in ignore_markers}
         logger.info(f"Ignoring markers = {ignore_markers}")
         logger.info(f"Final filtered channels: {list(result.keys())}")
 
-    # Gather a list of unused channels
-    unused = {k: v for k, v in image_dict.items() if v not in result.values()}
-
     # Final report
-    logger.info(f"Final selected channels {len(result)}:")
-    for ch in sorted(result, key=str.casefold):
-        logger.info(f"  Channel: {ch} <- {result[ch]}")
+    selected_files = {r.file for r in result.values()}
+    unused = [r for r in records if r.file not in selected_files]
 
-    logger.info(f"OME-TIFF files not used in final channel selection {len(unused)}:")
-    for ch, file in sorted(unused.items()):
-        logger.info(f"  Unused: Channel {ch} <- {file}")
+    logger.info(f"Final selected channels {len(result)}:")
+    for m in sorted(result, key=str.casefold):
+        r = result[m]
+        logger.info(f"  Channel: {m} ({r.channel}) <- {r.file}")
+
+    logger.info(f"Files not used in final channel selection {len(unused)}:")
+    for r in unused:
+        logger.info(f"  Unused: Channel {r.channel} <- {r.file}")
 
     return result
+
+
+def log_unmatched(unmatched: Sequence[str], preset: str) -> None:
+    """Log files that a naming preset did not recognise."""
+    if not unmatched:
+        return
+    logger.info(
+        f"Files not recognised by naming preset '{preset}' {len(unmatched)}:"
+    )
+    for name in unmatched:
+        logger.info(f"  Unrecognised: {name}")
+
+
+def scan_channels_from_list(
+    files: Sequence[str],
+    include_channels: list[str] | None = None,
+    exclude_channels: list[str] | None = None,
+    use_markers: list[str] | None = None,
+    ignore_markers: list[str] | None = None,
+    preset: str = "celldive",
+) -> dict[str, str]:
+    """Build a channel map from a list of file paths.
+
+    Builds the manifest from file names with a naming preset, then applies
+    :func:`select_channels`.
+
+    Args:
+        files: List of file paths to process.
+        include_channels: Specific channel names to include, bypassing selection.
+        exclude_channels: Specific channel names to exclude.
+        use_markers: List of marker names to keep.
+        ignore_markers: List of marker names to discard.
+        preset: Naming preset used to parse file names.
+
+    Returns:
+        Dictionary mapping marker names to file paths (as given in ``files``).
+
+    Raises:
+        ValueError: If no file is recognised by the preset.
+    """
+    records, unmatched = build_manifest(files, preset)
+    log_unmatched(unmatched, preset)
+
+    if not records:
+        msg = f"No files recognised by naming preset '{preset}' in {list(files)}"
+        raise ValueError(msg)
+
+    selected = select_channels(
+        records, include_channels, exclude_channels, use_markers, ignore_markers
+    )
+
+    # records store base names; map back to the paths that were listed
+    path_by_name = {os.path.basename(str(f).replace("\\", "/")): f for f in files}
+    return {m: path_by_name[r.file] for m, r in selected.items()}
 
 
 def discover_channels(
