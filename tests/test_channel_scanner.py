@@ -2,7 +2,7 @@ import pytest
 from loguru import logger
 
 import plex_pipe.stages.roi_preparation.channel_scanner as channel_scanner
-from plex_pipe.stages.roi_preparation.channel_manifest import ChannelRecord
+from plex_pipe.io.channel_manifest import ChannelRecord
 from plex_pipe.stages.roi_preparation.channel_scanner import (
     scan_channels_from_list,
     select_channels,

@@ -1,6 +1,6 @@
 import pytest
 
-from plex_pipe.stages.roi_preparation.channel_manifest import (
+from plex_pipe.io.channel_manifest import (
     ChannelRecord,
     ManifestError,
     build_manifest,

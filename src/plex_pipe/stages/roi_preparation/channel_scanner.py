@@ -8,7 +8,7 @@ from plex_pipe.io.globus import (
     GlobusConfig,
     list_globus_tifs,
 )
-from plex_pipe.stages.roi_preparation.channel_manifest import (
+from plex_pipe.io.channel_manifest import (
     ChannelRecord,
     build_manifest,
 )
