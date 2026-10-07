@@ -213,7 +213,7 @@ def test_selected_and_unused_logged_with_file_names(log_messages):
 
 
 def test_no_recognised_files_raises():
-    with pytest.raises(ValueError, match="No files recognised"):
+    with pytest.raises(ValueError, match="No files in image_dir match the 'celldive'"):
         scan_channels_from_list(["a.tif", "b.tif"])
 
 
@@ -383,8 +383,8 @@ def test_explain_selection_reasons():
     ]
     _, reasons = channel_scanner.explain_selection(records, ignore_markers=["bCat"])
     assert reasons == {
-        "d1.tif": "selected: earliest DAPI round",
-        "d2.tif": "DAPI: earliest round 001_DAPI kept",
+        "d1.tif": "selected: earliest round",
+        "d2.tif": "earliest round 001_DAPI kept",
         "c3.tif": "selected: latest round",
         "c2.tif": "superseded by 003_CD3",
         "k1.tif": "selected",
@@ -406,7 +406,11 @@ def _cfg(
     from types import SimpleNamespace
 
     cutting = dict(
-        include_channels=[], exclude_channels=[], use_markers=[], ignore_markers=[]
+        include_channels=[],
+        exclude_channels=[],
+        use_markers=[],
+        ignore_markers=[],
+        earliest_round_markers=["DAPI"],
     )
     cutting.update(rules)
     return SimpleNamespace(
@@ -592,5 +596,160 @@ def test_save_manifest_defaults_to_channels_csv_in_analysis_dir(
     out = channel_scanner.save_manifest(_cfg(analysis_dir=tmp_path / "A"))
     assert out == tmp_path / "A" / "channels.csv"
     assert out.read_text().startswith("file,marker,round,use\n")
-    assert f"To use it, set general.channel_manifest: {out} " \
-        "(and remove general.file_naming)." in log_messages
+    assert (
+        f"To use it, set channel_manifest: {out} under general: in your config "
+        "YAML file (and remove file_naming), then reload the config." in log_messages
+    )
+
+
+# --- starting without Cell DIVE names and without a CSV (option C + clearer errors) ---
+
+
+def test_preset_mismatch_error_points_to_manifest(local_listing):
+    local_listing(NON_CELLDIVE_FILES)
+    with pytest.raises(ValueError, match="plex_pipe.save_manifest\\(config\\)"):
+        channel_scanner.discover_channels("/data/slide1")
+
+
+def test_discover_empty_image_dir(local_listing):
+    local_listing([])
+    with pytest.raises(ValueError, match="No TIFF files found in image_dir: /d"):
+        channel_scanner.discover_channels("/d")
+
+
+def test_missing_manifest_fails_before_listing(tmp_path, monkeypatch):
+    """No listing (and so no Globus call) happens before the missing CSV is reported."""
+
+    def boom(*args):
+        raise AssertionError("listing should not happen")
+
+    monkeypatch.setattr(channel_scanner, "list_local_files", boom)
+    missing = tmp_path / "channels.csv"
+    with pytest.raises(FileNotFoundError, match="save_manifest"):
+        channel_scanner.discover_channels("/d", channel_manifest=str(missing))
+
+
+def test_preview_with_manifest_not_created_yet(tmp_path, local_listing, log_messages):
+    local_listing(NON_CELLDIVE_FILES)
+    cfg = _cfg(file_naming=None, channel_manifest=str(tmp_path / "channels.csv"))
+    table = channel_scanner.preview_channels(cfg)
+    assert len(table) == len(NON_CELLDIVE_FILES)
+    assert not table["selected"].any()
+    assert set(table["reason"]) == {"channel manifest not created yet"}
+    assert any("does not exist yet" in m for m in log_messages)
+
+
+def test_save_manifest_writes_to_configured_path_when_missing(
+    tmp_path, local_listing, log_messages
+):
+    """
+    Not Cell DIVE, no CSV yet: the config points at the future CSV and
+    save_manifest(config) writes the template exactly there.
+    """
+    local_listing(NON_CELLDIVE_FILES)
+    target = tmp_path / "manifests" / "channels.csv"
+    cfg = _cfg(file_naming=None, channel_manifest=str(target))
+    out = channel_scanner.save_manifest(cfg)
+    assert out == target
+    assert out.read_text().splitlines() == [
+        "file,marker,round,use",
+        "overview.tif,,,",
+        "slide1_cycle1_Hoechst.tif,,,",
+        "slide1_cycle2_CD45.tif,,,",
+        "slide1_cycle3_CD45.tif,,,",
+    ]
+    assert any("already points to" in m for m in log_messages)
+    # save_manifest is creating the file, so no "does not exist yet" warning
+    assert not any("does not exist yet" in m for m in log_messages)
+
+
+def test_save_manifest_never_overwrites_configured_manifest(tmp_path, local_listing):
+    local_listing(NON_CELLDIVE_FILES)
+    target = tmp_path / "channels.csv"
+    target.write_text("file,marker\nslide1_cycle1_Hoechst.tif,DAPI\n")
+    cfg = _cfg(file_naming=None, channel_manifest=str(target))
+    with pytest.raises(FileExistsError, match="it is the channel_manifest in your config"):
+        channel_scanner.save_manifest(cfg)
+    assert target.read_text() == "file,marker\nslide1_cycle1_Hoechst.tif,DAPI\n"
+
+
+def test_save_manifest_logs_where_markers_came_from(tmp_path, local_listing, log_messages):
+    """A new CSV is pre-filled from Cell DIVE names, and the log says so."""
+    local_listing(CELLDIVE_FILES)
+    target = tmp_path / "channels.csv"
+    cfg = _cfg(file_naming=None, channel_manifest=str(target))
+    channel_scanner.save_manifest(cfg)
+    assert (
+        f"Wrote channel manifest {target}: 3 files with a marker "
+        "(read from file names using the 'celldive' naming), 0 left blank."
+        in log_messages
+    )
+
+
+# --- earliest_round_markers: which markers keep their earliest round ---
+
+NUCLEAR_ROUNDS = [
+    ChannelRecord("h1.tif", "Hoechst", 1),
+    ChannelRecord("h2.tif", "Hoechst", 2),
+    ChannelRecord("c1.tif", "CD45", 1),
+    ChannelRecord("c2.tif", "CD45", 2),
+]
+
+
+def test_earliest_round_markers_keeps_real_marker_name():
+    """A Hoechst channel can keep its own name and still get the earliest round."""
+    out = select_channels(NUCLEAR_ROUNDS, earliest_round_markers=["Hoechst"])
+    assert {m: r.file for m, r in out.items()} == {
+        "Hoechst": "h1.tif",
+        "CD45": "c2.tif",
+    }
+
+
+def test_default_earliest_round_markers_is_dapi():
+    """Not configured -> only DAPI keeps its earliest round (Cell DIVE default)."""
+    out = select_channels(NUCLEAR_ROUNDS)
+    assert out["Hoechst"].file == "h2.tif"  # latest: not in the default list
+
+
+def test_empty_earliest_round_markers_keeps_latest_everywhere():
+    records = [ChannelRecord("d1.tif", "DAPI", 1), ChannelRecord("d2.tif", "DAPI", 2)]
+    out = select_channels(records, earliest_round_markers=[])
+    assert out["DAPI"].file == "d2.tif"
+
+
+def test_earliest_round_markers_case_insensitive_and_name_kept():
+    """Matching ignores case; the marker keeps the name written in the manifest."""
+    records = [ChannelRecord("d1.tif", "dapi", 1), ChannelRecord("d2.tif", "dapi", 2)]
+    out = select_channels(records, earliest_round_markers=["DAPI"])
+    assert list(out) == ["dapi"] and out["dapi"].file == "d1.tif"
+
+
+def test_preview_uses_configured_earliest_round_markers(tmp_path, local_listing):
+    local_listing(NON_CELLDIVE_FILES)
+    manifest = _manifest(
+        tmp_path,
+        "file,marker,round\n"
+        "slide1_cycle1_Hoechst.tif,Hoechst,1\n"
+        "slide1_cycle2_CD45.tif,Hoechst,2\n",
+    )
+    cfg = _cfg(
+        file_naming=None, channel_manifest=manifest, earliest_round_markers=["Hoechst"]
+    )
+    table = channel_scanner.preview_channels(cfg)
+    reason = dict(zip(table["file"], table["reason"]))
+    assert reason["slide1_cycle1_Hoechst.tif"] == "selected: earliest round"
+    assert reason["slide1_cycle2_CD45.tif"] == "earliest round 001_Hoechst kept"
+
+
+def test_discover_passes_earliest_round_markers(tmp_path, local_listing):
+    local_listing(NON_CELLDIVE_FILES)
+    manifest = _manifest(
+        tmp_path,
+        "file,marker,round\n"
+        "slide1_cycle1_Hoechst.tif,Hoechst,1\n"
+        "slide1_cycle2_CD45.tif,Hoechst,2\n",
+    )
+    out = channel_scanner.discover_channels(
+        "/data/slide1", channel_manifest=manifest, earliest_round_markers=["Hoechst"]
+    )
+    assert out == {"Hoechst": "/data/slide1/slide1_cycle1_Hoechst.tif"}

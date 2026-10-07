@@ -91,7 +91,7 @@ def test_read_minimal_manifest_defaults_round(tmp_path):
     ]
 
 
-def test_read_manifest_excel_variants(tmp_path):
+def test_read_manifest_editor_variants(tmp_path):
     """Semicolons, BOM, header case, whitespace, blank lines, extra columns."""
     text = "File ; Marker ; Round ; notes\n a.tif ; DAPI ; 2 ; ok\n\nb.tif;CD3;;\n"
     p = _write(tmp_path, "\ufeff" + text)
@@ -163,11 +163,9 @@ def test_write_unmatched_rows_blank_and_rejected_on_read(tmp_path):
         ("yes", True),
         ("TRUE", True),
         ("1", True),
-        ("Prawda", True),
         ("no", False),
         ("FALSE", False),
         ("0", False),
-        ("FAŁSZ", False),
     ],
 )
 def test_read_use_column_values(tmp_path, cell, expected):
@@ -202,3 +200,9 @@ def test_lenient_build_and_read_keep_duplicates(tmp_path):
     assert len(read_manifest(p, strict=False)) == 2
     with pytest.raises(ManifestError):
         read_manifest(p)
+
+
+def test_default_preset_is_registered():
+    from plex_pipe.io.channel_manifest import DEFAULT_PRESET, NAMING_PRESETS
+
+    assert DEFAULT_PRESET in NAMING_PRESETS

@@ -42,10 +42,9 @@ DEFAULT_ROUND = 1
 REQUIRED_COLUMNS = ("file", "marker")
 OUTPUT_COLUMNS = ("file", "marker", "round", "use")
 
-#: Accepted ``use`` values (case-insensitive). Includes the Polish Excel
-#: booleans, which localized Excel may write to CSV. A blank cell means yes.
-USE_TRUE = frozenset({"yes", "y", "true", "t", "1", "tak", "prawda"})
-USE_FALSE = frozenset({"no", "n", "false", "f", "0", "nie", "fałsz", "falsz"})
+#: Accepted ``use`` values (case-insensitive). A blank cell means yes.
+USE_TRUE = frozenset({"yes", "y", "true", "t", "1"})
+USE_FALSE = frozenset({"no", "n", "false", "f", "0"})
 
 
 class ManifestError(ValueError):
@@ -108,6 +107,15 @@ def parse_celldive_name(fname: str) -> tuple[str, int] | None:
 NAMING_PRESETS: dict[str, Callable[[str], tuple[str, int] | None]] = {
     "celldive": parse_celldive_name,
 }
+
+#: Preset used when none is named: in the config (``file_naming`` left out) and
+#: when ``save_manifest`` / ``preview_channels`` build a manifest from file
+#: names without ``preset=``.
+DEFAULT_PRESET = "celldive"
+
+#: Markers for which the earliest round is kept (all others keep the latest),
+#: when ``roi_cutting.earliest_round_markers`` is not set in the config.
+DEFAULT_EARLIEST_ROUND_MARKERS = ("DAPI",)
 
 
 ###################################################################
@@ -196,8 +204,9 @@ def validate_records(records: Iterable[ChannelRecord]) -> None:
 def read_manifest(path: str | Path, strict: bool = True) -> list[ChannelRecord]:
     """Read and validate a user-provided manifest CSV.
 
-    Accepts comma, semicolon (Excel in many European locales) or tab
-    delimiters, and a UTF-8 byte-order mark (Excel "CSV UTF-8").
+    Accepts comma, semicolon (written by some spreadsheet programs in many
+    locales) or tab delimiters, and a UTF-8 byte-order mark (added by some
+    editors).
 
     Args:
         path: Path to the CSV file.
