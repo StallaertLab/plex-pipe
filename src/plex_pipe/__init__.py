@@ -13,6 +13,10 @@ from plex_pipe.stages.resource_building.controller import (
 from plex_pipe.stages.roi_preparation.controller import (
     RoiPreparationController,
 )
+from plex_pipe.stages.roi_preparation.channel_scanner import (
+    preview_channels,
+    save_manifest,
+)
 from plex_pipe.stages.roi_preparation.file_strategy import (
     GlobusFileStrategy,
     LocalFileStrategy,
@@ -32,4 +36,6 @@ __all__ = [
     "QcShapeMasker",
     "GlobusFileStrategy",
     "LocalFileStrategy",
+    "preview_channels",
+    "save_manifest",
 ]

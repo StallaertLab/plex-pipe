@@ -4,6 +4,7 @@ from plex_pipe.io.channel_manifest import (
     ChannelRecord,
     ManifestError,
     build_manifest,
+    duplicate_channels,
     parse_celldive_name,
     read_manifest,
     write_manifest,
@@ -127,8 +128,77 @@ def test_read_empty_manifest(tmp_path):
 
 
 def test_write_read_roundtrip(tmp_path):
-    records = [ChannelRecord("a.tif", "DAPI", 1), ChannelRecord("b.tif", "CD3", 2)]
+    """`use` is written only as a deliberate 'no'; blank otherwise."""
+    records = [
+        ChannelRecord("a.tif", "DAPI", 1),
+        ChannelRecord("b.tif", "CD3", 2, use=False),
+    ]
     out = write_manifest(records, tmp_path / "sub" / "m.csv")
     lines = out.read_text().splitlines()
-    assert lines == ["file,marker,round", "a.tif,DAPI,1", "b.tif,CD3,2"]
+    assert lines == ["file,marker,round,use", "a.tif,DAPI,1,", "b.tif,CD3,2,no"]
     assert sorted(read_manifest(out), key=lambda r: r.file) == records
+
+
+def test_write_unmatched_rows_blank_and_rejected_on_read(tmp_path):
+    """Unrecognised files become blank rows the user must fill in or delete."""
+    out = write_manifest(
+        [ChannelRecord("a.tif", "DAPI", 1)], tmp_path / "m.csv", unmatched=["x.tif"]
+    )
+    assert out.read_text().splitlines() == [
+        "file,marker,round,use",
+        "a.tif,DAPI,1,",
+        "x.tif,,,",
+    ]
+    with pytest.raises(ManifestError, match="row 3: empty 'marker'"):
+        read_manifest(out)
+
+
+# --- optional `use` column ---
+
+
+@pytest.mark.parametrize(
+    ("cell", "expected"),
+    [
+        ("", True),
+        ("yes", True),
+        ("TRUE", True),
+        ("1", True),
+        ("Prawda", True),
+        ("no", False),
+        ("FALSE", False),
+        ("0", False),
+        ("FAŁSZ", False),
+    ],
+)
+def test_read_use_column_values(tmp_path, cell, expected):
+    p = _write(tmp_path, f"file,marker,round,use\na.tif,CD3,1,{cell}\n")
+    assert read_manifest(p) == [ChannelRecord("a.tif", "CD3", 1, use=expected)]
+
+
+def test_read_use_column_rejects_unknown_value(tmp_path):
+    p = _write(tmp_path, "file,marker,use\na.tif,CD3,maybe\n")
+    with pytest.raises(ManifestError, match="row 2: use 'maybe' not understood"):
+        read_manifest(p)
+
+
+def test_missing_use_column_means_use(tmp_path):
+    p = _write(tmp_path, "file,marker\na.tif,CD3\n")
+    assert read_manifest(p)[0].use is True
+
+
+# --- lenient mode (used by previews) ---
+
+
+def test_lenient_build_and_read_keep_duplicates(tmp_path):
+    files = [
+        "p_002.0.4_R000_dye_CD3-01_x.ome.tif",
+        "p_002.0.4_R000_dye_CD3-02_x.ome.tif",
+    ]
+    records, _ = build_manifest(files, "celldive", strict=False)
+    assert len(records) == 2
+    assert duplicate_channels(records) == {"002_CD3": files}
+
+    p = _write(tmp_path, "file,marker,round\na.tif,CD3,1\nb.tif,CD3,1\n")
+    assert len(read_manifest(p, strict=False)) == 2
+    with pytest.raises(ManifestError):
+        read_manifest(p)

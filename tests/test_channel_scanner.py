@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from loguru import logger
 
@@ -204,7 +206,10 @@ def test_selected_and_unused_logged_with_file_names(log_messages):
     ]
     scan_channels_from_list(files)
     assert "  Channel: CD3 (003_CD3) <- p_003.0.4_R000_dye_CD3_x.ome.tif" in log_messages
-    assert "  Unused: Channel 002_CD3 <- p_002.0.4_R000_dye_CD3_x.ome.tif" in log_messages
+    assert (
+        "  Unused: Channel 002_CD3 <- p_002.0.4_R000_dye_CD3_x.ome.tif "
+        "(superseded by 003_CD3)" in log_messages
+    )
 
 
 def test_no_recognised_files_raises():
@@ -314,3 +319,278 @@ def test_discover_unknown_preset_raises(local_listing):
     local_listing(["/d/p_001.0.4_R000_DAPI_x.ome.tif"])
     with pytest.raises(ManifestError, match="Unknown naming preset"):
         channel_scanner.discover_channels("/d", file_naming="phenocycler")
+
+
+# --- `use` column: manifest exclusions, rules applied on top ---
+
+
+def test_use_no_removes_file_before_round_selection(log_messages):
+    """
+    Verifies: use=no drops a file first; "latest round" then falls back to the
+    next round. The log says the rules were applied on top.
+    """
+    records = [
+        ChannelRecord("dapi.tif", "DAPI", 1),
+        ChannelRecord("cd45_r2.tif", "CD45", 2),
+        ChannelRecord("cd45_r3.tif", "CD45", 3, use=False),
+    ]
+    out = select_channels(records)
+    assert out["CD45"].file == "cd45_r2.tif"
+    assert (
+        "Manifest column 'use': 1 file(s) excluded by the manifest; "
+        "roi_cutting rules applied on top." in log_messages
+    )
+    assert (
+        "  Unused: Channel 003_CD45 <- cd45_r3.tif (excluded in manifest (use=no))"
+        in log_messages
+    )
+
+
+def test_use_no_beats_include_channels(log_messages):
+    records = [
+        ChannelRecord("cd45_r2.tif", "CD45", 2, use=False),
+        ChannelRecord("cd45_r3.tif", "CD45", 3),
+    ]
+    out = select_channels(records, include_channels=["002_CD45"])
+    assert out["CD45"].file == "cd45_r3.tif"
+    assert any("the manifest wins" in m for m in log_messages)
+
+
+def test_renamed_marker_keeps_two_rounds():
+    """
+    Documented workaround: one channel is kept per marker, so to keep two
+    rounds the user gives them different marker names in the manifest.
+    """
+    records = [
+        ChannelRecord("cd45_r2.tif", "CD45_1", 2),
+        ChannelRecord("cd45_r3.tif", "CD45", 3),
+    ]
+    out = select_channels(records)
+    assert {m: r.file for m, r in out.items()} == {
+        "CD45_1": "cd45_r2.tif",
+        "CD45": "cd45_r3.tif",
+    }
+
+
+def test_explain_selection_reasons():
+    records = [
+        ChannelRecord("d1.tif", "DAPI", 1),
+        ChannelRecord("d2.tif", "DAPI", 2),
+        ChannelRecord("c2.tif", "CD3", 2),
+        ChannelRecord("c3.tif", "CD3", 3),
+        ChannelRecord("k1.tif", "CK7", 1),
+        ChannelRecord("b1.tif", "bCat", 1),
+    ]
+    _, reasons = channel_scanner.explain_selection(records, ignore_markers=["bCat"])
+    assert reasons == {
+        "d1.tif": "selected: earliest DAPI round",
+        "d2.tif": "DAPI: earliest round 001_DAPI kept",
+        "c3.tif": "selected: latest round",
+        "c2.tif": "superseded by 003_CD3",
+        "k1.tif": "selected",
+        "b1.tif": "ignore_markers",
+    }
+
+
+# --- preview_channels / save_manifest (step 5) ---
+
+
+def _cfg(
+    image_dir="/d",
+    file_naming="celldive",
+    channel_manifest=None,
+    analysis_dir="/work/A",
+    **rules,
+):
+    """Duck-typed config: `general`, the `roi_cutting` rules and `analysis_dir`."""
+    from types import SimpleNamespace
+
+    cutting = dict(
+        include_channels=[], exclude_channels=[], use_markers=[], ignore_markers=[]
+    )
+    cutting.update(rules)
+    return SimpleNamespace(
+        general=SimpleNamespace(
+            image_dir=image_dir,
+            file_naming=file_naming,
+            channel_manifest=channel_manifest,
+        ),
+        roi_cutting=SimpleNamespace(**cutting),
+        analysis_dir=analysis_dir,
+    )
+
+
+CELLDIVE_FILES = [
+    "/d/p_001.0.4_R000_DAPI_x.ome.tif",
+    "/d/p_002.0.4_R000_dye_CD3_x.ome.tif",
+    "/d/p_003.0.4_R000_dye_CD3_x.ome.tif",
+]
+
+
+def test_preview_preset_mode_rows_and_reasons(local_listing):
+    local_listing(CELLDIVE_FILES + ["/d/overview.tif"])
+    table = channel_scanner.preview_channels(_cfg())
+    assert list(table.columns) == [
+        "file", "marker", "round", "use", "channel", "selected", "reason"
+    ]
+    rows = table[["file", "selected", "reason"]].values.tolist()
+    assert rows == [
+        ["p_001.0.4_R000_DAPI_x.ome.tif", True, "selected"],
+        ["p_002.0.4_R000_dye_CD3_x.ome.tif", False, "superseded by 003_CD3"],
+        ["p_003.0.4_R000_dye_CD3_x.ome.tif", True, "selected: latest round"],
+        ["overview.tif", False, "not recognised by naming preset 'celldive'"],
+    ]
+
+
+def test_preview_reports_duplicates_instead_of_failing(local_listing):
+    """A run raises on duplicate channels; the preview shows them as rows."""
+    dup = [
+        "/d/p_002.0.4_R000_dye_CD3-01_x.ome.tif",
+        "/d/p_002.0.4_R000_dye_CD3-02_x.ome.tif",
+    ]
+    local_listing(["/d/p_001.0.4_R000_DAPI_x.ome.tif"] + dup)
+    table = channel_scanner.preview_channels(_cfg())
+    dups = table[table["reason"].str.startswith("duplicate channel 002_CD3")]
+    assert len(dups) == 2 and not dups["selected"].any()
+    assert table.loc[table["marker"] == "DAPI", "selected"].item()
+
+
+def test_preview_manifest_mode_reports_problems(tmp_path, local_listing):
+    local_listing(NON_CELLDIVE_FILES)
+    manifest = _manifest(
+        tmp_path,
+        "file,marker,round,use\n"
+        "slide1_cycle1_Hoechst.tif,DAPI,1,\n"
+        "slide1_cycle2_CD45.tif,CD45,2,\n"
+        "slide1_cycle3_CD45.tif,CD45,3,no\n"
+        "gone.tif,CD8,1,\n",
+    )
+    table = channel_scanner.preview_channels(_cfg(channel_manifest=manifest))
+    reason = dict(zip(table["file"], table["reason"]))
+    assert reason["slide1_cycle2_CD45.tif"] == "selected"
+    assert reason["slide1_cycle3_CD45.tif"] == "excluded in manifest (use=no)"
+    assert reason["gone.tif"] == "missing from image_dir"
+    assert reason["overview.tif"] == "not in manifest"
+
+
+@pytest.mark.parametrize("use_manifest", [False, True])
+def test_preview_selects_exactly_what_discovery_selects(
+    tmp_path, local_listing, use_manifest
+):
+    """The preview and the real run share the rules, so they must agree."""
+    local_listing(CELLDIVE_FILES)
+    rules = dict(exclude_channels=["003_CD3"])
+    manifest = None
+    if use_manifest:
+        manifest = _manifest(
+            tmp_path,
+            "file,marker,round,use\n"
+            "p_001.0.4_R000_DAPI_x.ome.tif,DAPI,1,\n"
+            "p_002.0.4_R000_dye_CD3_x.ome.tif,CD3,2,\n"
+            "p_003.0.4_R000_dye_CD3_x.ome.tif,CD3,3,\n",
+        )
+    table = channel_scanner.preview_channels(_cfg(channel_manifest=manifest, **rules))
+    run = channel_scanner.discover_channels(
+        "/d", channel_manifest=manifest, **rules
+    )
+    previewed = set(table.loc[table["selected"], "file"])
+    assert previewed == {os.path.basename(p) for p in run.values()}
+
+
+def test_preview_preset_argument_ignores_configured_manifest(local_listing):
+    local_listing(CELLDIVE_FILES)
+    cfg = _cfg(file_naming=None, channel_manifest="/does/not/matter.csv")
+    table = channel_scanner.preview_channels(cfg, preset="celldive")
+    assert table["selected"].sum() == 2
+
+
+def test_preview_over_globus(monkeypatch):
+    remote = ["/remote/s1/p_001.0.4_R000_DAPI_x.ome.tif"]
+    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda gc, p: remote)
+    table = channel_scanner.preview_channels(_cfg(image_dir="/remote/s1"), gc=object())
+    assert table["file"].tolist() == ["p_001.0.4_R000_DAPI_x.ome.tif"]
+
+
+def test_preview_empty_image_dir(local_listing):
+    local_listing([])
+    with pytest.raises(ValueError, match="No TIFF files"):
+        channel_scanner.preview_channels(_cfg())
+
+
+def test_save_manifest_writes_inventory_only(tmp_path, local_listing):
+    """
+    Verifies: only file, marker, round, use are saved; `use` stays blank (the
+    rules' choice is not frozen into the file); unrecognised files become
+    blank rows.
+    """
+    local_listing(CELLDIVE_FILES + ["/d/overview.tif"])
+    out = channel_scanner.save_manifest(_cfg(), tmp_path / "channels.csv")
+    assert out.read_text().splitlines() == [
+        "file,marker,round,use",
+        "p_001.0.4_R000_DAPI_x.ome.tif,DAPI,1,",
+        "p_002.0.4_R000_dye_CD3_x.ome.tif,CD3,2,",
+        "p_003.0.4_R000_dye_CD3_x.ome.tif,CD3,3,",
+        "overview.tif,,,",
+    ]
+
+
+def test_save_manifest_keeps_deliberate_no_and_drops_missing(
+    tmp_path, local_listing, log_messages
+):
+    local_listing(NON_CELLDIVE_FILES)
+    manifest = _manifest(
+        tmp_path,
+        "file,marker,round,use\n"
+        "slide1_cycle1_Hoechst.tif,DAPI,1,\n"
+        "slide1_cycle3_CD45.tif,CD45,3,no\n"
+        "gone.tif,CD8,1,\n",
+    )
+    out = channel_scanner.save_manifest(
+        _cfg(channel_manifest=manifest), tmp_path / "v2.csv"
+    )
+    text = out.read_text()
+    assert "slide1_cycle3_CD45.tif,CD45,3,no" in text
+    assert "gone.tif" not in text
+    assert any("missing from image_dir" in m for m in log_messages)
+
+
+def test_save_manifest_refuses_to_overwrite(tmp_path, local_listing):
+    local_listing(CELLDIVE_FILES)
+    out = tmp_path / "channels.csv"
+    out.write_text("file,marker\nmy_edit.tif,CD3\n")
+    with pytest.raises(FileExistsError):
+        channel_scanner.save_manifest(_cfg(), out)
+    assert out.read_text() == "file,marker\nmy_edit.tif,CD3\n"  # untouched
+    channel_scanner.save_manifest(_cfg(), out, overwrite=True)
+    assert out.read_text().startswith("file,marker,round,use\n")
+
+
+def test_saved_manifest_reproduces_preset_run(tmp_path, local_listing):
+    """Round trip: preview -> save -> manifest mode == preset mode."""
+    local_listing(CELLDIVE_FILES)
+    out = channel_scanner.save_manifest(_cfg(), tmp_path / "channels.csv")
+    via_preset = channel_scanner.discover_channels("/d")
+    via_manifest = channel_scanner.discover_channels("/d", channel_manifest=str(out))
+    assert via_manifest == via_preset
+
+
+def test_save_manifest_with_preset_and_globus(tmp_path, monkeypatch):
+    """`preset=` and `gc=` are passed through to the listing and the parser."""
+    remote = ["/remote/s1/p_001.0.4_R000_DAPI_x.ome.tif"]
+    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda gc, p: remote)
+    cfg = _cfg(image_dir="/remote/s1", file_naming=None, channel_manifest="/x.csv")
+    out = channel_scanner.save_manifest(
+        cfg, tmp_path / "m.csv", gc=object(), preset="celldive"
+    )
+    assert out.read_text().splitlines()[1] == "p_001.0.4_R000_DAPI_x.ome.tif,DAPI,1,"
+
+
+def test_save_manifest_defaults_to_channels_csv_in_analysis_dir(
+    tmp_path, local_listing, log_messages
+):
+    local_listing(CELLDIVE_FILES)
+    out = channel_scanner.save_manifest(_cfg(analysis_dir=tmp_path / "A"))
+    assert out == tmp_path / "A" / "channels.csv"
+    assert out.read_text().startswith("file,marker,round,use\n")
+    assert f"To use it, set general.channel_manifest: {out} " \
+        "(and remove general.file_naming)." in log_messages

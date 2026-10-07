@@ -4,20 +4,27 @@ A manifest lists **every** input file together with the marker it contains and
 the imaging round it was acquired in. It is either generated from file names
 with a naming preset (e.g. ``celldive``) or written by the user as a CSV file.
 
-The manifest is a pure inventory: it describes *what exists*. Which channels are
-actually used is decided downstream by the selection rules in
-:mod:`plex_pipe.stages.roi_preparation.channel_scanner`.
+The manifest is an inventory: it describes *what exists*, plus an optional
+per-file ``use`` flag. Which channels are actually used is decided downstream
+by the selection rules in
+:mod:`plex_pipe.stages.roi_preparation.channel_scanner`, which are applied on
+top of the ``use`` flag.
 
 CSV format (header required; comma, semicolon or tab separated)::
 
-    file,marker,round
-    BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif,DAPI,1
-    BLCA-1_1.0.4_R000_Cy3_pH2AX-AF555_FINAL_AFR_F.ome.tif,pH2AX,1
+    file,marker,round,use
+    BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif,DAPI,1,
+    BLCA-1_1.0.4_R000_Cy3_pH2AX-AF555_FINAL_AFR_F.ome.tif,pH2AX,1,no
 
-* ``file``: file name relative to ``general.image_dir``.
-* ``marker``: marker name used throughout the pipeline.
+* ``file``: file name in ``general.image_dir`` (no sub-folders).
+* ``marker``: marker name used throughout the pipeline (it becomes the image
+  layer name). One channel is kept per marker; to keep two rounds of the same
+  marker, give them different marker names (e.g. ``CD45`` and ``CD45_1``).
 * ``round``: optional non-negative integer; a blank cell or a missing column
   means round 1.
+* ``use``: optional; a blank cell or a missing column means the file may be
+  used. ``no`` / ``false`` / ``0`` removes the file before the selection rules
+  run. See :data:`USE_TRUE` / :data:`USE_FALSE` for accepted values.
 
 Any other columns are ignored, so the file can carry notes.
 """
@@ -33,7 +40,12 @@ from pathlib import Path
 
 DEFAULT_ROUND = 1
 REQUIRED_COLUMNS = ("file", "marker")
-OUTPUT_COLUMNS = ("file", "marker", "round")
+OUTPUT_COLUMNS = ("file", "marker", "round", "use")
+
+#: Accepted ``use`` values (case-insensitive). Includes the Polish Excel
+#: booleans, which localized Excel may write to CSV. A blank cell means yes.
+USE_TRUE = frozenset({"yes", "y", "true", "t", "1", "tak", "prawda"})
+USE_FALSE = frozenset({"no", "n", "false", "f", "0", "nie", "fałsz", "falsz"})
 
 
 class ManifestError(ValueError):
@@ -42,11 +54,13 @@ class ManifestError(ValueError):
 
 @dataclass(frozen=True)
 class ChannelRecord:
-    """One input file: which marker it holds and in which round."""
+    """One input file: which marker it holds, in which round, and whether the
+    user allows it to be used (``use=False`` removes it before selection)."""
 
     file: str
     marker: str
     round: int = DEFAULT_ROUND
+    use: bool = True
 
     @property
     def channel(self) -> str:
@@ -102,7 +116,7 @@ NAMING_PRESETS: dict[str, Callable[[str], tuple[str, int] | None]] = {
 
 
 def build_manifest(
-    files: Iterable[str], preset: str
+    files: Iterable[str], preset: str, strict: bool = True
 ) -> tuple[list[ChannelRecord], list[str]]:
     """Generate a manifest from file paths using a naming preset.
 
@@ -110,14 +124,16 @@ def build_manifest(
         files: File paths (local or remote); only the base name is parsed and
             stored.
         preset: Name of a preset in :data:`NAMING_PRESETS`.
+        strict: Raise if two files resolve to the same channel. Previews pass
+            ``False`` to report duplicates instead of failing.
 
     Returns:
         ``(records, unmatched)``: records sorted by channel name, and the base
         names of files the preset did not recognise.
 
     Raises:
-        ManifestError: If the preset is unknown or two files resolve to the
-            same channel.
+        ManifestError: If the preset is unknown, or (when ``strict``) two files
+            resolve to the same channel.
     """
     try:
         parse = NAMING_PRESETS[preset]
@@ -137,8 +153,21 @@ def build_manifest(
             marker, rnd = parsed
             records.append(ChannelRecord(file=name, marker=marker, round=rnd))
 
-    validate_records(records)
+    if strict:
+        validate_records(records)
     return sorted(records, key=lambda r: r.channel), sorted(unmatched)
+
+
+def duplicate_channels(records: Iterable[ChannelRecord]) -> dict[str, list[str]]:
+    """Channels that come from more than one file.
+
+    Returns:
+        ``{channel: [file, file, ...]}`` for every ambiguous channel.
+    """
+    files_by_channel: dict[str, list[str]] = {}
+    for r in records:
+        files_by_channel.setdefault(r.channel, []).append(r.file)
+    return {ch: fs for ch, fs in files_by_channel.items() if len(fs) > 1}
 
 
 def validate_records(records: Iterable[ChannelRecord]) -> None:
@@ -164,7 +193,7 @@ def validate_records(records: Iterable[ChannelRecord]) -> None:
         raise ManifestError("Ambiguous channel manifest:\n  - " + "\n  - ".join(problems))
 
 
-def read_manifest(path: str | Path) -> list[ChannelRecord]:
+def read_manifest(path: str | Path, strict: bool = True) -> list[ChannelRecord]:
     """Read and validate a user-provided manifest CSV.
 
     Accepts comma, semicolon (Excel in many European locales) or tab
@@ -172,6 +201,8 @@ def read_manifest(path: str | Path) -> list[ChannelRecord]:
 
     Args:
         path: Path to the CSV file.
+        strict: Raise on duplicate files or channels. Previews pass ``False``
+            to report duplicates instead of failing.
 
     Returns:
         Validated records sorted by channel name.
@@ -218,23 +249,49 @@ def read_manifest(path: str | Path) -> list[ChannelRecord]:
                 f"row {row_num}: round {round_str!r} is not a non-negative integer"
             )
             continue
-        records.append(ChannelRecord(file=row["file"], marker=row["marker"], round=rnd))
+        use_str = row.get("use", "").lower()
+        if use_str == "" or use_str in USE_TRUE:
+            use = True
+        elif use_str in USE_FALSE:
+            use = False
+        else:
+            problems.append(
+                f"row {row_num}: use {row['use']!r} not understood; "
+                f"leave it blank or write yes / no"
+            )
+            continue
+        records.append(
+            ChannelRecord(file=row["file"], marker=row["marker"], round=rnd, use=use)
+        )
 
     if problems:
         raise ManifestError(f"{path}:\n  - " + "\n  - ".join(problems))
     if not records:
         raise ManifestError(f"{path}: manifest has no entries")
 
-    validate_records(records)
+    if strict:
+        validate_records(records)
     return sorted(records, key=lambda r: r.channel)
 
 
-def write_manifest(records: Iterable[ChannelRecord], path: str | Path) -> Path:
+def write_manifest(
+    records: Iterable[ChannelRecord],
+    path: str | Path,
+    unmatched: Iterable[str] = (),
+) -> Path:
     """Write records to a CSV that :func:`read_manifest` can read back.
+
+    The ``use`` column is written as ``no`` for records with ``use=False`` and
+    left blank otherwise, so the file only ever carries deliberate exclusions,
+    never the outcome of the selection rules.
 
     Args:
         records: Manifest records.
         path: Output CSV path (parent folders are created).
+        unmatched: File names without a known marker. They are written after
+            the records with empty ``marker`` and ``round`` cells for the user
+            to fill in (or delete); :func:`read_manifest` rejects the file
+            until they are.
 
     Returns:
         The path written.
@@ -245,7 +302,9 @@ def write_manifest(records: Iterable[ChannelRecord], path: str | Path) -> Path:
         writer = csv.writer(fh)
         writer.writerow(OUTPUT_COLUMNS)
         for r in records:
-            writer.writerow([r.file, r.marker, r.round])
+            writer.writerow([r.file, r.marker, r.round, "" if r.use else "no"])
+        for name in unmatched:
+            writer.writerow([name, "", "", ""])
     return path
 
 
