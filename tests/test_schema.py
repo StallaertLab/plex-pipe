@@ -175,3 +175,34 @@ def test_example_configs_still_validate(example):
     raw, _ = migrate_to_current(yaml.safe_load(example.read_text()))
     model = AnalysisConfig.model_validate(expand_pipeline(raw))
     assert model.general.file_naming == "celldive"
+
+
+# --- roi_cutting.earliest_round_markers ---
+
+
+def _cutting(**fields):
+    cutting = {"roi_dir_tif": None, "roi_dir_output": None, "margin": 8, "mask_value": 1}
+    cutting.update(fields)
+    return cutting
+
+
+def test_earliest_round_markers_defaults_to_dapi():
+    from plex_pipe.config.config_schema import AnalysisConfig
+
+    model = AnalysisConfig.model_validate(base_cfg())
+    assert model.roi_cutting.earliest_round_markers == ["DAPI"]
+
+
+def test_earliest_round_markers_custom_and_blank():
+    from plex_pipe.config.config_schema import AnalysisConfig
+
+    custom = AnalysisConfig.model_validate(
+        base_cfg(roi_cutting=_cutting(earliest_round_markers=["Hoechst", "DAPI"]))
+    )
+    assert custom.roi_cutting.earliest_round_markers == ["Hoechst", "DAPI"]
+
+    # a bare `earliest_round_markers:` in YAML means "none": latest round everywhere
+    blank = AnalysisConfig.model_validate(
+        base_cfg(roi_cutting=_cutting(earliest_round_markers=None))
+    )
+    assert blank.roi_cutting.earliest_round_markers == []

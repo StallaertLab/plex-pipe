@@ -18,7 +18,11 @@ from pydantic import (
 )
 
 from plex_pipe.config.config_migrations import CURRENT_SCHEMA_VERSION
-from plex_pipe.io.channel_manifest import NAMING_PRESETS
+from plex_pipe.io.channel_manifest import (
+    DEFAULT_EARLIEST_ROUND_MARKERS,
+    DEFAULT_PRESET,
+    NAMING_PRESETS,
+)
 from plex_pipe.ops.registry import REGISTRY, Kind
 
 if TYPE_CHECKING:
@@ -40,7 +44,7 @@ else:
     FileNamingPreset = Literal[tuple(NAMING_PRESETS)]
 
 #: Preset used when neither ``file_naming`` nor ``channel_manifest`` is set.
-DEFAULT_FILE_NAMING = "celldive"
+DEFAULT_FILE_NAMING = DEFAULT_PRESET
 
 
 class GeneralSettings(BaseModel):
@@ -105,6 +109,9 @@ class RoiCuttingSettings(BaseModel):
     exclude_channels: list[str] = Field(default_factory=list)
     use_markers: list[str] = Field(default_factory=list)
     ignore_markers: list[str] = Field(default_factory=list)
+    earliest_round_markers: list[str] = Field(
+        default_factory=lambda: list(DEFAULT_EARLIEST_ROUND_MARKERS)
+    )
     margin: int | None = 0
     mask_value: int | None = 0
     transfer_cleanup_enabled: bool | None = False
@@ -115,6 +122,7 @@ class RoiCuttingSettings(BaseModel):
         "exclude_channels",
         "use_markers",
         "ignore_markers",
+        "earliest_round_markers",
         mode="before",
     )
     @classmethod

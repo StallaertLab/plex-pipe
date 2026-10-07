@@ -44,7 +44,7 @@ class FileAvailabilityStrategy(ABC):
 
         Uses ``general.channel_manifest`` if set, otherwise the
         ``general.file_naming`` preset, then applies the ``roi_cutting``
-        selection rules.
+        selection rules (including ``earliest_round_markers``).
 
         Args:
             gc: Globus configuration, for listing a remote ``image_dir``.
@@ -60,6 +60,7 @@ class FileAvailabilityStrategy(ABC):
             exclude_channels=cutting.exclude_channels,
             use_markers=cutting.use_markers,
             ignore_markers=cutting.ignore_markers,
+            earliest_round_markers=cutting.earliest_round_markers,
             gc=gc,
             file_naming=general.file_naming,
             channel_manifest=general.channel_manifest,

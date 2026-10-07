@@ -23,6 +23,7 @@ def mock_config():
     cfg.roi_cutting.exclude_channels = None
     cfg.roi_cutting.use_markers = None
     cfg.roi_cutting.ignore_markers = None
+    cfg.roi_cutting.earliest_round_markers = ["DAPI"]
     cfg.temp_dir = Path("/tmp/plex_pipe")
     return cfg
 
@@ -114,6 +115,7 @@ def test_local_strategy_passes_channel_source_and_rules(
         gc=None,
         file_naming=None,
         channel_manifest="/data/channels.csv",
+        earliest_round_markers=["DAPI"],
     )
 
 
