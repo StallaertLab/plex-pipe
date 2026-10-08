@@ -14,6 +14,7 @@ from plex_pipe.io.globus import (
 # --- 1. Testing GlobusEndpoint Path Logic ---
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Requires posix paths")
 def test_endpoint_init_posix_default():
     """Test that Linux/Mac defaults to full paths (root "/")."""
     with patch("os.name", "posix"):
