@@ -42,6 +42,7 @@ nav:
       - Overview: configuration/config_overview.md
       - Reference: configuration/reference.md
       - Channel Selection: configuration/channel-selection.md
+      - Schema Changelog: configuration/schema_changelog.md
   - How To Use:
     - Execution Modes: usage/execution_modes.md
     - Input Data: usage/input_data.md

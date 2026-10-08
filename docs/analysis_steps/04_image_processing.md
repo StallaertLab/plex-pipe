@@ -43,6 +43,7 @@ To complete the process, execute the following sections sequentially:
 * **Read in config**: Specify the path to the analysis configuration file and load the required settings.
 * **Specify the overwriting strategy**: Set the `OVERWRITE_FLAG`. If `False`, the pipeline will throw an error to prevent overwriting existing resources. If `True`, existing resources will be replaced. Use with caution!
 * **Define the logger**: Initialize the logging protocol to track execution progress and document the processing steps.
+* **Save a config snapshot (optional)**: Save the config used to the `configs/` folder of the analysis directory (see [Config Snapshots](../configuration/config_overview.md#config-snapshots)).
 * **Define ROIs for processing**: Identify the `SpatialData` objects to be processed. A demonstration cell is provided to truncate this list for faster testing.
 * **Setup processors**: Initialize the processing objects defined in your configuration. These objects are created once and reused across all ROIs.
 * **Run ROI Processing**: Execute the list of processing steps for each ROI. Note that the pipeline automatically validates each `SpatialData` object immediately before it is processed. An optional validation cell is also provided to run this check for all objects in the list upfront, ensuring every ROI has the required components before starting the full execution.

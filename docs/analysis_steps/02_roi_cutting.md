@@ -31,8 +31,9 @@ To complete the process, execute the following sections sequentially:
 
 * **Read in config**: Specify the pathway to the analysis configuration file and load the required settings.
 * **Define the logger**: Initialize the logging protocol to track execution progress and document the process.
+* **Save a config snapshot (optional)**: Save the config used to the `configs/` folder of the analysis directory (see [Config Snapshots](../configuration/config_overview.md#config-snapshots)).
 * **Define ROIs for processing**: Ingests the [ROI parameters](./01_roi_definition.md/#roi-output-schema) into a Pandas DataFrame. A demonstration cell is provided to truncate this DataFrame for rapid testing purposes.
-* **Discover signal channels**: Identifies available TIFF images and implements the [channel selection logic](../configuration/channel-selection.md). A demonstration cell is included to show how to subset the channel list for testing.
+* **Discover signal channels**: Preview which files will be used and why with `preview_channels(config)`, then identify the available TIFF images and apply the [channel selection rules](../configuration/channel-selection.md). To change the selection, edit the config YAML file and run *Read in config* again. A demonstration cell shows how to subset the channel list for testing.
 * **Run ROI cutting**: Triggers the ROI extraction process utilizing the local file sourcing strategy.
 
 ---

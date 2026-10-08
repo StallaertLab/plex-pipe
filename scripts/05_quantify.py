@@ -6,7 +6,7 @@ from datetime import datetime
 import spatialdata as sd
 from loguru import logger
 
-from plex_pipe.config.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config, save_config_snapshot
 from plex_pipe.stages.quantification.controller import QuantificationController
 
 
@@ -52,6 +52,7 @@ def main():
     # setup logging
     configure_logging(settings)
     logger.info("Starting quantification script.")
+    save_config_snapshot(settings)
 
     # setup quantification controllers
     quant_controller_list = []

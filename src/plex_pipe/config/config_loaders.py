@@ -1,8 +1,10 @@
 """General utilities for configuration loading and dynamic path handling."""
 
 import copy
+import hashlib
 import os
 import platform
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -12,7 +14,10 @@ from pydantic import ValidationError
 
 from plex_pipe.config.config_migrations import (
     CURRENT_SCHEMA_VERSION,
+    CURRENT_SCHEMA_VERSION_STR,
+    format_version,
     migrate_to_current,
+    needs_migration,
 )
 from plex_pipe.config.config_schema import AnalysisConfig
 
@@ -61,7 +66,9 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
 
     # Version check + in-memory migration of older configs (writes nothing to
     # disk; logs a hint pointing at migrate_config if a migration happened).
-    settings, _ = migrate_to_current(settings)
+    settings, start_version = migrate_to_current(settings)
+    # The upgraded config as written (before expansion), for snapshots.
+    raw = copy.deepcopy(settings)
 
     # expand placeholders
     settings = expand_pipeline(settings)
@@ -71,6 +78,10 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
         config = AnalysisConfig.model_validate(settings)
     except ValidationError as exc:
         raise ValueError(_format_validation_error(settings_path, exc)) from exc
+
+    config._source_path = Path(settings_path).resolve()
+    config._source_schema_version = format_version(start_version)
+    config._raw = raw
 
     # create dirs necessary for the analysis
     for p in [
@@ -85,9 +96,7 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
     return config
 
 
-def _format_validation_error(
-    settings_path: str | Path, exc: ValidationError
-) -> str:
+def _format_validation_error(settings_path: str | Path, exc: ValidationError) -> str:
     """Turn a Pydantic ValidationError into a short, human-readable message.
 
     Args:
@@ -97,16 +106,86 @@ def _format_validation_error(
     Returns:
         A plain-text summary listing each problem as ``section.field: message``.
     """
-    lines = [f"Config '{settings_path}' is not valid for schema "
-             f"v{CURRENT_SCHEMA_VERSION}:"]
+    lines = [
+        f"Config '{settings_path}' is not valid for schema "
+        f"{CURRENT_SCHEMA_VERSION_STR}:"
+    ]
     for err in exc.errors():
         location = ".".join(str(part) for part in err["loc"]) or "<root>"
         lines.append(f"  - {location}: {err['msg']}")
-    lines.append(
-        "If this is an older config, migrate it first: "
-        "plex_pipe.migrate_config(<path>)."
-    )
     return "\n".join(lines)
+
+
+def save_config_snapshot(config: AnalysisConfig) -> Path | None:
+    """Save the config used for a run into the analysis directory.
+
+    Each distinct config is saved once, as
+    ``<analysis_dir>/configs/config_<hash>.yaml``, where ``<hash>`` is a short
+    fingerprint of its content. Runs with the same config reuse the same file;
+    a changed config gives a new file. The file holds the config as loaded
+    (already upgraded to the current schema, ``${input}`` steps unexpanded) and
+    can be loaded again with :func:`load_config`. Its header records when and
+    from which source file it was first written.
+
+    Every call logs which snapshot the run used, with the details of this run:
+    source file, the folder the run started from (relative paths are
+    resolved against it), PlexPipe version and schema versions. Nothing is
+    written next to the source file.
+
+    Args:
+        config: A config returned by :func:`load_config`.
+
+    Returns:
+        The path of the snapshot, or ``None`` if ``config`` was not loaded
+        from a file (nothing to save).
+    """
+    if config._raw is None:
+        logger.warning(
+            "Config was not loaded with load_config; no config snapshot written."
+        )
+        return None
+
+    from plex_pipe import __version__
+
+    body = yaml.safe_dump(config._raw, sort_keys=False)
+    digest = hashlib.sha256(
+        yaml.safe_dump(config._raw, sort_keys=True).encode()
+    ).hexdigest()[:8]
+    out_dir = Path(config.analysis_dir) / "configs"
+    out_path = out_dir / f"config_{digest}.yaml"
+
+    source_schema = config._source_schema_version
+    if source_schema == CURRENT_SCHEMA_VERSION_STR:
+        schema = f"schema {CURRENT_SCHEMA_VERSION_STR}"
+    else:
+        schema = (
+            f"schema {source_schema} in the source file, upgraded to "
+            f"{CURRENT_SCHEMA_VERSION_STR}"
+        )
+
+    if out_path.exists():
+        status = "existing"
+    else:
+        status = "new"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        header = [
+            f"PlexPipe config snapshot {digest}",
+            f"first written: {datetime.now():%Y-%m-%d %H:%M:%S}",
+            f"from: {config._source_path}",
+            f"PlexPipe: {__version__}",
+            f"{schema}",
+            "Runs that used this config are listed in the logs "
+            f"('Config snapshot: ...config_{digest}.yaml').",
+        ]
+        with open(out_path, "w") as file:
+            file.write("".join(f"# {line}\n" for line in header) + "\n" + body)
+
+    logger.info(
+        f"Config snapshot: {out_path} ({status}; "
+        f"source {config._source_path}, run from {Path.cwd()}, "
+        f"PlexPipe {__version__}, {schema})"
+    )
+    return out_path
 
 
 def migrate_config(
@@ -120,7 +199,8 @@ def migrate_config(
     Args:
         in_path: Path to the config file to migrate.
         out_path: Where to write the migrated config. Defaults to
-            ``<stem>_v<CURRENT>.<suffix>`` next to the input.
+            ``<stem>_v<MAJOR>.<suffix>`` next to the input (e.g.
+            ``analysis_v2.yaml``).
 
     Returns:
         The path written, or ``None`` if the config was already current.
@@ -131,16 +211,16 @@ def migrate_config(
 
     migrated, start_version = migrate_to_current(raw)
 
-    if start_version == CURRENT_SCHEMA_VERSION:
+    if not needs_migration(start_version):
         logger.info(
-            f"{in_path} is already schema v{CURRENT_SCHEMA_VERSION}; "
+            f"{in_path} is already schema {format_version(start_version)}; "
             f"nothing to migrate."
         )
         return None
 
     if out_path is None:
         out_path = in_path.with_name(
-            f"{in_path.stem}_v{CURRENT_SCHEMA_VERSION}{in_path.suffix}"
+            f"{in_path.stem}_v{CURRENT_SCHEMA_VERSION[0]}{in_path.suffix}"
         )
     out_path = Path(out_path)
 
@@ -148,8 +228,8 @@ def migrate_config(
         yaml.safe_dump(migrated, file, sort_keys=False)
 
     logger.info(
-        f"Migrated {in_path} (schema v{start_version} -> "
-        f"v{CURRENT_SCHEMA_VERSION}) -> {out_path}"
+        f"Migrated {in_path} (schema {format_version(start_version)} -> "
+        f"{CURRENT_SCHEMA_VERSION_STR}) -> {out_path}"
     )
     return out_path
 

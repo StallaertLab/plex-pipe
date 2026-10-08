@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 from loguru import logger
 
-from plex_pipe.config.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config, save_config_snapshot
 from plex_pipe.io.globus import GlobusConfig
 from plex_pipe.stages.roi_preparation.controller import (
     RoiPreparationController,
@@ -43,18 +43,22 @@ def parse_args():
     parser.add_argument(
         "--from_collection",
         help="Key for source collection in Globus config.",
-        default="r_collection_id",
+        default="remote_source",
     )
     parser.add_argument(
         "--to_collection",
         help="Key for destination collection in Globus config.",
-        default="crcd_collection_id",
+        default="local_workstation",
     )
     parser.add_argument(
         "--cleanup",
         "-c",
         action="store_true",
-        help="Enable deletion of Globus transfered image files.",
+        help=(
+            "Delete each image transferred via Globus once its ROIs are cut "
+            "(same as transfer_cleanup_enabled: true under roi_cutting: in the "
+            "config YAML file)."
+        ),
     )
 
     return parser.parse_args()
@@ -70,6 +74,7 @@ def main():
     # setup logging
     configure_logging(config)
     logger.info("Starting core cutting script.")
+    save_config_snapshot(config)
 
     # setup Globus if requested
     if args.globus_config:
@@ -92,7 +97,10 @@ def main():
     if gc:
         # initialize Globus transfer
         strategy = GlobusFileStrategy(
-            config=config, gc=gc, cleanup_enabled=args.cleanup
+            config=config,
+            gc=gc,
+            cleanup_enabled=args.cleanup
+            or bool(config.roi_cutting.transfer_cleanup_enabled),
         )
         strategy.submit_all_transfers(batch_size=1)
     else:
@@ -109,6 +117,7 @@ def main():
         max_pyramid_levels=config.sdata_storage.max_pyramid_level,
         chunk_size=config.sdata_storage.chunk_size,
         downscale=config.sdata_storage.downscale,
+        temp_roi_delete=bool(config.roi_cutting.roi_cleanup_enabled),
     )
 
     # run core cutting

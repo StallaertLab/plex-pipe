@@ -6,7 +6,7 @@ from datetime import datetime
 import spatialdata as sd
 from loguru import logger
 
-from plex_pipe.config.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config, save_config_snapshot
 from plex_pipe.ops import build_processor
 from plex_pipe.stages.resource_building.controller import (
     ResourceBuildingController,
@@ -20,7 +20,7 @@ def configure_logging(settings):
 
     log_file = (
         settings.log_dir_path
-        / f"cores_segmenation_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
+        / f"cores_segmentation_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
 
     logger.remove()
@@ -55,6 +55,7 @@ def main():
     # setup logging
     configure_logging(settings)
     logger.info("Starting object segmentation script.")
+    save_config_snapshot(settings)
 
     # setup builders of additional data elements
     if getattr(settings, "additional_elements", None):

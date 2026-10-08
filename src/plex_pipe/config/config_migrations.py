@@ -1,67 +1,116 @@
 """Schema versioning and migration for ``AnalysisConfig`` YAML files.
 
-``schema_version`` is a **migration-generation counter**: a plain integer that
-is *independent of the plex_pipe package version*. It increments by one only
-when the config-file format changes in a way that would stop an older file from
-loading. A config with **no** ``schema_version`` key is treated as version 0
-(``LEGACY_VERSION`` — the pre-versioning format).
+``schema_version`` is written as ``"MAJOR.MINOR"`` (e.g. ``"2.0"``; quote it in
+YAML so ``2.10`` is not read as the number 2.1). It is *independent of the
+plex_pipe package version*:
+
+* **MAJOR** changes when the config-file format changes in a way that would
+  stop an older file from loading (keys moved, renamed or removed). Each MAJOR
+  step has a migration.
+* **MINOR** changes when optional keys are added. Older files still load
+  unchanged; the MINOR number lets an *older* plex_pipe warn that a newer
+  config may contain settings it does not know (and would ignore).
+
+A config with **no** ``schema_version`` key is treated as version 0.0
+(``LEGACY_VERSION``, the pre-versioning format). A bare integer, as written
+by schema 1 (``schema_version: 1``), is read as ``1.0``.
 
 Migrations are ``dict -> dict`` transforms applied to the raw parsed YAML
 **before** Pydantic validation, because an old file will not validate against
-the current model. Each migration converts version ``N`` to ``N + 1``;
+the current model. Each migration converts MAJOR ``N`` to ``N + 1``;
 :func:`migrate_to_current` composes the chain to bring any older file up to
-:data:`CURRENT_SCHEMA_VERSION` (e.g. v0 -> v2 runs v0->v1 then v1->v2).
+:data:`CURRENT_SCHEMA_VERSION` (e.g. 0 -> 2 runs v0->v1 then v1->v2).
 
-Adding a new schema version (the contributor rule):
+Changing the config format (the contributor rule):
 
-1. bump :data:`CURRENT_SCHEMA_VERSION`;
-2. write ``migrate_v{N}_to_v{N+1}(raw)`` and register it in :data:`MIGRATIONS`;
-3. add a test with a fixture config at the old version.
+* Breaking change: bump the MAJOR of :data:`CURRENT_SCHEMA_VERSION` (MINOR back
+  to 0), write ``migrate_v{N}_to_v{N+1}(raw)``, register it in
+  :data:`MIGRATIONS`, and add a test with a fixture config at the old version.
+* New optional key with a default: bump the MINOR only; no migration needed.
+* Either way: add an entry to ``docs/configuration/schema_changelog.md`` and
+  update ``schema_version`` in the example configs.
 """
 
 from __future__ import annotations
 
 import copy
+import re
 from collections.abc import Callable
 
 from loguru import logger
 
+#: Version as a ``(major, minor)`` pair.
+SchemaVersion = tuple[int, int]
+
 #: The schema version this build of plex_pipe reads/writes.
-CURRENT_SCHEMA_VERSION = 1
+CURRENT_SCHEMA_VERSION: SchemaVersion = (2, 0)
 
 #: The implicit version of a config that has no ``schema_version`` key.
-LEGACY_VERSION = 0
+LEGACY_VERSION: SchemaVersion = (0, 0)
+
+_VERSION_RE = re.compile(r"^(\d+)(?:\.(\d+))?$")
 
 
-def _detect_version(raw: dict) -> int:
-    """Read the integer ``schema_version`` from a raw config dict.
+def format_version(version: SchemaVersion) -> str:
+    """Format a ``(major, minor)`` pair as written in YAML, e.g. ``"2.0"``."""
+    return f"{version[0]}.{version[1]}"
 
-    A missing key means :data:`LEGACY_VERSION` (0). Kept as a single helper so the
-    comparison logic lives in one place: the only place that would need to change
-    if the versioning scheme ever moved away from plain integers.
+
+#: :data:`CURRENT_SCHEMA_VERSION` as written in YAML, e.g. ``"2.0"``.
+CURRENT_SCHEMA_VERSION_STR = format_version(CURRENT_SCHEMA_VERSION)
+
+
+def parse_version(value: object) -> SchemaVersion:
+    """Parse a ``schema_version`` value into ``(major, minor)``.
+
+    Accepts ``"2.0"`` (preferred), ``"2"``, the integer ``1`` written by
+    schema 1, and an unquoted YAML number such as ``2.0``.
+
+    Raises:
+        ValueError: If the value is not a ``MAJOR.MINOR`` version.
+    """
+    if isinstance(value, bool):
+        match = None
+    elif isinstance(value, int):
+        match = _VERSION_RE.match(str(value))
+    elif isinstance(value, float):
+        match = _VERSION_RE.match(repr(value))
+    elif isinstance(value, str):
+        match = _VERSION_RE.match(value.strip())
+    else:
+        match = None
+    if match is None:
+        raise ValueError(
+            f'`schema_version` must be "MAJOR.MINOR" (e.g. '
+            f'"{CURRENT_SCHEMA_VERSION_STR}"), got {value!r} '
+            f"({type(value).__name__})."
+        )
+    return int(match[1]), int(match[2] or 0)
+
+
+def _detect_version(raw: dict) -> SchemaVersion:
+    """Read ``schema_version`` from a raw config dict as ``(major, minor)``.
+
+    A missing key means :data:`LEGACY_VERSION` (0.0). Kept as a single helper
+    so version parsing lives in one place.
 
     Args:
         raw: The raw config dictionary (parsed YAML).
 
     Returns:
-        The schema version as an integer.
+        The schema version as ``(major, minor)``.
 
     Raises:
-        ValueError: If ``schema_version`` is present but not an integer.
+        ValueError: If ``schema_version`` is present but not a valid version.
     """
-    version = raw.get("schema_version", LEGACY_VERSION)
-    if not isinstance(version, int) or isinstance(version, bool):
-        raise ValueError(
-            f"`schema_version` must be an integer, got {version!r} "
-            f"({type(version).__name__}). Schema versions are plain "
-            f"incrementing integers (1, 2, 3, ...)."
-        )
-    return version
+    if "schema_version" not in raw:
+        return LEGACY_VERSION
+    return parse_version(raw["schema_version"])
 
 
-def needs_migration(version: int) -> bool:
-    """Return True if a config at ``version`` is behind the current schema."""
-    return version < CURRENT_SCHEMA_VERSION
+def needs_migration(version: SchemaVersion) -> bool:
+    """Return True if a config at ``version`` is an older MAJOR than current."""
+    return version[0] < CURRENT_SCHEMA_VERSION[0]
 
 
 # Legacy category names for the image-enhancement step, unified to the current
@@ -199,62 +248,149 @@ def migrate_v0_to_v1(raw: dict) -> dict:
     return raw
 
 
-#: Migration functions keyed by the version they migrate *from*.
-#: Add ``1: migrate_v1_to_v2`` here when a v2 schema is introduced.
+# Channel selection settings that moved from ``roi_cutting`` to ``channels``
+# in schema 2.0.
+_CHANNEL_SELECTION_FIELDS = (
+    "include_channels",
+    "exclude_channels",
+    "use_markers",
+    "ignore_markers",
+    "earliest_round_markers",
+)
+
+
+def migrate_v1_to_v2(raw: dict) -> dict:
+    """Migrate a schema-1 config to schema 2.0.
+
+    Schema 2.0 groups everything about which images are used, and under which
+    marker names, in a new top-level ``channels`` section:
+
+    * ``roi_cutting`` -> ``channels``: ``include_channels``,
+      ``exclude_channels``, ``use_markers``, ``ignore_markers`` (and
+      ``earliest_round_markers`` if present).
+    * ``general`` -> ``channels``: ``file_naming`` (if present);
+      ``channel_manifest`` -> ``manifest`` (if present).
+
+    The new section is placed right after ``general``. Written defensively: a
+    key already present in ``channels`` is kept, and running this on
+    2.0-shaped input is a safe no-op.
+
+    Args:
+        raw: The raw schema-1 config dictionary (mutated and returned).
+
+    Returns:
+        The upgraded dictionary, stamped with ``schema_version = "2.0"``.
+    """
+    channels = raw.get("channels")
+    if not isinstance(channels, dict):
+        channels = {}
+
+    roi_cut = raw.get("roi_cutting")
+    if isinstance(roi_cut, dict):
+        for field in _CHANNEL_SELECTION_FIELDS:
+            if field in roi_cut:
+                value = roi_cut.pop(field)
+                channels.setdefault(field, value)
+
+    general = raw.get("general")
+    if isinstance(general, dict):
+        if "file_naming" in general:
+            channels.setdefault("file_naming", general.pop("file_naming"))
+        if "channel_manifest" in general:
+            channels.setdefault("manifest", general.pop("channel_manifest"))
+
+    if channels:
+        # rebuild so that `channels` sits right after `general` when written out
+        reordered: dict = {}
+        for key, value in raw.items():
+            if key == "channels":
+                continue
+            reordered[key] = value
+            if key == "general":
+                reordered["channels"] = channels
+        if "channels" not in reordered:
+            reordered["channels"] = channels
+        raw.clear()
+        raw.update(reordered)
+
+    raw["schema_version"] = "2.0"
+    return raw
+
+
+#: Migration functions keyed by the MAJOR version they migrate *from*.
 MIGRATIONS: dict[int, Callable[[dict], dict]] = {
     0: migrate_v0_to_v1,
+    1: migrate_v1_to_v2,
 }
 
 
-def migrate_to_current(raw: dict) -> tuple[dict, int]:
+def migrate_to_current(raw: dict) -> tuple[dict, SchemaVersion]:
     """Bring a raw config dict up to :data:`CURRENT_SCHEMA_VERSION`.
 
     Applies the registered migrations in sequence (v0->v1->v2->...) until the
-    config reaches the current version. Operates on a deep copy, so the caller's
-    dict is never mutated.
+    config reaches the current MAJOR version. Operates on a deep copy, so the
+    caller's dict is never mutated. The returned dict always carries
+    ``schema_version`` as a ``"MAJOR.MINOR"`` string.
+
+    A config with the current MAJOR but a newer MINOR loads with a warning: it
+    may contain optional settings this build does not know, which would be
+    ignored.
 
     Args:
         raw: The raw config dictionary (parsed YAML).
 
     Returns:
         A tuple ``(migrated_dict, start_version)`` where ``start_version`` is the
-        version the config was at before migration.
+        ``(major, minor)`` the config was at before migration.
 
     Raises:
-        ValueError: If the config is newer than this build understands, or if a
-            migration step is missing or misbehaves.
+        ValueError: If the config is a newer MAJOR than this build understands,
+            or if a migration step is missing or misbehaves.
     """
     raw = copy.deepcopy(raw)
     start_version = _detect_version(raw)
+    current_major = CURRENT_SCHEMA_VERSION[0]
 
-    if start_version > CURRENT_SCHEMA_VERSION:
+    if start_version[0] > current_major:
         raise ValueError(
-            f"This config is schema v{start_version}, but this build of "
-            f"plex_pipe understands only up to v{CURRENT_SCHEMA_VERSION}. "
-            f"Upgrade plex_pipe to read it."
+            f"This config is schema {format_version(start_version)}, but this "
+            f"build of plex_pipe understands only up to "
+            f"{CURRENT_SCHEMA_VERSION_STR}. Upgrade plex_pipe to read it."
         )
 
     version = start_version
-    while version < CURRENT_SCHEMA_VERSION:
-        migrate = MIGRATIONS.get(version)
+    while version[0] < current_major:
+        migrate = MIGRATIONS.get(version[0])
         if migrate is None:
             raise ValueError(
-                f"No migration registered from schema v{version} to "
-                f"v{version + 1}. This is a plex_pipe bug — please report it."
+                f"No migration registered from schema {version[0]} to "
+                f"{version[0] + 1}. This is a plex_pipe bug — please report it."
             )
         raw = migrate(raw)
         new_version = _detect_version(raw)
-        if new_version != version + 1:
+        if new_version[0] != version[0] + 1:
             raise ValueError(
-                f"Migration from schema v{version} left schema_version="
-                f"{new_version} (expected {version + 1})."
+                f"Migration from schema {format_version(version)} left "
+                f"schema_version={format_version(new_version)} "
+                f"(expected {version[0] + 1}.x)."
             )
         version = new_version
 
-    if start_version < CURRENT_SCHEMA_VERSION:
+    if version[0] == current_major and version[1] > CURRENT_SCHEMA_VERSION[1]:
+        logger.warning(
+            f"This config is schema {format_version(version)}, newer than this "
+            f"build of plex_pipe ({CURRENT_SCHEMA_VERSION_STR}). It may contain "
+            f"settings this build does not know, which would be ignored. "
+            f"Consider upgrading plex_pipe."
+        )
+
+    # canonical form for the model (e.g. an unquoted YAML 2.0 becomes "2.0")
+    raw["schema_version"] = format_version(version)
+
+    if needs_migration(start_version):
         logger.info(
-            f"Config migrated in memory: schema v{start_version} -> "
-            f"v{CURRENT_SCHEMA_VERSION}. To upgrade the file on disk, run "
+            f"Config migrated in memory: schema {format_version(start_version)} "
+            f"-> {CURRENT_SCHEMA_VERSION_STR}. To upgrade the file on disk, run "
             f"plex_pipe.migrate_config(<path>)."
         )
     return raw, start_version

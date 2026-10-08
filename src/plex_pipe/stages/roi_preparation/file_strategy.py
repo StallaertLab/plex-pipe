@@ -8,13 +8,15 @@ from loguru import logger
 # NOTE: `globus_sdk` (the `globus` extra) is imported lazily inside the methods
 # that use it, so `import plex_pipe` — and `LocalFileStrategy` — work without the
 # extra installed. Only `GlobusFileStrategy`'s transfer methods need it.
-
 from plex_pipe.config.config_schema import AnalysisConfig
 from plex_pipe.io.globus import (
     GlobusConfig,
     create_globus_tc,
 )
-from plex_pipe.stages.roi_preparation.channel_scanner import discover_channels
+from plex_pipe.stages.roi_preparation.channel_scanner import (
+    check_downstream_markers,
+    discover_channels,
+)
 
 RETRYABLE_STATUSES = {502, 503, 504}
 MAX_TRIES = 6
@@ -38,6 +40,34 @@ class FileAvailabilityStrategy(ABC):
             config: Analysis configuration object.
         """
         self.config = config
+
+    def _discover_channel_map(self, gc: GlobusConfig | None = None) -> ChannelMap:
+        """Build the channel map from the config (shared by all strategies).
+
+        Reads the ``channels`` section: the manifest source (``manifest`` if
+        set, otherwise the ``file_naming`` preset) and the selection rules.
+        Warns if later pipeline steps need markers that will not be cut.
+
+        Args:
+            gc: Globus configuration, for listing a remote ``image_dir``.
+
+        Returns:
+            Mapping of marker name to (local or remote) file path.
+        """
+        channels = self.config.channels
+        channel_map = discover_channels(
+            self.config.general.image_dir,
+            include_channels=channels.include_channels,
+            exclude_channels=channels.exclude_channels,
+            use_markers=channels.use_markers,
+            ignore_markers=channels.ignore_markers,
+            earliest_round_markers=channels.earliest_round_markers,
+            gc=gc,
+            file_naming=channels.file_naming,
+            channel_manifest=channels.manifest,
+        )
+        check_downstream_markers(self.config, channel_map)
+        return channel_map
 
     @abstractmethod
     def yield_ready_channels(self) -> Iterator[tuple[str, str | Path]]:
@@ -69,14 +99,7 @@ class GlobusFileStrategy(FileAvailabilityStrategy):
         self.gc = gc
         self.tc = create_globus_tc(gc.client_id, gc.transfer_tokens)
 
-        self.channel_map = discover_channels(
-            self.config.general.image_dir,
-            include_channels=self.config.roi_cutting.include_channels,
-            exclude_channels=self.config.roi_cutting.exclude_channels,
-            use_markers=self.config.roi_cutting.use_markers,
-            ignore_markers=self.config.roi_cutting.ignore_markers,
-            gc=self.gc,
-        )
+        self.channel_map = self._discover_channel_map(gc=self.gc)
 
         self.pending_tasks: list[str] = []
         self.yielded_channels: set[str] = set()
@@ -216,13 +239,7 @@ class LocalFileStrategy(FileAvailabilityStrategy):
         self.gc = None
         super().__init__(config)
 
-        self.channel_map = discover_channels(
-            self.config.general.image_dir,
-            include_channels=self.config.roi_cutting.include_channels,
-            exclude_channels=self.config.roi_cutting.exclude_channels,
-            use_markers=self.config.roi_cutting.use_markers,
-            ignore_markers=self.config.roi_cutting.ignore_markers,
-        )
+        self.channel_map = self._discover_channel_map()
 
     def yield_ready_channels(self) -> Iterator[tuple[str, str]]:
         """Yield all discovered local channels.

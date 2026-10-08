@@ -14,8 +14,9 @@ gc:
       # Find this on the Globus Web App under 'Collection Search'
       # The UUID of your Globus Connect Personal endpoint
       id: "destination-collection-uuid-here"
-      # Windows: null (for multi-drive) or specify the entry point, e.g. "C:/"
-      # Linux: null (for Home) or specify the entry point, e.g. "/home/user/data"
+      # null: full paths on Mac/Linux, drive letters (/C/...) on Windows,
+      # as Globus Connect Personal uses. Set a folder only if the collection
+      # is rooted there, e.g. "/home/user/data"
       root: null
 
 transfer_tokens:

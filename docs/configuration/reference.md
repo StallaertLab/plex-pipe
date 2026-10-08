@@ -1,6 +1,14 @@
-
-
 The following sections detail the configuration parameters for each step of the pipeline.
+
+## Schema Version
+
+```yaml
+schema_version: "2.0"
+```
+
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `schema_version` | `str` | Version of the config file format, `"MAJOR.MINOR"`, in quotes. The current version is `"2.0"`. Older configs are upgraded automatically when loaded; see [Schema Version and Migration](config_overview.md#schema-version-and-migration). |
 
 ## General Settings
 
@@ -10,69 +18,83 @@ This section defines the fundamental paths and naming conventions for the analys
 general:
   image_dir: C:/path/to/images
   analysis_name: experiment_01
-  analysis_root_dir: C:/analysis_out
+  analysis_dir: C:/analysis_out
   log_dir: null
 ```
 
-| Key                        | Type        | Description                                        |
-| -------------------------- | ----------- | ---------------------------------------------------|
-| `image_dir`                | `Path`       | Source directory with tiff images. In local mode, `image_dir` should point to a folder on a local system. In Globus mode, `image_dir` should reflect the remote directory on the Globus endpoint.|            |
-| `analysis_name`            | `str`       | Name of the analysis run.                          |
-| `analysis_root_dir`        | `Path`       | Analysis output base directory. Analysis will be saved in `analysis_root_dir/analysis_name` referred to as `analysis_dir`.|
-| `log_dir`                  | `Path` (optional)       | Custom log directory. Defaults to `analysis_dir/logs`.   |
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `image_dir` | `Path` | Source directory with TIFF images. In local mode, `image_dir` should point to a folder on a local system. In Globus mode, `image_dir` should reflect the remote directory on the Globus endpoint. |
+| `analysis_name` | `str` | Name of the analysis run. |
+| `analysis_dir` | `Path` | Analysis output base directory. The analysis is saved in `analysis_dir/analysis_name`, referred to below as the analysis directory. |
+| `log_dir` | `Path` (optional) | Custom log directory. Defaults to `logs` in the analysis directory. |
+
+## Channels
+
+This section defines where marker names and rounds come from (the channel manifest) and which channels are used. The whole section is optional; leaving it out uses the defaults.
+
+```yaml
+channels:
+  file_naming: celldive
+  # manifest: /path/to/channels.csv
+  earliest_round_markers: [DAPI]
+  include_channels: []
+  exclude_channels: []
+  use_markers: []
+  ignore_markers: []
+```
+
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `file_naming` | `str` (optional) | Naming preset used to read marker and round from file names. Available: `celldive`. Used when `manifest` is not set. |
+| `manifest` | `Path` (optional) | Path to a channel manifest CSV listing every file with its marker and round. Set either `file_naming` or `manifest`, not both. |
+| `earliest_round_markers` | `list[str]` (optional) | Markers for which the earliest round is kept instead of the latest. Defaults to `[DAPI]`. |
+| `include_channels` | `list[str]` (optional) | Channel names (e.g. `002_CD44`) to use for their marker, bypassing round selection. |
+| `exclude_channels` | `list[str]` (optional) | Channel names to skip. |
+| `use_markers` | `list[str]` (optional) | If set, only these markers are used. |
+| `ignore_markers` | `list[str]` (optional) | Markers to leave out. |
+
+See [Channel Selection](channel-selection.md) for the manifest CSV format and how the selection rules work together.
 
 ## ROI Definition
 
-This section configures the automatic detection of tissue cores. It specifies the image used for detection and the parameters for the Segment Anything Model (SAM2) to accurately identify core boundaries.
+This section specifies the image used to define the regions of interest (ROIs) and where their coordinates are stored.
 
 ```yaml
-core_detection:
+roi_definition:
   detection_image: "BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif"
-  core_info_file_path: null
+  roi_info_file_path: null
   im_level: 6
 ```
 
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `detection_image` | `str` | **Required.** Name of the image in `image_dir` used for defining cores. |
-| `roi_info_file_path` | `Path` (optional) | Custom path for core coordinates. Defaults to `analysis_dir/rois.pkl`. |
-| `im_level` | `float` (optional) | Pyramid level to read from the image for core definition. If not specified, all pyramid levels are read from the input image. |
+| `detection_image` | `str` | **Required.** Name of the image in `image_dir` used for defining ROIs. |
+| `roi_info_file_path` | `Path` (optional) | Custom path for ROI coordinates. Defaults to `rois.pkl` in the analysis directory. |
+| `im_level` | `float` (optional) | Pyramid level to read from the image for ROI definition. If not specified, all pyramid levels are read from the input image. |
 
 ## ROI Cutting
 
-This section controls the extraction of individual ROIs from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.
+This section controls the extraction of individual ROIs from the original whole-slide images: output directories, margins and masking. Which channels are cut is set in [Channels](#channels).
 
 ```yaml
-core_cutting:
-  cores_dir_tif: null
-  cores_dir_output: null
-
-  include_channels:
-  exclude_channels:
-    - 008_ECad
-  use_markers:
-  ignore_markers:
-    - Antibody1
+roi_cutting:
+  roi_dir_tif: null
+  roi_dir_output: null
   margin: 0
   mask_value: 0
-  transfer_cleanup_enabled: True
-  temp_roi_delete: True
+  transfer_cleanup_enabled: false
+  roi_cleanup_enabled: false
 ```
 
-| Key                        | Type        | Description                                                             |
-| -------------------------- | ----------- | ----------------------------------------------------------------------- |
-| `cores_dir_tif`            | `Path` (optional)       | Temporary folder to store extracted TIFFs for each core. Defaults to `analysis_dir/temp`. |
-| `cores_dir_output`         | `Path` (optional)       | Final destination for SpatialData (Zarr) outputs. Defaults to `analysis_dir/cores`.       |
-| `include_channels`         | `list[str]` (optional)  | List of channel names to include.           |
-| `exclude_channels`         | `list[str]` (optional)  | List of channel names to exclude.                             |
-| `use_markers`              | `list[str]` (optional)  | List to restrict markers to analyze. |
-| `ignore_markers`           | `list[str]` (optional)  | List to ignore markers.|
-| `margin`                   | `int` (optional) | Number of pixels to pad around each bounding box when cutting cores. Defaults to 0.    |
-| `mask_value`               | `int` (optional) | Value used to fill background for polygonal core masks. Defaults to 0.                 |
-| `transfer_cleanup_enabled` | `bool` (optional) | Whether to delete temporary files downloaded via Globus after the run. Defaults to False.|
-| `temp_roi_delete`     | `bool` (optional) | Whether to delete TIFFs from the temporary storage in `cores_dir_tif` after core assembly. Defaults to False. For details see [Input Data](../usage/input_data.md).|
-
-Parameters `include_channels`, `exclude_channels`, `use_markers` and `ignore_markers` provide a fine-grained control over which imaging channels are included in processing. See [Channel Selection Logic](channel-selection.md) for details.
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `roi_dir_tif` | `Path` (optional) | Temporary folder to store extracted TIFFs for each ROI. Defaults to `temp` in the analysis directory. |
+| `roi_dir_output` | `Path` (optional) | Final destination for SpatialData (Zarr) outputs. Defaults to `rois` in the analysis directory. |
+| `margin` | `int` (optional) | Number of pixels to pad around each bounding box when cutting ROIs. Defaults to 0. |
+| `mask_value` | `int` (optional) | Value used to fill the background for polygonal ROI masks. Defaults to 0. |
+| `transfer_cleanup_enabled` | `bool` (optional) | Whether to delete each image transferred via Globus once its ROIs are cut. Defaults to false. The `--cleanup` option of `02_cut_rois.py` also turns it on. |
+| `roi_cleanup_enabled` | `bool` (optional) | Whether to delete the per-ROI TIFFs in `roi_dir_tif` once each ROI is assembled into its SpatialData object. Defaults to false. |
 
 ## Quality Control
 
@@ -86,7 +108,7 @@ qc:
 
 | Key | Type | Description |
 | :--- | :--- | :--- |
-| `prefix` | `str` (optional) | Prefix for shapes used for quality control exclusion. Shapes named `{prefix}_{marker}` will be used to mask out objects for specific markers. |
+| `prefix` | `str` | **Required.** Prefix for shapes used for quality control exclusion. Shapes named `{prefix}_{marker}` will be used to mask out objects for specific markers. |
 
 
 ## Image Processing
@@ -126,8 +148,8 @@ additional_elements:
         - instanseg_nucleus
     output: ring
     parameters:
-      outer: 8
-      inner: 2
+      rad_bigger: 8
+      rad_smaller: 2
     keep: true
 ```
 
@@ -173,7 +195,7 @@ quant:
     markers_to_quantify:
       - DAPI
       - HLA1
-    add_qc_masks: True
+    qc_to_table: True
 ```
 
 | Key | Type | Description |
@@ -183,7 +205,7 @@ quant:
 | `layer_connection` | `str` (optional) | The mask layer name to which the table should be linked (e.g. for visualization in Napari Spatialdata plugin). |
 | `morphological_properties` | `list[str]` (optional) | List of morphological features to calculate. 'Label' is added automatically if absent from the custom list to identify objects. Defaults to ["label", "centroid", "area", "eccentricity", "solidity", "perimeter", "euler_number"].|
 | `intensity_properties` | `list[str]` (optional) | List of intensity metrics to calculate. Defaults to ['mean', 'median']. |
-| `markers_to_quantify` | `list[str]` (optional) | List of specific markers to quantify itensity properties. If omitted, all available channels are quantified. |
+| `markers_to_quantify` | `list[str]` (optional) | List of specific markers to quantify intensity properties. If omitted, all channels of the first ROI are quantified, and every ROI must have the same channels (the run stops otherwise). |
 | `qc_to_table` | `bool` (optional) | If True, uses polygons defined in the QC step to create a mask layer in the AnnData table indicating which objects are from the accepted regions. Defaults to False. |
 
 For `morphological_properties`, any property supported by skimage.measure.regionprops can be used.

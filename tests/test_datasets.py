@@ -11,11 +11,11 @@ import re
 import zipfile
 
 from plex_pipe.datasets import (
+    _REGISTRY,
     EXAMPLE_DATA_ARCHIVE,
     EXAMPLE_DATA_BASE_URL,
     EXAMPLE_DATA_SHA256,
     EXAMPLE_DATA_TAG,
-    _REGISTRY,
     _unpack_images_into,
 )
 
@@ -37,9 +37,7 @@ def test_base_url_points_at_the_data_release():
 
 def test_archive_is_registered_with_its_hash():
     """The registry maps the archive name to the recorded checksum."""
-    assert _REGISTRY.registry[EXAMPLE_DATA_ARCHIVE] == (
-        f"sha256:{EXAMPLE_DATA_SHA256}"
-    )
+    assert _REGISTRY.registry[EXAMPLE_DATA_ARCHIVE] == (f"sha256:{EXAMPLE_DATA_SHA256}")
 
 
 def test_resolved_asset_url_is_exact():

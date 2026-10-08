@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
@@ -42,7 +43,10 @@ class QuantificationController:
                 {'cell': 'cell_mask'}). Assumes object labels correspond across masks.
             table_name: Name for the output AnnData table.
             mask_to_annotate: Label key to connect the resulting table to.
-            markers_to_quantify: List of markers/channels to quantify.
+            markers_to_quantify: List of markers/channels to quantify. If None,
+                all images of the first ROI are quantified, and every later ROI
+                run with this controller must have the same images (so all
+                tables have the same columns).
             add_qc_masks: If True, runs QC masking after quantification.
             qc_prefix: Prefix for QC exclusion columns.
             overwrite: If True, allows overwriting an existing table.
@@ -58,7 +62,10 @@ class QuantificationController:
 
         self.mask_keys = mask_keys.copy()
         self.mask_to_annotate = mask_to_annotate
+        self.markers_to_quantify = markers_to_quantify
         self.channels = markers_to_quantify
+        # set from the first ROI when markers_to_quantify is None
+        self._expected_channels: list[str] | None = None
         self.table_name = table_name
         self.add_qc_masks = add_qc_masks
         self.qc_prefix = qc_prefix
@@ -91,7 +98,9 @@ class QuantificationController:
             sdata: The SpatialData object to validate.
 
         Raises:
-            ValueError: If a specified mask or channel key is missing.
+            ValueError: If a specified mask or channel key is missing, or (with
+                ``markers_to_quantify`` unset) if this ROI's channels differ from
+                those of the first ROI run with this controller.
         """
 
         # validate masks to quantify are present
@@ -102,20 +111,43 @@ class QuantificationController:
                 raise ValueError(message)
 
         # validate channels to quantify are present
-        if self.channels:
-            for ch in self.channels:
+        if self.markers_to_quantify:
+            for ch in self.markers_to_quantify:
                 if ch not in sdata:
                     message = f"Channel '{ch}' not found in sdata. Channels present: {list(sdata.images)}"
                     logger.error(message)
                     raise ValueError(message)
+            self.channels = list(self.markers_to_quantify)
             logger.info(
                 f"Quantifying {len(self.channels)} user-specified channels: {self.channels}."
             )
-        else:
-            self.channels = list(sdata.images)
+            return
+
+        present = list(sdata.images)
+        if self._expected_channels is None:
+            self._expected_channels = present
             logger.info(
-                f"Channels not specified. Quantifying all ({len(self.channels)}) existing channels: {self.channels}."
+                f"Channels not specified. Quantifying all ({len(present)}) channels "
+                f"of the first ROI: {present}. Every later ROI must have the same "
+                f"channels."
             )
+        else:
+            missing = [c for c in self._expected_channels if c not in present]
+            extra = [c for c in present if c not in self._expected_channels]
+            if missing or extra:
+                roi = Path(sdata.path).name if sdata.path else "This ROI"
+                message = (
+                    f"{roi} has different channels from the first ROI, so its "
+                    f"table would not match the others. All ROIs of one analysis "
+                    f"must have the same channels. Missing: {missing}. Extra: "
+                    f"{extra}. Expected: {self._expected_channels}."
+                )
+                logger.error(message)
+                raise ValueError(message)
+            logger.info(
+                f"Quantifying the same {len(present)} channels as the first ROI."
+            )
+        self.channels = list(self._expected_channels)
 
     def _prepare_to_overwrite(self, sdata: sd.SpatialData) -> None:
         """Deletes an existing table if overwrite is enabled.

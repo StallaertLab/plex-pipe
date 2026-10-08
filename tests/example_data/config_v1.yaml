@@ -10,7 +10,7 @@ schema_version: 1
 general:
   image_dir: "../examples/input"
   analysis_name: "sample_analysis"
-  analysis_dir: "/analysis_dir"
+  analysis_dir: "../examples//output"
   log_dir: null # => ${analysis_dir}/logs
 
 ######################################################

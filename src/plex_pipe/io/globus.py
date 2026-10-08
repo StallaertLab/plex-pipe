@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import os
 from pathlib import Path, PurePosixPath, PureWindowsPath
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import yaml
 
+if TYPE_CHECKING:
+    import globus_sdk
+
 # NOTE: `globus_sdk` is an OPTIONAL dependency (the `globus` extra). It is
 # imported lazily inside the functions that need it so that `import plex_pipe`
-# works without the extra installed. `from __future__ import annotations` keeps
-# the `globus_sdk.*` type hints below as strings, so they are never evaluated at
-# import time.
+# works without the extra installed. The import above is for type checkers
+# only, and `from __future__ import annotations` keeps the `globus_sdk.*` type
+# hints as strings, so they are never evaluated at import time.
 
 
 class GlobusEndpoint:
@@ -21,7 +24,10 @@ class GlobusEndpoint:
 
         Args:
             collection_id: The Globus collection ID.
-            root: The root path for the collection. Defaults to None.
+            root: Local folder that the collection's Globus path "/" points to.
+                None (default) means full paths on Mac/Linux, as Globus Connect
+                Personal uses (/Users/me/data -> /Users/me/data), and
+                drive-letter paths on Windows (D:\\data -> /D/data).
         """
 
         self.collection_id = collection_id
@@ -30,7 +36,7 @@ class GlobusEndpoint:
             if os.name == "nt":
                 self.shared_root = None
             else:
-                self.shared_root = Path.home().resolve()
+                self.shared_root = Path("/")
         else:
             self.shared_root = Path(root).resolve()
 
@@ -141,7 +147,7 @@ class GlobusConfig:
     @classmethod
     def from_yaml(
         cls, yaml_path: str | Path, source_key: str, dest_key: str
-    ) -> "GlobusConfig":
+    ) -> GlobusConfig:
         """Loads configuration from a YAML file.
 
         Args:

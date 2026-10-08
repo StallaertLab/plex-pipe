@@ -3,12 +3,20 @@ try:
 except ImportError:  # _version.py is generated at build time by setuptools_scm
     __version__ = "0.0.0+unknown"
 
-from plex_pipe.config.config_loaders import load_config, migrate_config
+from plex_pipe.config.config_loaders import (
+    load_config,
+    migrate_config,
+    save_config_snapshot,
+)
 from plex_pipe.datasets import fetch_example
 from plex_pipe.stages.quantification.controller import QuantificationController
 from plex_pipe.stages.quantification.qc_shape_masker import QcShapeMasker
 from plex_pipe.stages.resource_building.controller import (
     ResourceBuildingController,
+)
+from plex_pipe.stages.roi_preparation.channel_scanner import (
+    preview_channels,
+    save_manifest,
 )
 from plex_pipe.stages.roi_preparation.controller import (
     RoiPreparationController,
@@ -25,6 +33,7 @@ __all__ = [
     "ops",
     "load_config",
     "migrate_config",
+    "save_config_snapshot",
     "fetch_example",
     "RoiPreparationController",
     "ResourceBuildingController",
@@ -32,4 +41,6 @@ __all__ = [
     "QcShapeMasker",
     "GlobusFileStrategy",
     "LocalFileStrategy",
+    "preview_channels",
+    "save_manifest",
 ]

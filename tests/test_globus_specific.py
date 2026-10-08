@@ -1,6 +1,6 @@
 import os
 import sys
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -14,13 +14,30 @@ from plex_pipe.io.globus import (
 # --- 1. Testing GlobusEndpoint Path Logic ---
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Requires posix paths")
 def test_endpoint_init_posix_default():
-    """Test that Linux/Mac defaults to Home directory."""
+    """Test that Linux/Mac defaults to full paths (root "/")."""
     with patch("os.name", "posix"):
-        with patch.object(Path, "home") as mock_home:
-            mock_home.return_value.resolve.return_value = PurePosixPath("/home/user")
-            endpoint = GlobusEndpoint("id-123")
-            assert endpoint.shared_root == PurePosixPath("/home/user")
+        endpoint = GlobusEndpoint("id-123")
+        assert endpoint.shared_root == Path("/")
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Requires posix paths")
+def test_local_to_globus_posix_default_uses_full_path():
+    """Globus Connect Personal on Mac/Linux expects the full local path."""
+    endpoint = GlobusEndpoint("id-123")
+    local = "/Users/me/projects/plex-pipe/notebooks/test.txt"
+    assert endpoint.local_to_globus(local) == local
+    assert endpoint.globus_to_local(local) == Path(local)
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Requires posix paths")
+def test_local_to_globus_posix_rooted():
+    """With a root, paths are sent relative to it."""
+    endpoint = GlobusEndpoint("id-123", root="/data/shared")
+    with patch.object(Path, "resolve", side_effect=lambda self: self, autospec=True):
+        assert endpoint.local_to_globus("/data/shared/a/b.tif") == "/a/b.tif"
+        assert endpoint.globus_to_local("/a/b.tif") == Path("/data/shared/a/b.tif")
 
 
 def test_endpoint_init_windows_default():
