@@ -253,7 +253,9 @@ def test_keys_left_in_old_place_fail_clearly(section, key, value):
 
 @pytest.mark.parametrize(
     "example",
-    sorted((Path(__file__).parents[1] / "examples").glob("example_pipeline_config*.yaml")),
+    sorted(
+        (Path(__file__).parents[1] / "examples").glob("example_pipeline_config*.yaml")
+    ),
     ids=lambda p: p.name,
 )
 def test_example_configs_validate(example):

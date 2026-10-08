@@ -39,7 +39,7 @@ core_cutting:
   include_channels:
   exclude_channels:
     - 008_ECad
-  use_markers: 
+  use_markers:
   ignore_markers:
     - Antibody1
     - TNFa
@@ -101,7 +101,7 @@ additional_elements:
       model: fluorescence_nuclei_and_cells
       pixel_size: 0.3
       resolve_cell_and_nucleus: true
-      cleanup_fragments: true 
+      cleanup_fragments: true
       clean_cache: true
       normalise: false
     input:
@@ -114,15 +114,15 @@ additional_elements:
       - pCK26_norm
       - pS6_norm
       - HES1_norm
-    output: 
+    output:
       - instanseg_nucleus
       - instanseg_cell
     keep: true
-  
+
 #----------------------------------------------
   - category: mask_builder
     type: ring
-    input: 
+    input:
         - instanseg_nucleus
     output: ring
     parameters:
@@ -132,7 +132,7 @@ additional_elements:
 #----------------------------------------------
   - category: mask_builder
     type: subtract
-    input: 
+    input:
       - instanseg_cell
       - instanseg_nucleus
     output: cytoplasm
@@ -151,7 +151,7 @@ qc:
 
 quant:
   - name: instanseg_table
-    masks: 
+    masks:
       nucleus: instanseg_nucleus
       cell: instanseg_cell
       ring: ring
@@ -171,4 +171,3 @@ sdata_storage:
   chunk_size: [1, 512, 512]
   max_pyramid_level: 3
   downscale: 2
- 

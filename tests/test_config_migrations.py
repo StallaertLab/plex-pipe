@@ -170,8 +170,10 @@ def test_full_legacy_config_migrates_every_field():
     # core_cutting -> roi_cutting (+ field renames).
     assert "core_cutting" not in migrated
     roi_cut = migrated["roi_cutting"]
-    assert "roi_dir_tif" in roi_cut and "cores_dir_tif" not in roi_cut
-    assert "roi_dir_output" in roi_cut and "cores_dir_output" not in roi_cut
+    assert "roi_dir_tif" in roi_cut
+    assert "cores_dir_tif" not in roi_cut
+    assert "roi_dir_output" in roi_cut
+    assert "cores_dir_output" not in roi_cut
     assert "roi_cleanup_enabled" in roi_cut
     assert "core_cleanup_enabled" not in roi_cut
     # channel/marker lists: blank (None) normalized to [] by v0->v1, then moved
@@ -187,9 +189,7 @@ def test_full_legacy_config_migrates_every_field():
     categories = [s["category"] for s in migrated["additional_elements"]]
     assert "image_filter" not in categories
     assert "image_enhancer" in categories
-    ring = next(
-        s for s in migrated["additional_elements"] if s.get("type") == "ring"
-    )
+    ring = next(s for s in migrated["additional_elements"] if s.get("type") == "ring")
     assert ring["parameters"]["rad_bigger"] == 8
     assert ring["parameters"]["rad_smaller"] == 2
     assert "outer" not in ring["parameters"]
@@ -243,7 +243,11 @@ def test_v1_to_v2_moves_selection_lists_to_channels():
     assert out["roi_cutting"] == {"margin": 8}
     # the new section is placed right after `general`
     assert list(out) == [
-        "schema_version", "general", "channels", "roi_definition", "roi_cutting"
+        "schema_version",
+        "general",
+        "channels",
+        "roi_definition",
+        "roi_cutting",
     ]
 
 

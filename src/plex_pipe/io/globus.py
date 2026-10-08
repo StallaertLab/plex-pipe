@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import os
 from pathlib import Path, PurePosixPath, PureWindowsPath
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import yaml
 
+if TYPE_CHECKING:
+    import globus_sdk
+
 # NOTE: `globus_sdk` is an OPTIONAL dependency (the `globus` extra). It is
 # imported lazily inside the functions that need it so that `import plex_pipe`
-# works without the extra installed. `from __future__ import annotations` keeps
-# the `globus_sdk.*` type hints below as strings, so they are never evaluated at
-# import time.
+# works without the extra installed. The import above is for type checkers
+# only, and `from __future__ import annotations` keeps the `globus_sdk.*` type
+# hints as strings, so they are never evaluated at import time.
 
 
 class GlobusEndpoint:
@@ -141,7 +144,7 @@ class GlobusConfig:
     @classmethod
     def from_yaml(
         cls, yaml_path: str | Path, source_key: str, dest_key: str
-    ) -> "GlobusConfig":
+    ) -> GlobusConfig:
         """Loads configuration from a YAML file.
 
         Args:

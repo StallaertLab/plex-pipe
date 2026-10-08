@@ -147,8 +147,7 @@ def build_manifest(
         parse = NAMING_PRESETS[preset]
     except KeyError:
         raise ManifestError(
-            f"Unknown naming preset {preset!r}. "
-            f"Available: {sorted(NAMING_PRESETS)}"
+            f"Unknown naming preset {preset!r}. Available: {sorted(NAMING_PRESETS)}"
         ) from None
 
     records, unmatched = [], []
@@ -198,7 +197,9 @@ def validate_records(records: Iterable[ChannelRecord]) -> None:
             )
         by_channel[r.channel] = r
     if problems:
-        raise ManifestError("Ambiguous channel manifest:\n  - " + "\n  - ".join(problems))
+        raise ManifestError(
+            "Ambiguous channel manifest:\n  - " + "\n  - ".join(problems)
+        )
 
 
 def channel_marker(channel: str) -> str:
@@ -246,9 +247,7 @@ def selection_rule_conflicts(
             )
     for ch in include:
         if ch in exclude:
-            problems.append(
-                f"{ch} is in both include_channels and exclude_channels."
-            )
+            problems.append(f"{ch} is in both include_channels and exclude_channels.")
         marker = channel_marker(ch)
         if marker in ignore:
             problems.append(
@@ -326,9 +325,7 @@ def read_manifest(path: str | Path, strict: bool = True) -> list[ChannelRecord]:
 
     records, problems = [], []
     for row_num, raw in enumerate(reader, start=2):  # row 1 is the header
-        row = {
-            (k or "").strip().lower(): (v or "").strip() for k, v in raw.items()
-        }
+        row = {(k or "").strip().lower(): (v or "").strip() for k, v in raw.items()}
         if not any(row.values()):
             continue  # blank line
         if not row["file"]:

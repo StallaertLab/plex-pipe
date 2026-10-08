@@ -81,8 +81,8 @@ def parse_version(value: object) -> SchemaVersion:
         match = None
     if match is None:
         raise ValueError(
-            f"`schema_version` must be \"MAJOR.MINOR\" (e.g. "
-            f"\"{CURRENT_SCHEMA_VERSION_STR}\"), got {value!r} "
+            f'`schema_version` must be "MAJOR.MINOR" (e.g. '
+            f'"{CURRENT_SCHEMA_VERSION_STR}"), got {value!r} '
             f"({type(value).__name__})."
         )
     return int(match[1]), int(match[2] or 0)

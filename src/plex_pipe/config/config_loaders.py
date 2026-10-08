@@ -96,9 +96,7 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
     return config
 
 
-def _format_validation_error(
-    settings_path: str | Path, exc: ValidationError
-) -> str:
+def _format_validation_error(settings_path: str | Path, exc: ValidationError) -> str:
     """Turn a Pydantic ValidationError into a short, human-readable message.
 
     Args:
@@ -108,8 +106,10 @@ def _format_validation_error(
     Returns:
         A plain-text summary listing each problem as ``section.field: message``.
     """
-    lines = [f"Config '{settings_path}' is not valid for schema "
-             f"{CURRENT_SCHEMA_VERSION_STR}:"]
+    lines = [
+        f"Config '{settings_path}' is not valid for schema "
+        f"{CURRENT_SCHEMA_VERSION_STR}:"
+    ]
     for err in exc.errors():
         location = ".".join(str(part) for part in err["loc"]) or "<root>"
         lines.append(f"  - {location}: {err['msg']}")

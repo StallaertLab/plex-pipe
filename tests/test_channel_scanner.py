@@ -66,23 +66,23 @@ def test_scan_exclude_channels_overrides_grouping():
     ("rules", "message"),
     [
         (
-            dict(include_channels=["002_CD3", "003_CD3"]),
+            {"include_channels": ["002_CD3", "003_CD3"]},
             r"several channels of marker CD3 \(002_CD3, 003_CD3\)",
         ),
         (
-            dict(include_channels=["003_CD3"], exclude_channels=["003_CD3"]),
+            {"include_channels": ["003_CD3"], "exclude_channels": ["003_CD3"]},
             "003_CD3 is in both include_channels and exclude_channels",
         ),
         (
-            dict(include_channels=["003_CD3"], ignore_markers=["CD3"]),
+            {"include_channels": ["003_CD3"], "ignore_markers": ["CD3"]},
             "include_channels lists 003_CD3, but marker CD3 is in ignore_markers",
         ),
         (
-            dict(include_channels=["003_CD3"], use_markers=["DAPI"]),
+            {"include_channels": ["003_CD3"], "use_markers": ["DAPI"]},
             "include_channels lists 003_CD3, but marker CD3 is not in use_markers",
         ),
         (
-            dict(use_markers=["CD3"], ignore_markers=["CD3"]),
+            {"use_markers": ["CD3"], "ignore_markers": ["CD3"]},
             "Marker CD3 is in both use_markers and ignore_markers",
         ),
     ],
@@ -245,7 +245,9 @@ def test_selected_and_unused_logged_with_file_names(log_messages):
         "p_003.0.4_R000_dye_CD3_x.ome.tif",
     ]
     scan_channels_from_list(files)
-    assert "  Channel: CD3 (003_CD3) <- p_003.0.4_R000_dye_CD3_x.ome.tif" in log_messages
+    assert (
+        "  Channel: CD3 (003_CD3) <- p_003.0.4_R000_dye_CD3_x.ome.tif" in log_messages
+    )
     assert (
         "  Unused: Channel 002_CD3 <- p_002.0.4_R000_dye_CD3_x.ome.tif "
         "(superseded by 003_CD3)" in log_messages
@@ -332,11 +334,9 @@ def test_files_not_in_manifest_are_logged(tmp_path, local_listing, log_messages)
     assert "  Not in manifest: overview.tif" in log_messages
 
 
-def test_discover_with_manifest_over_globus_returns_remote_paths(
-    tmp_path, monkeypatch
-):
+def test_discover_with_manifest_over_globus_returns_remote_paths(tmp_path, monkeypatch):
     remote = ["/remote/s1/a_cycle1_DAPI.tif", "/remote/s1/a_cycle1_CD3.tif"]
-    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda gc, p: remote)
+    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda _gc, _p: remote)
     manifest = _manifest(
         tmp_path, "file,marker\na_cycle1_DAPI.tif,DAPI\na_cycle1_CD3.tif,CD3\n"
     )
@@ -464,15 +464,15 @@ def _cfg(
     `analysis_dir`. `channel_manifest` maps to `channels.manifest`."""
     from types import SimpleNamespace
 
-    channels = dict(
-        file_naming=file_naming,
-        manifest=channel_manifest,
-        include_channels=[],
-        exclude_channels=[],
-        use_markers=[],
-        ignore_markers=[],
-        earliest_round_markers=["DAPI"],
-    )
+    channels = {
+        "file_naming": file_naming,
+        "manifest": channel_manifest,
+        "include_channels": [],
+        "exclude_channels": [],
+        "use_markers": [],
+        "ignore_markers": [],
+        "earliest_round_markers": ["DAPI"],
+    }
     channels.update(rules)
     return SimpleNamespace(
         general=SimpleNamespace(image_dir=image_dir),
@@ -492,9 +492,15 @@ def test_preview_preset_mode_rows_and_reasons(local_listing):
     local_listing(CELLDIVE_FILES + ["/d/overview.tif"])
     table = channel_scanner.preview_channels(_cfg())
     assert list(table.columns) == [
-        "file", "marker", "round", "use", "channel", "selected", "reason"
+        "file",
+        "marker",
+        "round",
+        "use",
+        "channel",
+        "selected",
+        "reason",
     ]
-    rows = table[["file", "selected", "reason"]].values.tolist()
+    rows = table[["file", "selected", "reason"]].to_numpy().tolist()
     assert rows == [
         ["p_001.0.4_R000_DAPI_x.ome.tif", True, "selected"],
         ["p_002.0.4_R000_dye_CD3_x.ome.tif", False, "superseded by 003_CD3"],
@@ -512,7 +518,8 @@ def test_preview_reports_duplicates_instead_of_failing(local_listing):
     local_listing(["/d/p_001.0.4_R000_DAPI_x.ome.tif"] + dup)
     table = channel_scanner.preview_channels(_cfg())
     dups = table[table["reason"].str.startswith("duplicate channel 002_CD3")]
-    assert len(dups) == 2 and not dups["selected"].any()
+    assert len(dups) == 2
+    assert not dups["selected"].any()
     assert table.loc[table["marker"] == "DAPI", "selected"].item()
 
 
@@ -527,7 +534,7 @@ def test_preview_manifest_mode_reports_problems(tmp_path, local_listing):
         "gone.tif,CD8,1,\n",
     )
     table = channel_scanner.preview_channels(_cfg(channel_manifest=manifest))
-    reason = dict(zip(table["file"], table["reason"]))
+    reason = dict(zip(table["file"], table["reason"], strict=False))
     assert reason["slide1_cycle2_CD45.tif"] == "selected"
     assert reason["slide1_cycle3_CD45.tif"] == "excluded in manifest (use=no)"
     assert reason["gone.tif"] == "missing from image_dir"
@@ -540,7 +547,7 @@ def test_preview_selects_exactly_what_discovery_selects(
 ):
     """The preview and the real run share the rules, so they must agree."""
     local_listing(CELLDIVE_FILES)
-    rules = dict(exclude_channels=["003_CD3"])
+    rules = {"exclude_channels": ["003_CD3"]}
     manifest = None
     if use_manifest:
         manifest = _manifest(
@@ -551,9 +558,7 @@ def test_preview_selects_exactly_what_discovery_selects(
             "p_003.0.4_R000_dye_CD3_x.ome.tif,CD3,3,\n",
         )
     table = channel_scanner.preview_channels(_cfg(channel_manifest=manifest, **rules))
-    run = channel_scanner.discover_channels(
-        "/d", channel_manifest=manifest, **rules
-    )
+    run = channel_scanner.discover_channels("/d", channel_manifest=manifest, **rules)
     previewed = set(table.loc[table["selected"], "file"])
     assert previewed == {os.path.basename(p) for p in run.values()}
 
@@ -567,7 +572,7 @@ def test_preview_preset_argument_ignores_configured_manifest(local_listing):
 
 def test_preview_over_globus(monkeypatch):
     remote = ["/remote/s1/p_001.0.4_R000_DAPI_x.ome.tif"]
-    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda gc, p: remote)
+    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda _gc, _p: remote)
     table = channel_scanner.preview_channels(_cfg(image_dir="/remote/s1"), gc=object())
     assert table["file"].tolist() == ["p_001.0.4_R000_DAPI_x.ome.tif"]
 
@@ -638,7 +643,7 @@ def test_saved_manifest_reproduces_preset_run(tmp_path, local_listing):
 def test_save_manifest_with_preset_and_globus(tmp_path, monkeypatch):
     """`preset=` and `gc=` are passed through to the listing and the parser."""
     remote = ["/remote/s1/p_001.0.4_R000_DAPI_x.ome.tif"]
-    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda gc, p: remote)
+    monkeypatch.setattr(channel_scanner, "list_globus_tifs", lambda _gc, _p: remote)
     cfg = _cfg(image_dir="/remote/s1", file_naming=None, channel_manifest="/x.csv")
     out = channel_scanner.save_manifest(
         cfg, tmp_path / "m.csv", gc=object(), preset="celldive"
@@ -725,12 +730,16 @@ def test_save_manifest_never_overwrites_configured_manifest(tmp_path, local_list
     target = tmp_path / "channels.csv"
     target.write_text("file,marker\nslide1_cycle1_Hoechst.tif,DAPI\n")
     cfg = _cfg(file_naming=None, channel_manifest=str(target))
-    with pytest.raises(FileExistsError, match="it is the manifest set under channels: in your config"):
+    with pytest.raises(
+        FileExistsError, match="it is the manifest set under channels: in your config"
+    ):
         channel_scanner.save_manifest(cfg)
     assert target.read_text() == "file,marker\nslide1_cycle1_Hoechst.tif,DAPI\n"
 
 
-def test_save_manifest_logs_where_markers_came_from(tmp_path, local_listing, log_messages):
+def test_save_manifest_logs_where_markers_came_from(
+    tmp_path, local_listing, log_messages
+):
     """A new CSV is pre-filled from Cell DIVE names, and the log says so."""
     local_listing(CELLDIVE_FILES)
     target = tmp_path / "channels.csv"
@@ -778,7 +787,8 @@ def test_earliest_round_markers_case_insensitive_and_name_kept():
     """Matching ignores case; the marker keeps the name written in the manifest."""
     records = [ChannelRecord("d1.tif", "dapi", 1), ChannelRecord("d2.tif", "dapi", 2)]
     out = select_channels(records, earliest_round_markers=["DAPI"])
-    assert list(out) == ["dapi"] and out["dapi"].file == "d1.tif"
+    assert list(out) == ["dapi"]
+    assert out["dapi"].file == "d1.tif"
 
 
 def test_preview_uses_configured_earliest_round_markers(tmp_path, local_listing):
@@ -793,7 +803,7 @@ def test_preview_uses_configured_earliest_round_markers(tmp_path, local_listing)
         file_naming=None, channel_manifest=manifest, earliest_round_markers=["Hoechst"]
     )
     table = channel_scanner.preview_channels(cfg)
-    reason = dict(zip(table["file"], table["reason"]))
+    reason = dict(zip(table["file"], table["reason"], strict=False))
     assert reason["slide1_cycle1_Hoechst.tif"] == "selected: earliest round"
     assert reason["slide1_cycle2_CD45.tif"] == "earliest round 001_Hoechst kept"
 

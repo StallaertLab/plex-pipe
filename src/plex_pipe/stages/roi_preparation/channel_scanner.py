@@ -7,11 +7,6 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from plex_pipe.io.filesystem import list_local_files
-from plex_pipe.io.globus import (
-    GlobusConfig,
-    list_globus_tifs,
-)
 from plex_pipe.io.channel_manifest import (
     DEFAULT_EARLIEST_ROUND_MARKERS,
     DEFAULT_PRESET,
@@ -22,12 +17,16 @@ from plex_pipe.io.channel_manifest import (
     read_manifest,
     write_manifest,
 )
+from plex_pipe.io.filesystem import list_local_files
+from plex_pipe.io.globus import (
+    GlobusConfig,
+    list_globus_tifs,
+)
 
 if TYPE_CHECKING:
     import pandas as pd
 
     from plex_pipe.config.config_schema import AnalysisConfig
-
 
 
 def explain_selection(
@@ -249,9 +248,7 @@ def log_unmatched(unmatched: Sequence[str], preset: str) -> None:
     """Log files that a naming preset did not recognise."""
     if not unmatched:
         return
-    logger.info(
-        f"Files not recognised by naming preset '{preset}' {len(unmatched)}:"
-    )
+    logger.info(f"Files not recognised by naming preset '{preset}' {len(unmatched)}:")
     for name in unmatched:
         logger.info(f"  Unrecognised: {name}")
 
@@ -442,7 +439,9 @@ def discover_channels(
             f"(image_dir: {image_dir_or_path})"
         )
         return scan_channels_from_manifest(
-            channel_manifest, files, *rules,
+            channel_manifest,
+            files,
+            *rules,
             earliest_round_markers=earliest_round_markers,
         )
 
@@ -506,8 +505,10 @@ def _preview(
 
     general, channels = config.general, config.channels
     image_dir = general.image_dir
-    files = list_globus_tifs(gc, image_dir) if gc is not None else list_local_files(
-        image_dir
+    files = (
+        list_globus_tifs(gc, image_dir)
+        if gc is not None
+        else list_local_files(image_dir)
     )
     if not files:
         raise ValueError(f"No TIFF files found in image_dir: {image_dir}")
@@ -516,12 +517,26 @@ def _preview(
     problem_rows: list[dict] = []
 
     def blank_row(name: str, reason: str) -> dict:
-        return dict(file=name, marker="", round=None, use=True, channel="",
-                    selected=False, reason=reason)
+        return {
+            "file": name,
+            "marker": "",
+            "round": None,
+            "use": True,
+            "channel": "",
+            "selected": False,
+            "reason": reason,
+        }
 
     def record_row(r: ChannelRecord, selected: bool, reason: str) -> dict:
-        return dict(file=r.file, marker=r.marker, round=r.round, use=r.use,
-                    channel=r.channel, selected=selected, reason=reason)
+        return {
+            "file": r.file,
+            "marker": r.marker,
+            "round": r.round,
+            "use": r.use,
+            "channel": r.channel,
+            "selected": selected,
+            "reason": reason,
+        }
 
     manifest_missing = (
         preset is None
@@ -673,8 +688,9 @@ def save_manifest(
 
     has_marker = table["marker"].astype(str).str.strip() != ""
     records = [
-        ChannelRecord(file=row.file, marker=row.marker, round=int(row.round),
-                      use=bool(row.use))
+        ChannelRecord(
+            file=row.file, marker=row.marker, round=int(row.round), use=bool(row.use)
+        )
         for row in table[has_marker].itertuples()
     ]
     unmatched = table.loc[~has_marker, "file"].tolist()

@@ -8,7 +8,6 @@ from loguru import logger
 # NOTE: `globus_sdk` (the `globus` extra) is imported lazily inside the methods
 # that use it, so `import plex_pipe` — and `LocalFileStrategy` — work without the
 # extra installed. Only `GlobusFileStrategy`'s transfer methods need it.
-
 from plex_pipe.config.config_schema import AnalysisConfig
 from plex_pipe.io.globus import (
     GlobusConfig,

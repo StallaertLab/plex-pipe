@@ -112,7 +112,9 @@ def test_read_manifest_reports_every_bad_row(tmp_path):
     with pytest.raises(ManifestError) as exc:
         read_manifest(p)
     msg = str(exc.value)
-    assert "row 2" in msg and "row 3" in msg and "row 4" in msg
+    assert "row 2" in msg
+    assert "row 3" in msg
+    assert "row 4" in msg
 
 
 def test_read_manifest_duplicate_channel(tmp_path):

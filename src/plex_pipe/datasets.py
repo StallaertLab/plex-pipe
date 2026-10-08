@@ -29,9 +29,7 @@ EXAMPLE_DATA_TAG = "example-data-v1"
 EXAMPLE_DATA_ARCHIVE = "plexpipe_example_data.zip"
 
 #: SHA256 of the archive. Update whenever the example data changes.
-EXAMPLE_DATA_SHA256 = (
-    "2ab09badbe18ec8c39dcb1206f158bba0c2b6667330039b8b11dcae7bb9d0b8c"
-)
+EXAMPLE_DATA_SHA256 = "2ab09badbe18ec8c39dcb1206f158bba0c2b6667330039b8b11dcae7bb9d0b8c"
 
 #: Location the archive is downloaded from.
 EXAMPLE_DATA_BASE_URL = (

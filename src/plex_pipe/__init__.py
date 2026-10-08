@@ -14,12 +14,12 @@ from plex_pipe.stages.quantification.qc_shape_masker import QcShapeMasker
 from plex_pipe.stages.resource_building.controller import (
     ResourceBuildingController,
 )
-from plex_pipe.stages.roi_preparation.controller import (
-    RoiPreparationController,
-)
 from plex_pipe.stages.roi_preparation.channel_scanner import (
     preview_channels,
     save_manifest,
+)
+from plex_pipe.stages.roi_preparation.controller import (
+    RoiPreparationController,
 )
 from plex_pipe.stages.roi_preparation.file_strategy import (
     GlobusFileStrategy,

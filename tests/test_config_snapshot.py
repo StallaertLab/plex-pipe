@@ -105,7 +105,9 @@ def test_changed_config_gets_a_new_snapshot(tmp_path):
     path.write_text(yaml.safe_dump(raw, sort_keys=False))
     second = save_config_snapshot(load_config(path))
 
-    assert second != first and first.exists() and second.exists()
+    assert second != first
+    assert first.exists()
+    assert second.exists()
     assert yaml.safe_load(second.read_text())["roi_cutting"]["margin"] == 25
 
 
