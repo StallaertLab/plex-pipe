@@ -143,6 +143,8 @@ For the example dataset (with `ignore_markers: [bCat]` in the config):
 | `sample_1.0.4_R000_Cy7_NaKATPase-AF750_FINAL_AFR_F.tiff` | NaKATPase | 1 | `001_NaKATPase` | True | selected |
 | `sample_1.0.4_R000_Cy3_bCat-AF555_FINAL_AFR_F.tiff` | bCat | 1 | `001_bCat` | False | ignore_markers |
 
+It also checks the rest of the config: if a step in `additional_elements` or a `markers_to_quantify` list needs a marker that is not selected, it logs a warning, so you can fix the config before cutting rather than find out at segmentation or quantification. The same check runs when cutting starts.
+
 Both `preview_channels` and `save_manifest` also work for Globus data: pass `gc=...` (see [Globus Configuration](../usage/globus.md#configuration-registry)).
 
 ---

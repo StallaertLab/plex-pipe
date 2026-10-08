@@ -457,6 +457,62 @@ def discover_channels(
 PREVIEW_COLUMNS = ("file", "marker", "round", "use", "channel", "selected", "reason")
 
 
+def _as_list(value: str | Sequence[str] | None) -> list[str]:
+    if value is None:
+        return []
+    return [value] if isinstance(value, str) else list(value)
+
+
+def check_downstream_markers(
+    config: AnalysisConfig, selected_markers: Iterable[str]
+) -> list[str]:
+    """Checks that later pipeline steps only need markers that will be cut.
+
+    Walks ``additional_elements`` in order: a step input must be a selected
+    marker or the output of an earlier step. Then checks that every
+    ``markers_to_quantify`` entry in ``quant`` is a selected marker or a step
+    output. Problems are logged as one warning; nothing is raised, because the
+    cut itself is still valid.
+
+    Args:
+        config: The analysis configuration (``additional_elements`` already
+            expanded, as :func:`~plex_pipe.load_config` returns it).
+        selected_markers: Markers that will be cut.
+
+    Returns:
+        One line per problem; empty if later steps have everything they need.
+    """
+    available = set(selected_markers)
+    problems: list[str] = []
+
+    for step in getattr(config, "additional_elements", None) or []:
+        outputs = _as_list(step.output)
+        for name in _as_list(step.input):
+            if name not in available:
+                problems.append(
+                    f"additional_elements: '{step.type}' (output {outputs}) "
+                    f"needs '{name}'"
+                )
+        available.update(outputs)
+
+    for task in getattr(config, "quant", None) or []:
+        for name in task.markers_to_quantify or []:
+            if name not in available:
+                problems.append(
+                    f"quant: '{task.name}' markers_to_quantify includes '{name}'"
+                )
+
+    if problems:
+        bullets = "".join(f"\n      * {p}" for p in problems)
+        logger.warning(
+            "Later pipeline steps need inputs that are neither selected markers "
+            "nor outputs of earlier steps. Segmentation or quantification will "
+            "fail unless you change the 'channels:' section or these steps in "
+            f"your config YAML file:{bullets}"
+        )
+    return problems
+
+
 def preview_channels(
     config: AnalysisConfig,
     gc: GlobusConfig | None = None,
@@ -484,13 +540,19 @@ def preview_channels(
     Returns:
         DataFrame with columns ``file, marker, round, use, channel, selected,
         reason``. Selected and candidate rows come first (by channel), then
-        rows needing attention.
+        rows needing attention. If later pipeline steps need markers that are
+        not selected, a warning is logged (see
+        :func:`check_downstream_markers`).
 
     Raises:
         ValueError: If ``image_dir`` contains no TIFF files.
         ManifestError: If the ``manifest`` CSV cannot be parsed.
     """
-    return _preview(config, gc=gc, preset=preset, warn_missing=True)
+    table = _preview(config, gc=gc, preset=preset, warn_missing=True)
+    selected = table.loc[table["selected"], "marker"]
+    if len(selected):
+        check_downstream_markers(config, selected)
+    return table
 
 
 def _preview(

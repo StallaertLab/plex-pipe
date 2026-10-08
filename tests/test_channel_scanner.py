@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pytest
 from loguru import logger
@@ -820,3 +821,113 @@ def test_discover_passes_earliest_round_markers(tmp_path, local_listing):
         "/data/slide1", channel_manifest=manifest, earliest_round_markers=["Hoechst"]
     )
     assert out == {"Hoechst": "/data/slide1/slide1_cycle1_Hoechst.tif"}
+
+
+# --- downstream-marker check (step 8) ---
+
+
+EXAMPLE_CONFIG = (
+    Path(__file__).resolve().parents[1] / "examples" / "example_pipeline_config.yaml"
+)
+
+
+def _logged(messages, text):
+    return any(text in m for m in messages)
+
+
+def _step(type_, input_, output):
+    from types import SimpleNamespace
+
+    return SimpleNamespace(type=type_, input=input_, output=output)
+
+
+def _quant(name, markers):
+    from types import SimpleNamespace
+
+    return SimpleNamespace(name=name, markers_to_quantify=markers)
+
+
+def _pipeline_cfg(steps=(), quant=(), **kwargs):
+    cfg = _cfg(**kwargs)
+    cfg.additional_elements = list(steps)
+    cfg.quant = list(quant)
+    return cfg
+
+
+def test_downstream_check_passes_when_everything_is_available(log_messages):
+    cfg = _pipeline_cfg(
+        steps=[
+            _step("normalize", "DAPI", "DAPI_norm"),
+            _step("instanseg", ["DAPI_norm"], ["nucleus", "cell"]),
+            _step("ring", "nucleus", "ring"),
+        ],
+        quant=[_quant("t", ["CD3"]), _quant("all", None)],
+    )
+    assert channel_scanner.check_downstream_markers(cfg, ["DAPI", "CD3"]) == []
+    assert not _logged(log_messages, "Later pipeline steps need")
+
+
+def test_downstream_check_reports_unselected_step_input(log_messages):
+    cfg = _pipeline_cfg(
+        steps=[
+            _step("normalize", "NaKATPase", "NaKATPase_norm"),
+            _step("instanseg", ["DAPI", "NaKATPase_norm"], ["nucleus", "cell"]),
+        ]
+    )
+    problems = channel_scanner.check_downstream_markers(cfg, ["DAPI"])
+    assert problems == [
+        "additional_elements: 'normalize' (output ['NaKATPase_norm']) "
+        "needs 'NaKATPase'"
+    ]
+    assert _logged(log_messages, "Later pipeline steps need inputs")
+    assert _logged(log_messages, "'channels:' section")
+
+
+def test_downstream_check_respects_step_order():
+    """An output is only available to the steps after the one producing it."""
+    cfg = _pipeline_cfg(
+        steps=[
+            _step("ring", "nucleus", "ring"),
+            _step("instanseg", "DAPI", "nucleus"),
+        ]
+    )
+    problems = channel_scanner.check_downstream_markers(cfg, ["DAPI"])
+    assert problems == ["additional_elements: 'ring' (output ['ring']) needs 'nucleus'"]
+
+
+def test_downstream_check_reports_markers_to_quantify():
+    cfg = _pipeline_cfg(
+        steps=[_step("normalize", "DAPI", "DAPI_norm")],
+        quant=[_quant("cells", ["CD3", "DAPI_norm", "CD8"])],
+    )
+    problems = channel_scanner.check_downstream_markers(cfg, ["DAPI", "CD3"])
+    assert problems == ["quant: 'cells' markers_to_quantify includes 'CD8'"]
+
+
+def test_preview_warns_about_downstream_markers(local_listing, log_messages):
+    local_listing(CELLDIVE_FILES)
+    cfg = _pipeline_cfg(steps=[_step("normalize", "NaKATPase", "NaKATPase_norm")])
+    channel_scanner.preview_channels(cfg)
+    assert _logged(log_messages, "needs 'NaKATPase'")
+
+
+def test_preview_skips_downstream_check_when_nothing_selected(
+    tmp_path, local_listing, log_messages
+):
+    """With the manifest not created yet nothing is selected: no extra warning."""
+    local_listing(CELLDIVE_FILES)
+    cfg = _pipeline_cfg(
+        steps=[_step("normalize", "DAPI", "DAPI_norm")],
+        file_naming=None,
+        channel_manifest=str(tmp_path / "channels.csv"),
+    )
+    channel_scanner.preview_channels(cfg)
+    assert not _logged(log_messages, "Later pipeline steps need")
+
+
+def test_example_config_needs_only_selected_markers(log_messages):
+    """The example config's later steps are satisfied by its own selection."""
+    from plex_pipe.config.config_loaders import load_config
+
+    cfg = load_config(EXAMPLE_CONFIG)
+    assert channel_scanner.check_downstream_markers(cfg, ["DAPI", "NaKATPase"]) == []

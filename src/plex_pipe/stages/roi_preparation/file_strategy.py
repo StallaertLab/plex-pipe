@@ -13,7 +13,10 @@ from plex_pipe.io.globus import (
     GlobusConfig,
     create_globus_tc,
 )
-from plex_pipe.stages.roi_preparation.channel_scanner import discover_channels
+from plex_pipe.stages.roi_preparation.channel_scanner import (
+    check_downstream_markers,
+    discover_channels,
+)
 
 RETRYABLE_STATUSES = {502, 503, 504}
 MAX_TRIES = 6
@@ -43,6 +46,7 @@ class FileAvailabilityStrategy(ABC):
 
         Reads the ``channels`` section: the manifest source (``manifest`` if
         set, otherwise the ``file_naming`` preset) and the selection rules.
+        Warns if later pipeline steps need markers that will not be cut.
 
         Args:
             gc: Globus configuration, for listing a remote ``image_dir``.
@@ -51,7 +55,7 @@ class FileAvailabilityStrategy(ABC):
             Mapping of marker name to (local or remote) file path.
         """
         channels = self.config.channels
-        return discover_channels(
+        channel_map = discover_channels(
             self.config.general.image_dir,
             include_channels=channels.include_channels,
             exclude_channels=channels.exclude_channels,
@@ -62,6 +66,8 @@ class FileAvailabilityStrategy(ABC):
             file_naming=channels.file_naming,
             channel_manifest=channels.manifest,
         )
+        check_downstream_markers(self.config, channel_map)
+        return channel_map
 
     @abstractmethod
     def yield_ready_channels(self) -> Iterator[tuple[str, str | Path]]:
