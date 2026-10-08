@@ -17,13 +17,13 @@ def mock_config():
     """Mocks the configuration object passed to strategies."""
     cfg = MagicMock()
     cfg.general.image_dir = "/data/images"
-    cfg.general.file_naming = "celldive"
-    cfg.general.channel_manifest = None
-    cfg.roi_cutting.include_channels = None
-    cfg.roi_cutting.exclude_channels = None
-    cfg.roi_cutting.use_markers = None
-    cfg.roi_cutting.ignore_markers = None
-    cfg.roi_cutting.earliest_round_markers = ["DAPI"]
+    cfg.channels.file_naming = "celldive"
+    cfg.channels.manifest = None
+    cfg.channels.include_channels = None
+    cfg.channels.exclude_channels = None
+    cfg.channels.use_markers = None
+    cfg.channels.ignore_markers = None
+    cfg.channels.earliest_round_markers = ["DAPI"]
     cfg.temp_dir = Path("/tmp/plex_pipe")
     return cfg
 
@@ -99,9 +99,9 @@ def test_local_strategy_passes_channel_source_and_rules(
     mock_config, mock_discover_channels
 ):
     """Verifies the config's channel source and selection rules reach discovery."""
-    mock_config.general.file_naming = None
-    mock_config.general.channel_manifest = "/data/channels.csv"
-    mock_config.roi_cutting.ignore_markers = ["bCat"]
+    mock_config.channels.file_naming = None
+    mock_config.channels.manifest = "/data/channels.csv"
+    mock_config.channels.ignore_markers = ["bCat"]
     mock_discover_channels.return_value = {}
 
     LocalFileStrategy(mock_config)

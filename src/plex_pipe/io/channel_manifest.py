@@ -114,7 +114,7 @@ NAMING_PRESETS: dict[str, Callable[[str], tuple[str, int] | None]] = {
 DEFAULT_PRESET = "celldive"
 
 #: Markers for which the earliest round is kept (all others keep the latest),
-#: when ``roi_cutting.earliest_round_markers`` is not set in the config.
+#: when ``channels.earliest_round_markers`` is not set in the config.
 DEFAULT_EARLIEST_ROUND_MARKERS = ("DAPI",)
 
 
@@ -199,6 +199,95 @@ def validate_records(records: Iterable[ChannelRecord]) -> None:
         by_channel[r.channel] = r
     if problems:
         raise ManifestError("Ambiguous channel manifest:\n  - " + "\n  - ".join(problems))
+
+
+def channel_marker(channel: str) -> str:
+    """Marker part of a channel name: ``"002_CD45"`` -> ``"CD45"``.
+
+    The name is split at the first ``_`` after the round number, so
+    ``"002_CD45_1"`` gives ``"CD45_1"``. A name without a round prefix is
+    returned unchanged.
+    """
+    prefix, sep, marker = channel.partition("_")
+    return marker if sep and prefix.isdigit() else channel
+
+
+def selection_rule_conflicts(
+    include_channels: Iterable[str] = (),
+    exclude_channels: Iterable[str] = (),
+    use_markers: Iterable[str] = (),
+    ignore_markers: Iterable[str] = (),
+) -> list[str]:
+    """Find selection settings that contradict each other.
+
+    A setting cannot both ask for and reject the same channel or marker, and
+    ``include_channels`` cannot ask for two channels of one marker (one
+    channel is kept per marker).
+
+    Returns:
+        One message per conflict; empty if there are none.
+    """
+    include = list(dict.fromkeys(include_channels))
+    exclude = set(exclude_channels)
+    use = list(dict.fromkeys(use_markers))
+    ignore = set(ignore_markers)
+    problems = []
+
+    by_marker: dict[str, list[str]] = {}
+    for ch in include:
+        by_marker.setdefault(channel_marker(ch), []).append(ch)
+    for marker, chans in by_marker.items():
+        if len(chans) > 1:
+            problems.append(
+                f"include_channels lists several channels of marker {marker} "
+                f"({', '.join(chans)}). Only one channel per marker is used: keep "
+                f"one, or give the rounds different marker names in a manifest "
+                f"CSV (e.g. {marker} and {marker}_1)."
+            )
+    for ch in include:
+        if ch in exclude:
+            problems.append(
+                f"{ch} is in both include_channels and exclude_channels."
+            )
+        marker = channel_marker(ch)
+        if marker in ignore:
+            problems.append(
+                f"include_channels lists {ch}, but marker {marker} is in "
+                f"ignore_markers."
+            )
+        elif use and marker not in use:
+            problems.append(
+                f"include_channels lists {ch}, but marker {marker} is not in "
+                f"use_markers."
+            )
+    for marker in use:
+        if marker in ignore:
+            problems.append(
+                f"Marker {marker} is in both use_markers and ignore_markers."
+            )
+    return problems
+
+
+def check_selection_rules(
+    include_channels: Iterable[str] = (),
+    exclude_channels: Iterable[str] = (),
+    use_markers: Iterable[str] = (),
+    ignore_markers: Iterable[str] = (),
+) -> None:
+    """Raise if the selection settings contradict each other.
+
+    Raises:
+        ValueError: Listing every conflict found by
+            :func:`selection_rule_conflicts`.
+    """
+    problems = selection_rule_conflicts(
+        include_channels, exclude_channels, use_markers, ignore_markers
+    )
+    if problems:
+        raise ValueError(
+            "Contradicting channel selection settings under 'channels:' in your "
+            "config YAML file:\n      * " + "\n      * ".join(problems)
+        )
 
 
 def read_manifest(path: str | Path, strict: bool = True) -> list[ChannelRecord]:

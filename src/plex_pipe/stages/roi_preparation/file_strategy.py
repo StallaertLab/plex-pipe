@@ -42,9 +42,8 @@ class FileAvailabilityStrategy(ABC):
     def _discover_channel_map(self, gc: GlobusConfig | None = None) -> ChannelMap:
         """Build the channel map from the config (shared by all strategies).
 
-        Uses ``general.channel_manifest`` if set, otherwise the
-        ``general.file_naming`` preset, then applies the ``roi_cutting``
-        selection rules (including ``earliest_round_markers``).
+        Reads the ``channels`` section: the manifest source (``manifest`` if
+        set, otherwise the ``file_naming`` preset) and the selection rules.
 
         Args:
             gc: Globus configuration, for listing a remote ``image_dir``.
@@ -52,18 +51,17 @@ class FileAvailabilityStrategy(ABC):
         Returns:
             Mapping of marker name to (local or remote) file path.
         """
-        general = self.config.general
-        cutting = self.config.roi_cutting
+        channels = self.config.channels
         return discover_channels(
-            general.image_dir,
-            include_channels=cutting.include_channels,
-            exclude_channels=cutting.exclude_channels,
-            use_markers=cutting.use_markers,
-            ignore_markers=cutting.ignore_markers,
-            earliest_round_markers=cutting.earliest_round_markers,
+            self.config.general.image_dir,
+            include_channels=channels.include_channels,
+            exclude_channels=channels.exclude_channels,
+            use_markers=channels.use_markers,
+            ignore_markers=channels.ignore_markers,
+            earliest_round_markers=channels.earliest_round_markers,
             gc=gc,
-            file_naming=general.file_naming,
-            channel_manifest=general.channel_manifest,
+            file_naming=channels.file_naming,
+            channel_manifest=channels.manifest,
         )
 
     @abstractmethod

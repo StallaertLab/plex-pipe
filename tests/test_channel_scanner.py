@@ -62,20 +62,60 @@ def test_scan_exclude_channels_overrides_grouping():
     assert out["CD3"] == "p_002.0.4_R000_dye_CD3-01_x.ome.tif"
 
 
-def test_scan_include_exclude_channels_overrides_grouping():
+@pytest.mark.parametrize(
+    ("rules", "message"),
+    [
+        (
+            dict(include_channels=["002_CD3", "003_CD3"]),
+            r"several channels of marker CD3 \(002_CD3, 003_CD3\)",
+        ),
+        (
+            dict(include_channels=["003_CD3"], exclude_channels=["003_CD3"]),
+            "003_CD3 is in both include_channels and exclude_channels",
+        ),
+        (
+            dict(include_channels=["003_CD3"], ignore_markers=["CD3"]),
+            "include_channels lists 003_CD3, but marker CD3 is in ignore_markers",
+        ),
+        (
+            dict(include_channels=["003_CD3"], use_markers=["DAPI"]),
+            "include_channels lists 003_CD3, but marker CD3 is not in use_markers",
+        ),
+        (
+            dict(use_markers=["CD3"], ignore_markers=["CD3"]),
+            "Marker CD3 is in both use_markers and ignore_markers",
+        ),
+    ],
+)
+def test_contradicting_rules_are_an_error(rules, message):
     """
-    Verifies: includes overwrite excludes.
+    Verifies: settings that ask for and reject the same channel or marker stop
+    the selection instead of one silently winning.
     """
     files = [
         "p_001.0.4_R000_DAPI_xxx.ome.tif",
         "p_002.0.4_R000_dye_CD3-01_x.ome.tif",
         "p_003.0.4_R000_dye_CD3-02_x.ome.tif",
     ]
-    # include exact channel name "003_CD3" to keep that one verbatim
+    with pytest.raises(ValueError, match=message):
+        scan_channels_from_list(files, **rules)
+
+
+def test_rules_that_do_not_contradict_are_allowed():
+    """Different channels of one marker in include/exclude, and excluding a
+    round of a marker in use_markers, are not conflicts."""
+    files = [
+        "p_001.0.4_R000_DAPI_xxx.ome.tif",
+        "p_002.0.4_R000_dye_CD3-01_x.ome.tif",
+        "p_003.0.4_R000_dye_CD3-02_x.ome.tif",
+    ]
     out = scan_channels_from_list(
-        files, exclude_channels=["003_CD3"], include_channels=["003_CD3"]
+        files,
+        include_channels=["002_CD3"],
+        exclude_channels=["003_CD3", "001_DAPI"],
+        use_markers=["CD3", "DAPI"],
     )
-    assert out["CD3"] == "p_003.0.4_R000_dye_CD3-02_x.ome.tif"
+    assert out == {"CD3": "p_002.0.4_R000_dye_CD3-01_x.ome.tif"}
 
 
 def test_scan_ignore_markers_overrides_grouping():
@@ -338,7 +378,7 @@ def test_use_no_removes_file_before_round_selection(log_messages):
     assert out["CD45"].file == "cd45_r2.tif"
     assert (
         "Manifest column 'use': 1 file(s) excluded by the manifest; "
-        "roi_cutting rules applied on top." in log_messages
+        "selection rules applied on top." in log_messages
     )
     assert (
         "  Unused: Channel 003_CD45 <- cd45_r3.tif (excluded in manifest (use=no))"
@@ -346,14 +386,32 @@ def test_use_no_removes_file_before_round_selection(log_messages):
     )
 
 
-def test_use_no_beats_include_channels(log_messages):
+def test_include_of_use_no_file_is_an_error():
     records = [
         ChannelRecord("cd45_r2.tif", "CD45", 2, use=False),
         ChannelRecord("cd45_r3.tif", "CD45", 3),
     ]
-    out = select_channels(records, include_channels=["002_CD45"])
-    assert out["CD45"].file == "cd45_r3.tif"
-    assert any("the manifest wins" in m for m in log_messages)
+    with pytest.raises(
+        ValueError,
+        match=r"include_channels lists 002_CD45, but the manifest excludes "
+        r"cd45_r2.tif \(use=no\)",
+    ):
+        select_channels(records, include_channels=["002_CD45"])
+
+
+def test_explain_selection_non_strict_reports_use_no_conflict():
+    """The preview (strict=False) reports the conflict in the reason."""
+    records = [
+        ChannelRecord("cd45_r2.tif", "CD45", 2, use=False),
+        ChannelRecord("cd45_r3.tif", "CD45", 3),
+    ]
+    selected, reasons = channel_scanner.explain_selection(
+        records, include_channels=["002_CD45"], strict=False
+    )
+    assert selected["CD45"].file == "cd45_r3.tif"
+    assert reasons["cd45_r2.tif"] == (
+        "excluded in manifest (use=no); conflicts with include_channels"
+    )
 
 
 def test_renamed_marker_keeps_two_rounds():
@@ -402,24 +460,23 @@ def _cfg(
     analysis_dir="/work/A",
     **rules,
 ):
-    """Duck-typed config: `general`, the `roi_cutting` rules and `analysis_dir`."""
+    """Duck-typed config: `general.image_dir`, the `channels` section and
+    `analysis_dir`. `channel_manifest` maps to `channels.manifest`."""
     from types import SimpleNamespace
 
-    cutting = dict(
+    channels = dict(
+        file_naming=file_naming,
+        manifest=channel_manifest,
         include_channels=[],
         exclude_channels=[],
         use_markers=[],
         ignore_markers=[],
         earliest_round_markers=["DAPI"],
     )
-    cutting.update(rules)
+    channels.update(rules)
     return SimpleNamespace(
-        general=SimpleNamespace(
-            image_dir=image_dir,
-            file_naming=file_naming,
-            channel_manifest=channel_manifest,
-        ),
-        roi_cutting=SimpleNamespace(**cutting),
+        general=SimpleNamespace(image_dir=image_dir),
+        channels=SimpleNamespace(**channels),
         analysis_dir=analysis_dir,
     )
 
@@ -597,7 +654,7 @@ def test_save_manifest_defaults_to_channels_csv_in_analysis_dir(
     assert out == tmp_path / "A" / "channels.csv"
     assert out.read_text().startswith("file,marker,round,use\n")
     assert (
-        f"To use it, set channel_manifest: {out} under general: in your config "
+        f"To use it, set manifest: {out} under channels: in your config "
         "YAML file (and remove file_naming), then reload the config." in log_messages
     )
 
@@ -668,7 +725,7 @@ def test_save_manifest_never_overwrites_configured_manifest(tmp_path, local_list
     target = tmp_path / "channels.csv"
     target.write_text("file,marker\nslide1_cycle1_Hoechst.tif,DAPI\n")
     cfg = _cfg(file_naming=None, channel_manifest=str(target))
-    with pytest.raises(FileExistsError, match="it is the channel_manifest in your config"):
+    with pytest.raises(FileExistsError, match="it is the manifest set under channels: in your config"):
         channel_scanner.save_manifest(cfg)
     assert target.read_text() == "file,marker\nslide1_cycle1_Hoechst.tif,DAPI\n"
 

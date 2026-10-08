@@ -3,7 +3,9 @@
 Deciding which images enter the analysis happens in two stages:
 
 1. **Channel manifest — what exists.** A list of every input file with its marker and round. It comes either from the file names (a naming preset) or from a CSV you provide.
-2. **Selection rules — what is used.** The `roi_cutting` settings (`include_channels`, `exclude_channels`, `use_markers`, `ignore_markers`) choose one channel per marker from the manifest.
+2. **Selection rules — what is used.** Settings such as `include_channels`, `exclude_channels`, `use_markers`, `ignore_markers` and `earliest_round_markers` choose one channel per marker from the manifest.
+
+All of these settings live in the `channels:` section of the config YAML file.
 
 Both happen at the [ROI cutting step](../analysis_steps/02_roi_cutting.md). Channels left out there never reach the SpatialData objects, so [preview the selection](#previewing-the-channels) before cutting.
 
@@ -30,8 +32,7 @@ All settings below go in your **config YAML file**, which is the single source o
 This is the default. In the config YAML file you can leave it implicit or state it:
 
 ```yaml
-general:
-  image_dir: /path/to/images
+channels:
   file_naming: celldive        # default; may be left out
 ```
 
@@ -55,34 +56,11 @@ Check the result with [`preview_channels`](#previewing-the-channels) before cutt
 
 !!! tip "Any issues? Switch to Path B"
     If files are not recognised, marker names come out wrong, two files resolve to the same channel, or you want to rename markers, switch to [Path B](#path-b-any-other-data-manifest-csv).
-    In the YAML file, replace `file_naming` with `channel_manifest: /path/to/channels.csv`, reload the config and run `plex_pipe.save_manifest(config)`. It reads markers and rounds from your Cell DIVE file names into the new CSV, so you only edit what needs fixing.
+    In the `channels:` section of the YAML file, replace `file_naming` with `manifest: /path/to/channels.csv`, reload the config and run `plex_pipe.save_manifest(config)`. It reads markers and rounds from your Cell DIVE file names into the new CSV, so you only edit what needs fixing.
 
 ### Path B: Any other data (manifest CSV)
 
-**1. Point the config YAML file at the CSV.** The CSV does not need to exist yet. Remove `file_naming` if it is there (setting both is an error).
-
-```yaml
-general:
-  image_dir: /path/to/images
-  channel_manifest: /path/to/channels.csv
-```
-
-**2. Create the CSV.**
-
-```python
-import plex_pipe
-
-config = plex_pipe.load_config("your_config.yaml")
-plex_pipe.save_manifest(config)
-```
-
-This writes the CSV at the `channel_manifest` path, with one row per file in `image_dir`. For files with Cell DIVE names, `marker` and `round` are read from the name; all other rows have an empty `marker` and `round` for you to fill in. An existing file is never overwritten unless you pass `overwrite=True`.
-
-**3. Fill in the CSV** in any program that opens CSV files (a text editor or a spreadsheet program), following the format below. Set `use` to `no`, or delete the row, for files you never want.
-
-**4. Check the selection** with [`preview_channels(config)`](#previewing-the-channels). The CSV is read each time, so you don't need to reload the config after editing it.
-
-**5. Cut.** Until the CSV exists and every row has a marker, the ROI cutting step stops with a message saying what is missing.
+You provide a CSV listing every file in `image_dir` with its marker and round.
 
 #### CSV format
 
@@ -113,12 +91,38 @@ slide1_cycle3_CD8.tif,CD8,3,
 * **One channel is kept per marker.** To keep two rounds of the same marker, give them different marker names, e.g. `CD45` and `CD45_1`. The rules then treat them as separate markers.
 * **Use the real name of your nuclear stain.** By default the earliest round is kept for `DAPI` and the latest round for every other marker. For a stain such as Hoechst, keep the name `Hoechst` and add it to [`earliest_round_markers`](#2-default-round-selection) in the config YAML file.
 
+#### Creating the CSV
+
+**1. Point the config YAML file at the CSV.** The CSV does not need to exist yet. Remove `file_naming` if it is there (setting both is an error).
+
+```yaml
+channels:
+  manifest: /path/to/channels.csv
+```
+
+**2. Create the CSV.**
+
+```python
+import plex_pipe
+
+config = plex_pipe.load_config("your_config.yaml")
+plex_pipe.save_manifest(config)
+```
+
+This writes the CSV at the `manifest` path, with one row per file in `image_dir`. For files with Cell DIVE names, `marker` and `round` are read from the name; all other rows have an empty `marker` and `round` for you to fill in. An existing file is never overwritten unless you pass `overwrite=True`.
+
+**3. Fill in the CSV** in any program that opens CSV files (a text editor or a spreadsheet program), following the [format above](#csv-format). Set `use` to `no`, or delete the row, for files you never want.
+
+**4. Check the selection** with [`preview_channels(config)`](#previewing-the-channels). The CSV is read each time, so you don't need to reload the config after editing it.
+
+**5. Cut.** Until the CSV exists and every row has a marker, the ROI cutting step stops with a message saying what is missing.
+
 !!! note "Paths"
-    A relative `channel_manifest` path (like `image_dir`) is resolved against the folder you **run from**.
+    A relative `manifest` path (like `image_dir`) is resolved against the folder you **run from**.
     A path that works from `notebooks/` will not work for a script started from the repository root.
     For scripts and Slurm jobs, use absolute paths.
 
-    If `channel_manifest` is not set, `save_manifest(config)` writes to `channels.csv` in the analysis directory; you can also pass any path: `save_manifest(config, "my_channels.csv")`.
+    If `manifest` is not set, `save_manifest(config)` writes to `channels.csv` in the analysis directory; you can also pass any path: `save_manifest(config, "my_channels.csv")`.
 
 ### Previewing the channels
 
@@ -139,7 +143,7 @@ For the example dataset (with `ignore_markers: [bCat]` in the config):
 | `sample_1.0.4_R000_Cy7_NaKATPase-AF750_FINAL_AFR_F.tiff` | NaKATPase | 1 | `001_NaKATPase` | True | selected |
 | `sample_1.0.4_R000_Cy3_bCat-AF555_FINAL_AFR_F.tiff` | bCat | 1 | `001_bCat` | False | ignore_markers |
 
-Both `preview_channels` and `save_manifest` also work for Globus data: pass `gc=...`.
+Both `preview_channels` and `save_manifest` also work for Globus data: pass `gc=...` (see [Globus Configuration](../usage/globus.md#configuration-registry)).
 
 ---
 
@@ -156,7 +160,7 @@ The pipeline supports fine-grained control over which channels are processed. Th
 
 The rules are applied **on top of the manifest**, in this order:
 
-1. **Manifest `use` column**: files with `use` = `no` are removed first. Nothing below can bring them back.
+1. **Manifest `use` column**: files with `use` = `no` are removed first.
 2. **Per marker, choose one channel:**
     1. `include_channels`: if any channel of this marker is listed, it is used; round selection is skipped.
     2. `exclude_channels`: listed channels are removed.
@@ -171,10 +175,11 @@ The rules are applied **on top of the manifest**, in this order:
 ### 2. **Default round selection**
 - For each marker imaged in several rounds, the **latest round** is used.
 - For markers listed in `earliest_round_markers`, the **earliest available round** is used instead (`001_DAPI` for Cell DIVE data). Marker names are matched regardless of case.
+- This is typically the marker used to align the rounds (e.g. DAPI); its first round usually has the best quality.
 - The default is `earliest_round_markers: ["DAPI"]`. Change it in the config YAML file, for example for a different nuclear stain:
 
 ```yaml
-roi_cutting:
+channels:
   earliest_round_markers: ["Hoechst"]
 ```
 
@@ -182,9 +187,9 @@ roi_cutting:
 
 ### 3. **Using `include_channels`**
 - A list of channel names like `002_CD44`, `001_DAPI`.
-- If a marker has a listed channel, that channel is used; this **overrides automatic selection** and `exclude_channels` for that marker.
+- If a marker has a listed channel, that channel is used; this **overrides automatic selection** for that marker.
 - Use it to **force an earlier round**.
-- If several channels of the same marker are listed, the one from the latest round is used (one channel per marker).
+- Listing several channels of the same marker is an error (one channel per marker). To keep two rounds, give them different marker names in a [manifest CSV](#marker-names-matter).
 
 ### 4. **Using `exclude_channels`**
 - A list of channel names to skip.
@@ -202,13 +207,16 @@ roi_cutting:
 
 ### Examples
 
+All examples below go in the `channels:` section.
+
 #### Example 1: Default automatic selection
 ```yaml
-include_channels: []
-exclude_channels: []
-use_markers: []
-ignore_markers: []
-earliest_round_markers: ["DAPI"]
+channels:
+  include_channels: []
+  exclude_channels: []
+  use_markers: []
+  ignore_markers: []
+  earliest_round_markers: ["DAPI"]
 ```
 
 * Keeps the **latest round per marker**, and the **earliest DAPI round**.
@@ -265,11 +273,18 @@ earliest_round_markers: ["Hoechst"]
 
 * The earliest Hoechst round is kept, and the image layer is named `Hoechst`.
 
-### Conflicts and priority
+### Conflicting settings
 
-* A file with `use` = `no` in the manifest **always** stays out. If its channel is also in `include_channels`, the manifest wins and a warning is logged.
-* If a channel is listed in both `include_channels` and `exclude_channels`, **`include_channels` wins**.
-* `use_markers` and `ignore_markers` are applied last, in that order. A listed marker that is not found produces a warning.
+Settings that ask for and reject the same thing are an error. The config does not load, so nothing runs:
+
+* several channels of the same marker in `include_channels`;
+* the same channel in `include_channels` and `exclude_channels`;
+* a channel in `include_channels` whose marker is in `ignore_markers`, or missing from `use_markers` when `use_markers` is set;
+* the same marker in `use_markers` and `ignore_markers`.
+
+A channel in `include_channels` whose file has `use` = `no` in the manifest is also an error, raised when the channels are selected. `preview_channels` shows it in that file's reason instead.
+
+A marker in `use_markers` or `ignore_markers` that is not found only produces a warning.
 
 ---
 
@@ -277,8 +292,3 @@ earliest_round_markers: ["Hoechst"]
 
 * **Before running:** `plex_pipe.preview_channels(config)` gives every file a `reason` (e.g. `superseded by 003_CD3`, `exclude_channels`, `ignore_markers`, `excluded in manifest (use=no)`). See [Previewing the channels](#previewing-the-channels).
 * **After running:** the ROI cutting log (in the analysis `logs/` folder when run through `scripts/02_cut_rois.py`) records the channel source (`Channel source: naming preset 'celldive'` or `Channel source: manifest <path>`), the final selected channels, every unused file with its reason, and files that were not recognised or not listed in the manifest.
-
-!!! note "Changes from earlier versions"
-    * DAPI: previously only `001_DAPI` was kept, so data without a round 1 DAPI silently had no DAPI. Now the earliest available DAPI round is kept, and the earliest-round rule can be applied to any marker with `earliest_round_markers`. As a result, `exclude_channels: ["001_DAPI"]` now falls back to the next DAPI round instead of dropping DAPI.
-    * Two files resolving to the same channel are now an error naming both files (previously the last file silently won).
-    * Earlier documentation said `include_channels` could keep duplicates for comparison, and that listing a channel in both `include_channels` and `exclude_channels` raised an error. Neither was the actual behavior: one channel is kept per marker, and `include_channels` wins.

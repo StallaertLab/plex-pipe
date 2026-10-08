@@ -12,7 +12,10 @@ from pydantic import ValidationError
 
 from plex_pipe.config.config_migrations import (
     CURRENT_SCHEMA_VERSION,
+    CURRENT_SCHEMA_VERSION_STR,
+    format_version,
     migrate_to_current,
+    needs_migration,
 )
 from plex_pipe.config.config_schema import AnalysisConfig
 
@@ -98,7 +101,7 @@ def _format_validation_error(
         A plain-text summary listing each problem as ``section.field: message``.
     """
     lines = [f"Config '{settings_path}' is not valid for schema "
-             f"v{CURRENT_SCHEMA_VERSION}:"]
+             f"{CURRENT_SCHEMA_VERSION_STR}:"]
     for err in exc.errors():
         location = ".".join(str(part) for part in err["loc"]) or "<root>"
         lines.append(f"  - {location}: {err['msg']}")
@@ -120,7 +123,8 @@ def migrate_config(
     Args:
         in_path: Path to the config file to migrate.
         out_path: Where to write the migrated config. Defaults to
-            ``<stem>_v<CURRENT>.<suffix>`` next to the input.
+            ``<stem>_v<MAJOR>.<suffix>`` next to the input (e.g.
+            ``analysis_v2.yaml``).
 
     Returns:
         The path written, or ``None`` if the config was already current.
@@ -131,16 +135,16 @@ def migrate_config(
 
     migrated, start_version = migrate_to_current(raw)
 
-    if start_version == CURRENT_SCHEMA_VERSION:
+    if not needs_migration(start_version):
         logger.info(
-            f"{in_path} is already schema v{CURRENT_SCHEMA_VERSION}; "
+            f"{in_path} is already schema {format_version(start_version)}; "
             f"nothing to migrate."
         )
         return None
 
     if out_path is None:
         out_path = in_path.with_name(
-            f"{in_path.stem}_v{CURRENT_SCHEMA_VERSION}{in_path.suffix}"
+            f"{in_path.stem}_v{CURRENT_SCHEMA_VERSION[0]}{in_path.suffix}"
         )
     out_path = Path(out_path)
 
@@ -148,8 +152,8 @@ def migrate_config(
         yaml.safe_dump(migrated, file, sort_keys=False)
 
     logger.info(
-        f"Migrated {in_path} (schema v{start_version} -> "
-        f"v{CURRENT_SCHEMA_VERSION}) -> {out_path}"
+        f"Migrated {in_path} (schema {format_version(start_version)} -> "
+        f"{CURRENT_SCHEMA_VERSION_STR}) -> {out_path}"
     )
     return out_path
 

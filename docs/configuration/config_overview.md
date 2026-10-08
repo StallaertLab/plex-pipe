@@ -28,22 +28,39 @@ Validation Rules:
 ---
 ## Schema Version and Migration
 
-Every configuration carries a **`schema_version`** at the top of the file, recording which version of the config format the file was written for. **The current schema version is `1`.**
+Every configuration carries a **`schema_version`** at the top of the file, recording which version of the config format the file was written for. **The current schema version is `"2.0"`.**
 
-This version is a plain incrementing counter, independent of the PlexPipe package version. It changes only when the config *format* changes, which is rare, so most releases leave it untouched.
+```yaml
+schema_version: "2.0"
+```
 
-**Loading an older config.** If you load a file written for an older schema, or one with no `schema_version` (treated as the original version `0`), PlexPipe upgrades it in memory automatically and logs what it changed. Your pipeline runs without you editing anything by hand.
+The version has two parts, `MAJOR.MINOR`, and is independent of the PlexPipe package version:
+
+* **MAJOR** changes when settings are moved, renamed or removed, so that an older file would no longer load as it is. PlexPipe upgrades such files automatically (see below).
+* **MINOR** changes when new optional settings are added. Older files load unchanged.
+
+Keep the quotes: without them, YAML reads `2.10` as the number `2.1`.
+
+**Loading an older config.** If you load a file written for an older schema (for example `schema_version: 1`), or one with no `schema_version` (treated as the original version `0`), PlexPipe upgrades it in memory automatically and logs what it changed. Your pipeline runs without you editing anything by hand.
 
 **Saving the upgraded file.** The automatic upgrade does not modify your file on disk. To write out the upgraded version, call `migrate_config`:
 
 ```python
 import plex_pipe
-plex_pipe.migrate_config("analysis_old.yaml")  # writes analysis_old_v1.yaml
+plex_pipe.migrate_config("analysis_old.yaml")  # writes analysis_old_v2.yaml
 ```
 
-By default this writes a new file and leaves your original untouched. Pass a second argument to set a specific output path.
+This writes a new file next to the original (the name gets `_v2`, after the current MAJOR version) and leaves your original untouched. To choose the output file yourself, give its path as the second argument:
 
-**A config that is too new.** If you load a config written for a schema newer than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe.
+```python
+plex_pipe.migrate_config("analysis_old.yaml", "analysis.yaml")
+```
+
+If the file is already at the current schema, nothing is written.
+
+**A config that is too new.** If you load a config written for a newer MAJOR version than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe. If only the MINOR version is newer (e.g. `"2.1"` with a PlexPipe that knows `"2.0"`), the config loads with a warning: settings your PlexPipe does not know yet would be ignored.
+
+**What changed in each version** is listed in the [Schema Changelog](schema_changelog.md).
 
 The full set of fields for the current schema is documented in the [Reference](reference.md).
 

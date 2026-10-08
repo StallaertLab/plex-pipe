@@ -17,6 +17,7 @@ from plex_pipe.io.channel_manifest import (
     DEFAULT_PRESET,
     ChannelRecord,
     build_manifest,
+    check_selection_rules,
     duplicate_channels,
     read_manifest,
     write_manifest,
@@ -36,19 +37,24 @@ def explain_selection(
     use_markers: list[str] | None = None,
     ignore_markers: list[str] | None = None,
     earliest_round_markers: Sequence[str] | None = None,
+    strict: bool = True,
 ) -> tuple[dict[str, ChannelRecord], dict[str, str]]:
     """Apply the channel selection rules and explain every decision.
 
     Order of operations:
 
-    1. Files with ``use=False`` in the manifest are removed first; nothing can
-       bring them back (not even ``include_channels``).
+    1. Files with ``use=False`` in the manifest are removed first.
     2. Per marker: ``include_channels`` (channel names such as ``002_CD3``)
        pick the channel directly; otherwise ``exclude_channels`` are dropped
        and the latest round is kept, except for markers listed in
        ``earliest_round_markers``, where the earliest round is kept. One
        channel is kept per marker.
     3. ``use_markers`` then ``ignore_markers`` filter whole markers.
+
+    Settings that contradict each other (see
+    :func:`~plex_pipe.io.channel_manifest.check_selection_rules`), or an
+    ``include_channels`` entry whose file is ``use=no`` in the manifest, are
+    errors.
 
     See ``docs/configuration/channel-selection.md``.
 
@@ -61,10 +67,17 @@ def explain_selection(
         earliest_round_markers: Markers (case-insensitive) for which the
             earliest round is kept instead of the latest. ``None`` means the
             default, :data:`DEFAULT_EARLIEST_ROUND_MARKERS` (``DAPI``).
+        strict: If ``False`` (used by the preview), an ``include_channels``
+            entry whose file is ``use=no`` is reported in the file's reason
+            instead of raising.
 
     Returns:
         ``(selected, reasons)``: marker -> selected record, and file -> a short
         reason for every file (selected or not).
+
+    Raises:
+        ValueError: If the selection settings contradict each other or the
+            manifest (with ``strict=True``).
     """
     include_channels = include_channels or []
     exclude_channels = exclude_channels or []
@@ -73,6 +86,9 @@ def explain_selection(
     if earliest_round_markers is None:
         earliest_round_markers = DEFAULT_EARLIEST_ROUND_MARKERS
     earliest = {m.upper() for m in earliest_round_markers}
+    check_selection_rules(
+        include_channels, exclude_channels, use_markers, ignore_markers
+    )
 
     reasons: dict[str, str] = {}
     candidates: list[ChannelRecord] = []
@@ -82,10 +98,14 @@ def explain_selection(
             continue
         reasons[r.file] = "excluded in manifest (use=no)"
         if r.channel in include_channels:
-            logger.warning(
-                f"include_channels lists {r.channel}, but the manifest excludes "
-                f"{r.file} (use=no); the manifest wins."
-            )
+            if strict:
+                raise ValueError(
+                    f"include_channels lists {r.channel}, but the manifest "
+                    f"excludes {r.file} (use=no). Remove {r.channel} from "
+                    f"include_channels in your config YAML file, or set use for "
+                    f"{r.file} in the manifest CSV."
+                )
+            reasons[r.file] += "; conflicts with include_channels"
 
     grouped: dict[str, list[ChannelRecord]] = {}
     for r in candidates:
@@ -98,17 +118,12 @@ def explain_selection(
 
         included = [r for r in items if r.channel in include_channels]
         if included:
-            kept = included[-1]
+            kept = included[0]  # at most one per marker (checked above)
             result[marker] = kept
             reasons[kept.file] = "selected: include_channels"
             for r in items:
-                if r is kept:
-                    continue
-                reasons[r.file] = (
-                    f"include_channels: one channel per marker, kept {kept.channel}"
-                    if r in included
-                    else f"include_channels selects {kept.channel}"
-                )
+                if r is not kept:
+                    reasons[r.file] = f"include_channels selects {kept.channel}"
             continue
 
         for r in items:
@@ -197,7 +212,7 @@ def select_channels(
     if n_excluded:
         logger.info(
             f"Manifest column 'use': {n_excluded} file(s) excluded by the manifest; "
-            f"roi_cutting rules applied on top."
+            f"selection rules applied on top."
         )
 
     result, reasons = explain_selection(
@@ -278,9 +293,9 @@ def scan_channels_from_list(
         msg = (
             f"No files in image_dir match the '{preset}' file naming "
             f"({len(files)} TIFF file(s) found). If this is not Cell DIVE data, "
-            f"set channel_manifest under general: in your config YAML file to a "
-            f"CSV path, reload the config, and create the CSV with "
-            f"plex_pipe.save_manifest(config)."
+            f"set manifest under channels: in your config YAML file to a CSV "
+            f"path (and remove file_naming), reload the config, and create the "
+            f"CSV with plex_pipe.save_manifest(config)."
         )
         raise ValueError(msg)
 
@@ -451,9 +466,9 @@ def preview_channels(
     """Dry run of channel discovery: what will be cut, and why.
 
     Lists ``image_dir`` (locally, or over Globus when ``gc`` is given),
-    builds the manifest exactly as a run would (from ``channel_manifest`` in the config
-    if set, otherwise with the naming preset), applies the ``roi_cutting``
-    selection rules, and returns one row per file. Unlike a run it never stops
+    builds the manifest exactly as a run would (from ``channels.manifest`` in
+    the config if set, otherwise with the naming preset), applies the selection
+    rules from the ``channels`` section, and returns one row per file. Unlike a run it never stops
     at the first problem: unrecognised files, duplicate channels, files missing
     from ``image_dir`` and files not in the manifest are reported as rows.
 
@@ -463,7 +478,7 @@ def preview_channels(
     Args:
         config: The analysis configuration.
         gc: Globus configuration, if ``image_dir`` is on a Globus endpoint.
-        preset: Force this naming preset, ignoring ``channel_manifest`` in the
+        preset: Force this naming preset, ignoring the ``manifest`` in the
             config (e.g. to start a fresh manifest).
 
     Returns:
@@ -473,7 +488,7 @@ def preview_channels(
 
     Raises:
         ValueError: If ``image_dir`` contains no TIFF files.
-        ManifestError: If the ``channel_manifest`` CSV cannot be parsed.
+        ManifestError: If the ``manifest`` CSV cannot be parsed.
     """
     return _preview(config, gc=gc, preset=preset, warn_missing=True)
 
@@ -488,7 +503,7 @@ def _preview(
     called from :func:`save_manifest`, which is creating the missing file."""
     import pandas as pd
 
-    general, cutting = config.general, config.roi_cutting
+    general, channels = config.general, config.channels
     image_dir = general.image_dir
     files = list_globus_tifs(gc, image_dir) if gc is not None else list_local_files(
         image_dir
@@ -509,13 +524,13 @@ def _preview(
 
     manifest_missing = (
         preset is None
-        and general.channel_manifest is not None
-        and not Path(general.channel_manifest).exists()
+        and channels.manifest is not None
+        and not Path(channels.manifest).exists()
     )
 
-    if preset is None and general.channel_manifest is not None and not manifest_missing:
-        source = f"manifest {general.channel_manifest}"
-        records = read_manifest(general.channel_manifest, strict=False)
+    if preset is None and channels.manifest is not None and not manifest_missing:
+        source = f"manifest {channels.manifest}"
+        records = read_manifest(channels.manifest, strict=False)
         in_manifest = {r.file for r in records}
         for r in records:
             if r.file not in path_by_name:
@@ -525,7 +540,7 @@ def _preview(
             if name not in in_manifest:
                 problem_rows.append(blank_row(name, "not in manifest"))
     else:
-        preset = preset or general.file_naming or DEFAULT_PRESET
+        preset = preset or channels.file_naming or DEFAULT_PRESET
         source = f"naming preset '{preset}'"
         records, unmatched = build_manifest(files, preset, strict=False)
         for name in unmatched:
@@ -542,11 +557,12 @@ def _preview(
 
     selected, reasons = explain_selection(
         candidates,
-        cutting.include_channels,
-        cutting.exclude_channels,
-        cutting.use_markers,
-        cutting.ignore_markers,
-        cutting.earliest_round_markers,
+        channels.include_channels,
+        channels.exclude_channels,
+        channels.use_markers,
+        channels.ignore_markers,
+        channels.earliest_round_markers,
+        strict=False,
     )
     selected_files = {r.file for r in selected.values()}
     rows = [
@@ -564,10 +580,10 @@ def _preview(
         not_dup = ~table["reason"].str.startswith("duplicate channel")
         table.loc[not_dup, "reason"] = "channel manifest not created yet"
         selected_files = set()
-        source = f"manifest {general.channel_manifest} (not created yet)"
+        source = f"manifest {channels.manifest} (not created yet)"
         if warn_missing:
             logger.warning(
-                f"Channel manifest {general.channel_manifest} does not exist yet. "
+                f"Channel manifest {channels.manifest} does not exist yet. "
                 f"Create it with plex_pipe.save_manifest(config), which writes to "
                 f"that path."
             )
@@ -594,7 +610,7 @@ def save_manifest(
     """Write an editable manifest CSV for ``image_dir``.
 
     Builds the manifest the same way :func:`preview_channels` does (from the
-    ``channel_manifest`` CSV if it exists, otherwise with the naming preset) and
+    ``manifest`` CSV if it exists, otherwise with the naming preset) and
     writes only ``file, marker, round, use``. The selection rules are not
     saved: they are re-applied on every run. ``use`` is written as ``no`` only
     for files already excluded in the manifest and left blank otherwise. Rows
@@ -602,18 +618,18 @@ def save_manifest(
     user can fix them; files missing from ``image_dir`` are dropped with a
     warning.
 
-    Workflow: set ``channel_manifest`` (under ``general:``) in the config YAML
-    file to where the CSV should be, reload the config, call this function,
+    Workflow: set ``manifest`` (under ``channels:``) in the config YAML file
+    to where the CSV should be, reload the config, call this function,
     then fill in the CSV in any program that opens CSV files.
 
     Args:
         config: The analysis configuration.
-        out_path: Where to write the CSV. Defaults to the ``channel_manifest``
-            path from the config if it is set (typically a CSV not created
+        out_path: Where to write the CSV. Defaults to the ``manifest`` path
+            from the config if it is set (typically a CSV not created
             yet), otherwise ``channels.csv`` in the analysis directory.
         gc: Globus configuration, if ``image_dir`` is on a Globus endpoint.
         preset: Force this naming preset, ignoring an existing
-            ``channel_manifest`` CSV (e.g. to start a fresh manifest).
+            ``manifest`` CSV (e.g. to start a fresh manifest).
         overwrite: Replace ``out_path`` if it exists. Off by default so a
             hand-edited manifest is never lost by accident.
 
@@ -624,13 +640,17 @@ def save_manifest(
         FileExistsError: If ``out_path`` exists and ``overwrite`` is False.
         ValueError: If ``image_dir`` contains no TIFF files.
     """
-    configured = config.general.channel_manifest
+    configured = config.channels.manifest
     if out_path is None:
         out_path = configured or Path(config.analysis_dir) / DEFAULT_MANIFEST_NAME
     out_path = Path(out_path)
     is_configured = configured is not None and out_path == Path(configured)
     if out_path.exists() and not overwrite:
-        hint = " (it is the channel_manifest in your config)" if is_configured else ""
+        hint = (
+            " (it is the manifest set under channels: in your config)"
+            if is_configured
+            else ""
+        )
         raise FileExistsError(
             f"{out_path} already exists{hint}. Pass overwrite=True to replace it."
         )
@@ -662,7 +682,7 @@ def save_manifest(
     n_dup = sum(table["reason"].str.startswith("duplicate channel"))
     origin = ""
     if records and not from_existing_csv:
-        naming = preset or config.general.file_naming or DEFAULT_PRESET
+        naming = preset or config.channels.file_naming or DEFAULT_PRESET
         origin = f" (read from file names using the '{naming}' naming)"
     logger.info(
         f"Wrote channel manifest {out_path}: {len(records)} files with a marker"
@@ -676,12 +696,13 @@ def save_manifest(
         )
     if is_configured:
         logger.info(
-            f"channel_manifest in your config already points to {out_path}: "
-            f"fill it in, then check with plex_pipe.preview_channels(config)."
+            f"The manifest under channels: in your config already points to "
+            f"{out_path}: fill it in, then check with "
+            f"plex_pipe.preview_channels(config)."
         )
     else:
         logger.info(
-            f"To use it, set channel_manifest: {out_path} under general: in your "
+            f"To use it, set manifest: {out_path} under channels: in your "
             f"config YAML file (and remove file_naming), then reload the config."
         )
     return out_path

@@ -1,9 +1,8 @@
 # configuration file for the analysis pipeline
 
-# Version of the config file format, "MAJOR.MINOR" (keep the quotes).
-# Older files are upgraded automatically when loaded; see the docs,
-# Configuration > Overview > Schema Version and Migration.
-schema_version: "2.0"
+# Schema version of this config — a migration-generation counter (see
+# config_migrations.py). Absent => treated as legacy (v0) and auto-migrated.
+schema_version: 1
 
 ######################################################
 # general settings
@@ -13,16 +12,6 @@ general:
   analysis_name: "sample_analysis"
   analysis_dir: "../examples//output"
   log_dir: null # => ${analysis_dir}/logs
-
-######################################################
-# channels
-######################################################
-channels:
-  file_naming: celldive  # read marker and round from Cell DIVE file names
-  # manifest: /path/to/channels.csv  # OR a CSV listing every file (replaces file_naming)
-  earliest_round_markers: [DAPI]  # earliest round kept for these; latest for all others
-  ignore_markers:
-    - bCat
 
 ######################################################
 # roi definition
@@ -36,8 +25,10 @@ roi_definition:
 # roi cutting
 ######################################################
 roi_cutting:
-  roi_dir_tif: null # => ${analysis_dir}/temp
-  roi_dir_output: null # => ${analysis_dir}/rois
+  roi_dir_tif: null # => ${analysis_dir}/rois
+  roi_dir_output: null # => ${analysis_dir}/temp
+  ignore_markers:
+    - bCat
   roi_cleanup_enabled: True
 
 ######################################################
