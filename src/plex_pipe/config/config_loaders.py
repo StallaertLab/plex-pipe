@@ -1,8 +1,10 @@
 """General utilities for configuration loading and dynamic path handling."""
 
 import copy
+import hashlib
 import os
 import platform
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -64,7 +66,9 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
 
     # Version check + in-memory migration of older configs (writes nothing to
     # disk; logs a hint pointing at migrate_config if a migration happened).
-    settings, _ = migrate_to_current(settings)
+    settings, start_version = migrate_to_current(settings)
+    # The upgraded config as written (before expansion), for snapshots.
+    raw = copy.deepcopy(settings)
 
     # expand placeholders
     settings = expand_pipeline(settings)
@@ -74,6 +78,10 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
         config = AnalysisConfig.model_validate(settings)
     except ValidationError as exc:
         raise ValueError(_format_validation_error(settings_path, exc)) from exc
+
+    config._source_path = Path(settings_path).resolve()
+    config._source_schema_version = format_version(start_version)
+    config._raw = raw
 
     # create dirs necessary for the analysis
     for p in [
@@ -110,6 +118,78 @@ def _format_validation_error(
         "plex_pipe.migrate_config(<path>)."
     )
     return "\n".join(lines)
+
+
+def save_config_snapshot(config: AnalysisConfig) -> Path | None:
+    """Save the config used for a run into the analysis directory.
+
+    Each distinct config is saved once, as
+    ``<analysis_dir>/configs/config_<hash>.yaml``, where ``<hash>`` is a short
+    fingerprint of its content. Runs with the same config reuse the same file;
+    a changed config gives a new file. The file holds the config as loaded
+    (already upgraded to the current schema, ``${input}`` steps unexpanded) and
+    can be loaded again with :func:`load_config`. Its header records when and
+    from which source file it was first written.
+
+    Every call logs which snapshot the run used, with the details of this run:
+    source file, the folder the run started from (relative paths are
+    resolved against it), PlexPipe version and schema versions. Nothing is
+    written next to the source file.
+
+    Args:
+        config: A config returned by :func:`load_config`.
+
+    Returns:
+        The path of the snapshot, or ``None`` if ``config`` was not loaded
+        from a file (nothing to save).
+    """
+    if config._raw is None:
+        logger.warning(
+            "Config was not loaded with load_config; no config snapshot written."
+        )
+        return None
+
+    from plex_pipe import __version__
+
+    body = yaml.safe_dump(config._raw, sort_keys=False)
+    digest = hashlib.sha256(
+        yaml.safe_dump(config._raw, sort_keys=True).encode()
+    ).hexdigest()[:8]
+    out_dir = Path(config.analysis_dir) / "configs"
+    out_path = out_dir / f"config_{digest}.yaml"
+
+    source_schema = config._source_schema_version
+    if source_schema == CURRENT_SCHEMA_VERSION_STR:
+        schema = f"schema {CURRENT_SCHEMA_VERSION_STR}"
+    else:
+        schema = (
+            f"schema {source_schema} in the source file, upgraded to "
+            f"{CURRENT_SCHEMA_VERSION_STR}"
+        )
+
+    if out_path.exists():
+        status = "existing"
+    else:
+        status = "new"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        header = [
+            f"PlexPipe config snapshot {digest}",
+            f"first written: {datetime.now():%Y-%m-%d %H:%M:%S}",
+            f"from: {config._source_path}",
+            f"PlexPipe: {__version__}",
+            f"{schema}",
+            "Runs that used this config are listed in the logs "
+            f"('Config snapshot: ...config_{digest}.yaml').",
+        ]
+        with open(out_path, "w") as file:
+            file.write("".join(f"# {line}\n" for line in header) + "\n" + body)
+
+    logger.info(
+        f"Config snapshot: {out_path} ({status}; "
+        f"source {config._source_path}, run from {Path.cwd()}, "
+        f"PlexPipe {__version__}, {schema})"
+    )
+    return out_path
 
 
 def migrate_config(

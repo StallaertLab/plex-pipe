@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 from loguru import logger
 
-from plex_pipe.config.config_loaders import load_config
+from plex_pipe.config.config_loaders import load_config, save_config_snapshot
 from plex_pipe.io.globus import GlobusConfig
 from plex_pipe.stages.roi_preparation.controller import (
     RoiPreparationController,
@@ -70,6 +70,7 @@ def main():
     # setup logging
     configure_logging(config)
     logger.info("Starting core cutting script.")
+    save_config_snapshot(config)
 
     # setup Globus if requested
     if args.globus_config:

@@ -12,6 +12,7 @@ from typing import (
 from pydantic import (
     BaseModel,
     Field,
+    PrivateAttr,
     create_model,
     field_validator,
     model_validator,
@@ -334,6 +335,11 @@ class AnalysisConfig(BaseModel):
     roi_info_file_path: Path = Path(".")
     roi_dir_tif_path: Path = Path(".")
     roi_dir_output_path: Path = Path(".")
+
+    # Set by ``load_config``; used by ``save_config_snapshot``.
+    _source_path: Path | None = PrivateAttr(default=None)
+    _source_schema_version: str | None = PrivateAttr(default=None)
+    _raw: dict | None = PrivateAttr(default=None)
 
     @field_validator("channels", mode="before")
     @classmethod

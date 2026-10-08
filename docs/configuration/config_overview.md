@@ -65,6 +65,21 @@ If the file is already at the current schema, nothing is written.
 The full set of fields for the current schema is documented in the [Reference](reference.md).
 
 ---
+## Config Snapshots
+
+Each pipeline script (`02_cut_rois.py`, `04_segment.py`, `05_quantify.py`) saves the config it ran with to the `configs/` folder of the analysis directory. Your own config file is not changed.
+
+* Each distinct config is saved once, as `configs/config_<hash>.yaml`, where `<hash>` is a short fingerprint of its content (e.g. `config_7837c2df.yaml`). Steps run with the same config share one file; changing any setting gives a new file.
+* The snapshot is the config as used, already upgraded to the current schema. You can load it with `plex_pipe.load_config` to repeat a run.
+* Each step's log names the snapshot it used, together with the source file, the folder the run started from, the PlexPipe version and the schema version.
+
+Notebooks don't save snapshots automatically. You can save one with:
+
+```python
+plex_pipe.save_config_snapshot(config)
+```
+
+---
 ## Path Format
 
 When entering file paths in this configuration file, always use the forward slash (/) as the folder separator, even on Windows.
