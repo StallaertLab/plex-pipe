@@ -367,3 +367,41 @@ def test_run_does_not_call_qc_masker_if_disabled(sdata_read):
 
         mock_qc_masker.assert_not_called()
         mock_qc_masker.return_value.run.assert_not_called()
+
+
+def test_all_rois_must_have_the_same_channels(sdata_read):
+    """Without markers_to_quantify, the first ROI fixes the channel list and a
+    later ROI with a different set stops the run."""
+    qc = QuantificationController(mask_keys={"cell": "instanseg_cell"})
+
+    qc.validate_sdata_as_input(sdata_read)
+    first = list(qc.channels)
+    assert first == list(sdata_read.images)
+
+    # same channels again: accepted, same order
+    qc.validate_sdata_as_input(sdata_read)
+    assert qc.channels == first
+
+    # a later ROI missing a channel (removed in memory only)
+    dropped = first[-1]
+    del sdata_read.images[dropped]
+    with pytest.raises(ValueError, match=r"different channels from the first ROI") as e:
+        qc.validate_sdata_as_input(sdata_read)
+    assert f"Missing: ['{dropped}']" in str(e.value)
+    assert "Core_000.zarr" in str(e.value)
+
+
+def test_markers_to_quantify_checked_for_every_roi(sdata_read):
+    """With markers_to_quantify, each ROI only needs those markers."""
+    qc = QuantificationController(
+        mask_keys={"cell": "instanseg_cell"}, markers_to_quantify=["DAPI"]
+    )
+    qc.validate_sdata_as_input(sdata_read)
+    other = next(c for c in sdata_read.images if c != "DAPI")
+    del sdata_read.images[other]
+    qc.validate_sdata_as_input(sdata_read)  # extra/missing others are fine
+    assert qc.channels == ["DAPI"]
+
+    del sdata_read.images["DAPI"]
+    with pytest.raises(ValueError, match="Channel 'DAPI' not found in sdata"):
+        qc.validate_sdata_as_input(sdata_read)

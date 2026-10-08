@@ -205,7 +205,7 @@ quant:
 | `layer_connection` | `str` (optional) | The mask layer name to which the table should be linked (e.g. for visualization in Napari Spatialdata plugin). |
 | `morphological_properties` | `list[str]` (optional) | List of morphological features to calculate. 'Label' is added automatically if absent from the custom list to identify objects. Defaults to ["label", "centroid", "area", "eccentricity", "solidity", "perimeter", "euler_number"].|
 | `intensity_properties` | `list[str]` (optional) | List of intensity metrics to calculate. Defaults to ['mean', 'median']. |
-| `markers_to_quantify` | `list[str]` (optional) | List of specific markers to quantify itensity properties. If omitted, all available channels are quantified. |
+| `markers_to_quantify` | `list[str]` (optional) | List of specific markers to quantify intensity properties. If omitted, all channels of the first ROI are quantified, and every ROI must have the same channels (the run stops otherwise). |
 | `qc_to_table` | `bool` (optional) | If True, uses polygons defined in the QC step to create a mask layer in the AnnData table indicating which objects are from the accepted regions. Defaults to False. |
 
 For `morphological_properties`, any property supported by skimage.measure.regionprops can be used.
