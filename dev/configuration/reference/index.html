@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#general-settings" class="md-skip">
+        <a href="#schema-version" class="md-skip">
           Skip to content
         </a>
       
@@ -675,10 +675,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#schema-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#general-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
         General Settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channels
       
     </span>
   </a>
@@ -792,6 +814,34 @@
     
   
     Channel Selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
   
 
     
@@ -1030,10 +1080,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#schema-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Version
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#general-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
         General Settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channels
       
     </span>
   </a>
@@ -1146,50 +1218,127 @@
   <h1>Reference</h1>
 
 <p>The following sections detail the configuration parameters for each step of the pipeline.</p>
+<h2 id="schema-version">Schema Version</h2>
+<div class="highlight"><pre><span></span><code><span class="nt">schema_version</span><span class="p">:</span><span class="w"> </span><span class="s">"2.0"</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>schema_version</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Version of the config file format, <code>"MAJOR.MINOR"</code>, in quotes. The current version is <code>"2.0"</code>. Older configs are upgraded automatically when loaded; see <a href="../config_overview/#schema-version-and-migration">Schema Version and Migration</a>.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="general-settings">General Settings</h2>
 <p>This section defines the fundamental paths and naming conventions for the analysis run, including the source image directory and the output location.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">general</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">image_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">C:/path/to/images</span>
 <span class="w">  </span><span class="nt">analysis_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">experiment_01</span>
-<span class="w">  </span><span class="nt">analysis_root_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">C:/analysis_out</span>
+<span class="w">  </span><span class="nt">analysis_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">C:/analysis_out</span>
 <span class="w">  </span><span class="nt">log_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Key</th>
-<th>Type</th>
-<th>Description</th>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>image_dir</code></td>
-<td><code>Path</code></td>
-<td>Source directory with tiff images. In local mode, <code>image_dir</code> should point to a folder on a local system. In Globus mode, <code>image_dir</code> should reflect the remote directory on the Globus endpoint.</td>
+<td style="text-align: left;"><code>image_dir</code></td>
+<td style="text-align: left;"><code>Path</code></td>
+<td style="text-align: left;">Source directory with TIFF images. In local mode, <code>image_dir</code> should point to a folder on a local system. In Globus mode, <code>image_dir</code> should reflect the remote directory on the Globus endpoint.</td>
 </tr>
 <tr>
-<td><code>analysis_name</code></td>
-<td><code>str</code></td>
-<td>Name of the analysis run.</td>
+<td style="text-align: left;"><code>analysis_name</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Name of the analysis run.</td>
 </tr>
 <tr>
-<td><code>analysis_root_dir</code></td>
-<td><code>Path</code></td>
-<td>Analysis output base directory. Analysis will be saved in <code>analysis_root_dir/analysis_name</code> referred to as <code>analysis_dir</code>.</td>
+<td style="text-align: left;"><code>analysis_dir</code></td>
+<td style="text-align: left;"><code>Path</code></td>
+<td style="text-align: left;">Analysis output base directory. The analysis is saved in <code>analysis_dir/analysis_name</code>, referred to below as the analysis directory.</td>
 </tr>
 <tr>
-<td><code>log_dir</code></td>
-<td><code>Path</code> (optional)</td>
-<td>Custom log directory. Defaults to <code>analysis_dir/logs</code>.</td>
+<td style="text-align: left;"><code>log_dir</code></td>
+<td style="text-align: left;"><code>Path</code> (optional)</td>
+<td style="text-align: left;">Custom log directory. Defaults to <code>logs</code> in the analysis directory.</td>
 </tr>
 </tbody>
 </table>
+<h2 id="channels">Channels</h2>
+<p>This section defines where marker names and rounds come from (the channel manifest) and which channels are used. The whole section is optional; leaving it out uses the defaults.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">channels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">file_naming</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">celldive</span>
+<span class="w">  </span><span class="c1"># manifest: /path/to/channels.csv</span>
+<span class="w">  </span><span class="nt">earliest_round_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">DAPI</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">include_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">exclude_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">use_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">ignore_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>file_naming</code></td>
+<td style="text-align: left;"><code>str</code> (optional)</td>
+<td style="text-align: left;">Naming preset used to read marker and round from file names. Available: <code>celldive</code>. Used when <code>manifest</code> is not set.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>manifest</code></td>
+<td style="text-align: left;"><code>Path</code> (optional)</td>
+<td style="text-align: left;">Path to a channel manifest CSV listing every file with its marker and round. Set either <code>file_naming</code> or <code>manifest</code>, not both.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>earliest_round_markers</code></td>
+<td style="text-align: left;"><code>list[str]</code> (optional)</td>
+<td style="text-align: left;">Markers for which the earliest round is kept instead of the latest. Defaults to <code>[DAPI]</code>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>include_channels</code></td>
+<td style="text-align: left;"><code>list[str]</code> (optional)</td>
+<td style="text-align: left;">Channel names (e.g. <code>002_CD44</code>) to use for their marker, bypassing round selection.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>exclude_channels</code></td>
+<td style="text-align: left;"><code>list[str]</code> (optional)</td>
+<td style="text-align: left;">Channel names to skip.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>use_markers</code></td>
+<td style="text-align: left;"><code>list[str]</code> (optional)</td>
+<td style="text-align: left;">If set, only these markers are used.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ignore_markers</code></td>
+<td style="text-align: left;"><code>list[str]</code> (optional)</td>
+<td style="text-align: left;">Markers to leave out.</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../channel-selection/">Channel Selection</a> for the manifest CSV format and how the selection rules work together.</p>
 <h2 id="roi-definition">ROI Definition</h2>
-<p>This section configures the automatic detection of tissue cores. It specifies the image used for detection and the parameters for the Segment Anything Model (SAM2) to accurately identify core boundaries.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">core_detection</span><span class="p">:</span>
+<p>This section specifies the image used to define the regions of interest (ROIs) and where their coordinates are stored.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">roi_definition</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">detection_image</span><span class="p">:</span><span class="w"> </span><span class="s">"BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif"</span>
-<span class="w">  </span><span class="nt">core_info_file_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">roi_info_file_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">  </span><span class="nt">im_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
 </code></pre></div>
 <table>
@@ -1204,99 +1353,71 @@
 <tr>
 <td style="text-align: left;"><code>detection_image</code></td>
 <td style="text-align: left;"><code>str</code></td>
-<td style="text-align: left;"><strong>Required.</strong> Name of the image in <code>image_dir</code> used for defining cores.</td>
+<td style="text-align: left;"><strong>Required.</strong> Name of the image in <code>image_dir</code> used for defining ROIs.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>roi_info_file_path</code></td>
 <td style="text-align: left;"><code>Path</code> (optional)</td>
-<td style="text-align: left;">Custom path for core coordinates. Defaults to <code>analysis_dir/rois.pkl</code>.</td>
+<td style="text-align: left;">Custom path for ROI coordinates. Defaults to <code>rois.pkl</code> in the analysis directory.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>im_level</code></td>
 <td style="text-align: left;"><code>float</code> (optional)</td>
-<td style="text-align: left;">Pyramid level to read from the image for core definition. If not specified, all pyramid levels are read from the input image.</td>
+<td style="text-align: left;">Pyramid level to read from the image for ROI definition. If not specified, all pyramid levels are read from the input image.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="roi-cutting">ROI Cutting</h2>
-<p>This section controls the extraction of individual ROIs from the original whole-slide images. It allows for precise channel selection, definition of output directories, and configuration of core processing parameters such as margins and masking.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">core_cutting</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">cores_dir_tif</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">  </span><span class="nt">cores_dir_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-
-<span class="w">  </span><span class="nt">include_channels</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">exclude_channels</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">008_ECad</span>
-<span class="w">  </span><span class="nt">use_markers</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">ignore_markers</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Antibody1</span>
+<p>This section controls the extraction of individual ROIs from the original whole-slide images: output directories, margins and masking. Which channels are cut is set in <a href="#channels">Channels</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">roi_cutting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">roi_dir_tif</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">roi_dir_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">  </span><span class="nt">margin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">  </span><span class="nt">mask_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="w">  </span><span class="nt">transfer_cleanup_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="w">  </span><span class="nt">temp_roi_delete</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">transfer_cleanup_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">roi_cleanup_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Key</th>
-<th>Type</th>
-<th>Description</th>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>cores_dir_tif</code></td>
-<td><code>Path</code> (optional)</td>
-<td>Temporary folder to store extracted TIFFs for each core. Defaults to <code>analysis_dir/temp</code>.</td>
+<td style="text-align: left;"><code>roi_dir_tif</code></td>
+<td style="text-align: left;"><code>Path</code> (optional)</td>
+<td style="text-align: left;">Temporary folder to store extracted TIFFs for each ROI. Defaults to <code>temp</code> in the analysis directory.</td>
 </tr>
 <tr>
-<td><code>cores_dir_output</code></td>
-<td><code>Path</code> (optional)</td>
-<td>Final destination for SpatialData (Zarr) outputs. Defaults to <code>analysis_dir/cores</code>.</td>
+<td style="text-align: left;"><code>roi_dir_output</code></td>
+<td style="text-align: left;"><code>Path</code> (optional)</td>
+<td style="text-align: left;">Final destination for SpatialData (Zarr) outputs. Defaults to <code>rois</code> in the analysis directory.</td>
 </tr>
 <tr>
-<td><code>include_channels</code></td>
-<td><code>list[str]</code> (optional)</td>
-<td>List of channel names to include.</td>
+<td style="text-align: left;"><code>margin</code></td>
+<td style="text-align: left;"><code>int</code> (optional)</td>
+<td style="text-align: left;">Number of pixels to pad around each bounding box when cutting ROIs. Defaults to 0.</td>
 </tr>
 <tr>
-<td><code>exclude_channels</code></td>
-<td><code>list[str]</code> (optional)</td>
-<td>List of channel names to exclude.</td>
+<td style="text-align: left;"><code>mask_value</code></td>
+<td style="text-align: left;"><code>int</code> (optional)</td>
+<td style="text-align: left;">Value used to fill the background for polygonal ROI masks. Defaults to 0.</td>
 </tr>
 <tr>
-<td><code>use_markers</code></td>
-<td><code>list[str]</code> (optional)</td>
-<td>List to restrict markers to analyze.</td>
+<td style="text-align: left;"><code>transfer_cleanup_enabled</code></td>
+<td style="text-align: left;"><code>bool</code> (optional)</td>
+<td style="text-align: left;">Whether to delete each image transferred via Globus once its ROIs are cut. Defaults to false. The <code>--cleanup</code> option of <code>02_cut_rois.py</code> also turns it on.</td>
 </tr>
 <tr>
-<td><code>ignore_markers</code></td>
-<td><code>list[str]</code> (optional)</td>
-<td>List to ignore markers.</td>
-</tr>
-<tr>
-<td><code>margin</code></td>
-<td><code>int</code> (optional)</td>
-<td>Number of pixels to pad around each bounding box when cutting cores. Defaults to 0.</td>
-</tr>
-<tr>
-<td><code>mask_value</code></td>
-<td><code>int</code> (optional)</td>
-<td>Value used to fill background for polygonal core masks. Defaults to 0.</td>
-</tr>
-<tr>
-<td><code>transfer_cleanup_enabled</code></td>
-<td><code>bool</code> (optional)</td>
-<td>Whether to delete temporary files downloaded via Globus after the run. Defaults to False.</td>
-</tr>
-<tr>
-<td><code>temp_roi_delete</code></td>
-<td><code>bool</code> (optional)</td>
-<td>Whether to delete TIFFs from the temporary storage in <code>cores_dir_tif</code> after core assembly. Defaults to False. For details see <a href="../../usage/input_data/">Input Data</a>.</td>
+<td style="text-align: left;"><code>roi_cleanup_enabled</code></td>
+<td style="text-align: left;"><code>bool</code> (optional)</td>
+<td style="text-align: left;">Whether to delete the per-ROI TIFFs in <code>roi_dir_tif</code> once each ROI is assembled into its SpatialData object. Defaults to false.</td>
 </tr>
 </tbody>
 </table>
-<p>Parameters <code>include_channels</code>, <code>exclude_channels</code>, <code>use_markers</code> and <code>ignore_markers</code> provide a fine-grained control over which imaging channels are included in processing. See <a href="../channel-selection/">Channel Selection Logic</a> for details.</p>
 <h2 id="quality-control">Quality Control</h2>
 <p>This section manages quality control parameters, specifically defining prefixes for exclusion masks.
 These masks are used to filter out artifacts or unwanted regions from downstream analysis.</p>
@@ -1314,8 +1435,8 @@ These masks are used to filter out artifacts or unwanted regions from downstream
 <tbody>
 <tr>
 <td style="text-align: left;"><code>prefix</code></td>
-<td style="text-align: left;"><code>str</code> (optional)</td>
-<td style="text-align: left;">Prefix for shapes used for quality control exclusion. Shapes named <code>{prefix}_{marker}</code> will be used to mask out objects for specific markers.</td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><strong>Required.</strong> Prefix for shapes used for quality control exclusion. Shapes named <code>{prefix}_{marker}</code> will be used to mask out objects for specific markers.</td>
 </tr>
 </tbody>
 </table>
@@ -1354,8 +1475,8 @@ These masks are used to filter out artifacts or unwanted regions from downstream
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">instanseg_nucleus</span>
 <span class="w">    </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ring</span>
 <span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">outer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
-<span class="w">      </span><span class="nt">inner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">      </span><span class="nt">rad_bigger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">      </span><span class="nt">rad_smaller</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="w">    </span><span class="nt">keep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 <p>The pipeline allows for flexible image processing steps defined in the <a href="../../usage/processors/">Processors</a> list.
@@ -1426,7 +1547,7 @@ Example below specifies only a single AnnData table to be created ('instanseg_ta
 <span class="w">    </span><span class="nt">markers_to_quantify</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DAPI</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HLA1</span>
-<span class="w">    </span><span class="nt">add_qc_masks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">qc_to_table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1465,7 +1586,7 @@ Example below specifies only a single AnnData table to be created ('instanseg_ta
 <tr>
 <td style="text-align: left;"><code>markers_to_quantify</code></td>
 <td style="text-align: left;"><code>list[str]</code> (optional)</td>
-<td style="text-align: left;">List of specific markers to quantify itensity properties. If omitted, all available channels are quantified.</td>
+<td style="text-align: left;">List of specific markers to quantify intensity properties. If omitted, all channels of the first ROI are quantified, and every ROI must have the same channels (the run stops otherwise).</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>qc_to_table</code></td>

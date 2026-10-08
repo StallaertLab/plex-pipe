@@ -770,6 +770,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1111,6 +1139,7 @@ Consequently, it can be executed via a Jupyter Notebook, standalone script, or a
 <li><strong>Read in config</strong>: Specify the path to the analysis configuration file and load the required settings.</li>
 <li><strong>Specify the overwriting strategy</strong>: Set the <code>OVERWRITE_FLAG</code>. If <code>False</code>, the pipeline will throw an error to prevent overwriting existing resources. If <code>True</code>, existing resources will be replaced. Use with caution!</li>
 <li><strong>Define the logger</strong>: Initialize the logging protocol to track execution progress and document the processing steps.</li>
+<li><strong>Save a config snapshot (optional)</strong>: Save the config used to the <code>configs/</code> folder of the analysis directory (see <a href="../../configuration/config_overview/#config-snapshots">Config Snapshots</a>).</li>
 <li><strong>Define ROIs for processing</strong>: Identify the <code>SpatialData</code> objects to be processed. A demonstration cell is provided to truncate this list for faster testing.</li>
 <li><strong>Setup processors</strong>: Initialize the processing objects defined in your configuration. These objects are created once and reused across all ROIs.</li>
 <li><strong>Run ROI Processing</strong>: Execute the list of processing steps for each ROI. Note that the pipeline automatically validates each <code>SpatialData</code> object immediately before it is processed. An optional validation cell is also provided to run this check for all objects in the list upfront, ensuring every ROI has the required components before starting the full execution.</li>

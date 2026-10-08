@@ -666,6 +666,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1173,7 +1201,7 @@ This allows you to define your <code>analysis_dir</code> and <code>image_dir</co
 <p><strong>Multi-Drive</strong> (Windows only): Set <code>root: null</code>. This allows the use of standard Windows paths (e.g., <code>D:\Data</code>) which map to Globus virtual paths (e.g., <code>/D/Data</code>).</p>
 </li>
 <li>
-<p><strong>Home Directory</strong> (Linux/Mac): Set <code>root: null</code>. This defaults the scope to your user home folder (~/).</p>
+<p><strong>Full Paths</strong> (Linux/Mac): Set <code>root: null</code>. Local paths are sent to Globus unchanged (e.g. <code>/Users/me/data</code>), as Globus Connect Personal expects.</p>
 </li>
 <li>
 <p><strong>Restricted/Rooted</strong>: Set root: <code>/data/images</code>. Use this to "jail" the converter to a specific directory if Globus was configured with a restricted access point.</p>

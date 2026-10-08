@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#file-naming-convention" class="md-skip">
+        <a href="#input-data" class="md-skip">
           Skip to content
         </a>
       
@@ -666,6 +666,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -763,6 +791,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -805,6 +835,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -813,10 +845,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#file-naming-convention" class="md-nav__link">
+  <a href="#what-you-need" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File Naming Convention
+        What you need
       
     </span>
   </a>
@@ -950,6 +982,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -958,10 +992,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#file-naming-convention" class="md-nav__link">
+  <a href="#what-you-need" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File Naming Convention
+        What you need
       
     </span>
   </a>
@@ -999,37 +1033,30 @@
   
 
 
-  <h1>Input Data</h1>
-
-<h2 id="file-naming-convention">File Naming Convention</h2>
-<p>The pipeline expects OME-TIFF files to follow a specific naming convention (typical of processed CellDive data).
-The filename is parsed to extract the <strong>round number</strong> and <strong>marker name</strong>.</p>
-<p>Format: <code>[Prefix]_[Round].0.4_R000_[Dye]_[Marker]-[Suffix].ome.tif</code></p>
+<h1 id="input-data">Input Data</h1>
+<h2 id="what-you-need">What you need</h2>
 <ul>
-<li><strong>Round</strong>: Extracted from the second segment (e.g., <code>001</code> from <code>..._1.0.4_...</code>).</li>
-<li><strong>Marker</strong>:<ul>
-<li>If the <code>[Dye]</code> segment contains "DAPI", the marker is set to <code>DAPI</code>.</li>
-<li>Otherwise, the marker is extracted from the <code>[Marker]</code> segment (everything before the first hyphen <code>-</code>).</li>
+<li><strong>One image file per channel</strong>: TIFF or OME-TIFF (<code>.tif</code>, <code>.tiff</code>, <code>.ome.tif</code>, <code>.ome.tiff</code>), flat or pyramidal.</li>
+<li><strong>All channel files in one folder</strong> (<code>image_dir</code> in the config YAML file), without sub-folders.</li>
+<li><strong>Registered images</strong>: ROIs are cut at the same coordinates from every channel, so all channels must be aligned to each other.</li>
 </ul>
-</li>
-</ul>
-<p><strong>Example:</strong></p>
+<p>For every file, PlexPipe needs to know <strong>which marker it contains</strong>. Marker names become the image layer names in the analysis.</p>
+<p>Multiplexed experiments often contain more images than you want to analyse: a marker may have been imaged more than once (e.g. DAPI in every round, or a re-stain), or some images should be skipped altogether. PlexPipe lets you set <strong>selection rules</strong> in the configuration to decide which image is kept for each marker (by default, the latest round of each marker and the earliest round of DAPI). Because these rules work with rounds, PlexPipe also needs to know in which imaging <strong>round</strong> each file was acquired.</p>
+<p>You can provide this information in two ways:</p>
 <ul>
-<li>File: <code>BLCA-1_1.0.4_R000_Cy3_pH2AX-AF555_FINAL_AFR_F.ome.tif</code></li>
-<li><strong>Round</strong>: 1</li>
-<li><strong>Marker</strong>: pH2AX</li>
-<li><strong>Channel Name</strong>: <code>001_pH2AX</code></li>
+<li><strong>Cell DIVE data</strong> is supported out of the box: marker and round are read from the original Cell DIVE file names.</li>
+<li><strong>Any other TIFFs</strong> can be used by providing a short CSV (a <em>channel manifest</em>) that lists each file with its marker and, optionally, its round.</li>
 </ul>
+<p>The CSV format and the rules for keeping and skipping images are described in <a href="../../configuration/channel-selection/">Channel Selection</a>.</p>
 <hr />
 <h2 id="sourcing-image-files">Sourcing Image Files</h2>
-<p>Original tiff files are required to divide into separate SpatialData objects in the ROI Cutting step.</p>
-<p>These files can be sourced differently resulting in the <a href="../../analysis_steps/02_roi_cutting/">ROI cutting step</a> supporting two modes of operation:</p>
+<p>The original TIFF files are needed in the <a href="../../analysis_steps/02_roi_cutting/">ROI cutting step</a>, where they are divided into separate SpatialData objects. The files can be sourced in two ways:</p>
 <ul>
-<li><strong>Local mode</strong>: Tiff files are available on the local filesystem.</li>
-<li><strong>Globus mode</strong>: Tiff files are accessed remotely using <a href="https://www.globus.org/">Globus</a> endpoints.</li>
+<li><strong>Local mode</strong>: TIFF files are available on the local filesystem.</li>
+<li><strong>Globus mode</strong>: TIFF files are accessed remotely through <a href="https://www.globus.org/">Globus</a> endpoints. Only the selected channels are transferred.</li>
 </ul>
 <p>For details of setting up Globus see <a href="../globus/">Globus Setup</a>.</p>
-<p>All downstream steps are performed on locally available SpatialData object.</p>
+<p>All downstream steps are performed on locally available SpatialData objects.</p>
 
 
 

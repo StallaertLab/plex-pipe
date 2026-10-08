@@ -664,6 +664,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -904,6 +932,94 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.config.config_loaders.load_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.config.config_loaders.migrate_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        migrate_config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.config.config_loaders.save_config_snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_config_snapshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.stages.roi_preparation.channel_scanner.preview_channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        preview_channels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.stages.roi_preparation.channel_scanner.save_manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_manifest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controllers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controllers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#plex_pipe.stages.roi_preparation.controller.RoiPreparationController" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1044,6 +1160,94 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.config.config_loaders.load_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.config.config_loaders.migrate_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        migrate_config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.config.config_loaders.save_config_snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_config_snapshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.stages.roi_preparation.channel_scanner.preview_channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        preview_channels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.stages.roi_preparation.channel_scanner.save_manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_manifest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controllers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controllers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#plex_pipe.stages.roi_preparation.controller.RoiPreparationController" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1170,8 +1374,665 @@
 
 
 <h1 id="api-reference">API Reference</h1>
-<p>This section contains the reference documentation for the controllers of the pipeline steps.</p>
+<p>This section contains the reference documentation for the public functions and the controllers of the pipeline steps.</p>
 <hr />
+<h2 id="configuration">Configuration</h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.config.config_loaders.load_config" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">config_loaders</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="n">settings_path</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Loads analysis settings from a YAML file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>settings_path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the YAML settings file.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="plex_pipe.config.config_schema.AnalysisConfig">AnalysisConfig</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The validated AnalysisConfig object.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the config is a newer schema than this build understands,
+or if it fails validation (raised with a human-readable message).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.config.config_loaders.migrate_config" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">config_loaders</span><span class="o">.</span><span class="n">migrate_config</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Read an old config, migrate it to the current schema, and write it out.</p>
+<p>Writes the upgraded config to a <strong>new</strong> file by default (never overwrites
+the original unless <code>out_path</code> is explicitly set to the same path).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>in_path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the config file to migrate.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>out_path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="pathlib.Path">Path</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Where to write the migrated config. Defaults to
+<code>&lt;stem&gt;_v&lt;MAJOR&gt;.&lt;suffix&gt;</code> next to the input (e.g.
+<code>analysis_v2.yaml</code>).</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path written, or <code>None</code> if the config was already current.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.config.config_loaders.save_config_snapshot" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">config_loaders</span><span class="o">.</span><span class="n">save_config_snapshot</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Save the config used for a run into the analysis directory.</p>
+<p>Each distinct config is saved once, as
+<code>&lt;analysis_dir&gt;/configs/config_&lt;hash&gt;.yaml</code>, where <code>&lt;hash&gt;</code> is a short
+fingerprint of its content. Runs with the same config reuse the same file;
+a changed config gives a new file. The file holds the config as loaded
+(already upgraded to the current schema, <code>${input}</code> steps unexpanded) and
+can be loaded again with :func:<code>load_config</code>. Its header records when and
+from which source file it was first written.</p>
+<p>Every call logs which snapshot the run used, with the details of this run:
+source file, the folder the run started from (relative paths are
+resolved against it), PlexPipe version and schema versions. Nothing is
+written next to the source file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>config</code>
+            </td>
+            <td>
+                  <code><span title="plex_pipe.config.config_schema.AnalysisConfig">AnalysisConfig</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A config returned by :func:<code>load_config</code>.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path of the snapshot, or <code>None</code> if <code>config</code> was not loaded</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>from a file (nothing to save).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div><hr />
+<h2 id="channels">Channels</h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.stages.roi_preparation.channel_scanner.preview_channels" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">stages</span><span class="o">.</span><span class="n">roi_preparation</span><span class="o">.</span><span class="n">channel_scanner</span><span class="o">.</span><span class="n">preview_channels</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">gc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Dry run of channel discovery: what will be cut, and why.</p>
+<p>Lists <code>image_dir</code> (locally, or over Globus when <code>gc</code> is given),
+builds the manifest exactly as a run would (from <code>channels.manifest</code> in
+the config if set, otherwise with the naming preset), applies the selection
+rules from the <code>channels</code> section, and returns one row per file. Unlike a
+run it never stops at the first problem: unrecognised files, duplicate
+channels, files missing from <code>image_dir</code> and files not in the manifest
+are reported as rows.</p>
+<p>To get an editable manifest CSV, call :func:<code>save_manifest</code> with the same
+config (it does not need this table).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>config</code>
+            </td>
+            <td>
+                  <code><span title="plex_pipe.config.config_schema.AnalysisConfig">AnalysisConfig</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The analysis configuration.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>gc</code>
+            </td>
+            <td>
+                  <code><span title="plex_pipe.io.globus.GlobusConfig">GlobusConfig</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Globus configuration, if <code>image_dir</code> is on a Globus endpoint.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>preset</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Force this naming preset, ignoring the <code>manifest</code> in the
+config (e.g. to start a fresh manifest).</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>DataFrame with columns ``file, marker, round, use, channel, selected,</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>reason``. Selected and candidate rows come first (by channel), then</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>rows needing attention. If later pipeline steps need markers that are</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>not selected, a warning is logged (see</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>func:<code>check_downstream_markers</code>).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>image_dir</code> contains no TIFF files.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ManifestError">ManifestError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the <code>manifest</code> CSV cannot be parsed.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.stages.roi_preparation.channel_scanner.save_manifest" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">stages</span><span class="o">.</span><span class="n">roi_preparation</span><span class="o">.</span><span class="n">channel_scanner</span><span class="o">.</span><span class="n">save_manifest</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Write an editable manifest CSV for <code>image_dir</code>.</p>
+<p>Builds the manifest the same way :func:<code>preview_channels</code> does (from the
+<code>manifest</code> CSV if it exists, otherwise with the naming preset) and
+writes only <code>file, marker, round, use</code>. The selection rules are not
+saved: they are re-applied on every run. <code>use</code> is written as <code>no</code> only
+for files already excluded in the manifest and left blank otherwise. Rows
+needing attention are kept (blank marker, or duplicate channels) so the
+user can fix them; files missing from <code>image_dir</code> are dropped with a
+warning.</p>
+<p>Workflow: set <code>manifest</code> (under <code>channels:</code>) in the config YAML file
+to where the CSV should be, reload the config, call this function,
+then fill in the CSV in any program that opens CSV files.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>config</code>
+            </td>
+            <td>
+                  <code><span title="plex_pipe.config.config_schema.AnalysisConfig">AnalysisConfig</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The analysis configuration.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>out_path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="pathlib.Path">Path</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Where to write the CSV. Defaults to the <code>manifest</code> path
+from the config if it is set (typically a CSV not created
+yet), otherwise <code>channels.csv</code> in the analysis directory.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>gc</code>
+            </td>
+            <td>
+                  <code><span title="plex_pipe.io.globus.GlobusConfig">GlobusConfig</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Globus configuration, if <code>image_dir</code> is on a Globus endpoint.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>preset</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Force this naming preset, ignoring an existing
+<code>manifest</code> CSV (e.g. to start a fresh manifest).</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>overwrite</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Replace <code>out_path</code> if it exists. Off by default so a
+hand-edited manifest is never lost by accident.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path written.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="FileExistsError">FileExistsError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>out_path</code> exists and <code>overwrite</code> is False.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>image_dir</code> contains no TIFF files.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div><hr />
+<h2 id="controllers">Controllers</h2>
 
 
 <div class="doc doc-object doc-module">
@@ -1937,7 +2798,10 @@ quantification task, processing channels and masks from a SpatialData object.</p
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of markers/channels to quantify.</p>
+                <p>List of markers/channels to quantify. If None,
+all images of the first ROI are quantified, and every later ROI
+run with this controller must have the same images (so all
+tables have the same columns).</p>
               </div>
             </td>
             <td>
@@ -2108,7 +2972,9 @@ quantification task, processing channels and masks from a SpatialData object.</p
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If a specified mask or channel key is missing.</p>
+                <p>If a specified mask or channel key is missing, or (with
+<code>markers_to_quantify</code> unset) if this ROI's channels differ from
+those of the first ROI run with this controller.</p>
               </div>
             </td>
           </tr>

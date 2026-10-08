@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://stallaertlab.github.io/plex-pipe/dev/usage/execution_modes/">
       
       
-        <link rel="prev" href="../../configuration/channel-selection/">
+        <link rel="prev" href="../../configuration/schema_changelog/">
       
       
         <link rel="next" href="../input_data/">
@@ -666,6 +666,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1090,10 +1118,10 @@
 <h2 id="command-line-usage">Command-Line Usage</h2>
 <p>To run the pipeline from the command line, use the provided scripts:</p>
 <h3 id="prepare-cores">Prepare Cores</h3>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp-config<span class="w"> </span>../examples/example_pipeline_config.yaml
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
 </code></pre></div>
 <p>or alternatively with <a href="../input_data/#sourcing-image-files">remote sourcing</a> of the image files:</p>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">'../examples/example_pipeline_config_globus.yaml'</span><span class="w"> </span>-globus_config<span class="w"> </span><span class="s1">'../examples/example_globus_config.yaml'</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">'r_collection_id'</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">'cbi_collection_id'</span><span class="w">  </span>--cleanup
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">'../examples/example_pipeline_config_globus.yaml'</span><span class="w"> </span>--globus_config<span class="w"> </span><span class="s1">'../examples/example_globus_config.yaml'</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">'remote_source'</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">'local_workstation'</span><span class="w"> </span>--cleanup
 </code></pre></div>
 <h3 id="image-processing">Image Processing</h3>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>04_segment.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite

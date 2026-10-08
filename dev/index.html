@@ -733,6 +733,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1017,7 +1045,7 @@
 <p><strong>PlexPipe</strong> is an multiplex analysis pipeline that processes images through a series of <a href="analysis_steps/00_steps_overview/">modular steps</a>, transforming raw whole-slide TIFF images into quantitative single-cell data.</p>
 <h2 id="key-features">Key Features</h2>
 <ul>
-<li><strong>Input Data:</strong> The pipeline accepts sets of individual TIFF files. It follows the naming conventions used by the <strong>Cell DIVE</strong> system. For specific requirements regarding file naming, refer to <a href="usage/input_data/">Input Data</a>.</li>
+<li><strong>Input Data:</strong> The pipeline accepts sets of individual TIFF files, one per channel. Marker names and imaging rounds are read from <strong>Cell DIVE</strong> file names, or from a channel manifest CSV for data from any other platform (see <a href="usage/input_data/">Input Data</a> and <a href="configuration/channel-selection/">Channel Selection</a>).</li>
 <li><strong>Remote Data Sourcing:</strong> Seamlessly source and transfer large-scale imaging datasets from institutional endpoints or personal collections using <a href="https://www.globus.org/">Globus</a>. This ensures secure and reliable data movement directly into your processing environment (see: <a href="usage/globus/">Globus Integration</a>).</li>
 <li><strong>Data Integration:</strong> Outputs are stored as <a href="https://spatialdata.scverse.org/en/latest/index.html">SpatialData</a> objects, making them ready for downstream analysis within the <a href="https://scverse.org/">scverse</a> ecosystem or interactive exploration via the <a href="https://github.com/scverse/napari-spatialdata">napari-spatialdata plugin</a>.</li>
 <li><strong>Flexible Execution:</strong> PlexPipe can be implemented in two ways based on your needs:<ul>

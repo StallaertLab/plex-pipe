@@ -770,6 +770,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1096,8 +1124,9 @@ Consequently, it can be executed via a Jupyter Notebook, standalone script, or a
 <ul>
 <li><strong>Read in config</strong>: Specify the pathway to the analysis configuration file and load the required settings.</li>
 <li><strong>Define the logger</strong>: Initialize the logging protocol to track execution progress and document the process.</li>
+<li><strong>Save a config snapshot (optional)</strong>: Save the config used to the <code>configs/</code> folder of the analysis directory (see <a href="../../configuration/config_overview/#config-snapshots">Config Snapshots</a>).</li>
 <li><strong>Define ROIs for processing</strong>: Ingests the <a href="../01_roi_definition/#roi-output-schema">ROI parameters</a> into a Pandas DataFrame. A demonstration cell is provided to truncate this DataFrame for rapid testing purposes.</li>
-<li><strong>Discover signal channels</strong>: Identifies available TIFF images and implements the <a href="../../configuration/channel-selection/">channel selection logic</a>. A demonstration cell is included to show how to subset the channel list for testing.</li>
+<li><strong>Discover signal channels</strong>: Preview which files will be used and why with <code>preview_channels(config)</code>, then identify the available TIFF images and apply the <a href="../../configuration/channel-selection/">channel selection rules</a>. To change the selection, edit the config YAML file and run <em>Read in config</em> again. A demonstration cell shows how to subset the channel list for testing.</li>
 <li><strong>Run ROI cutting</strong>: Triggers the ROI extraction process utilizing the local file sourcing strategy.</li>
 </ul>
 <hr />

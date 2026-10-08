@@ -14,7 +14,7 @@
         <link rel="prev" href="../reference/">
       
       
-        <link rel="next" href="../../usage/execution_modes/">
+        <link rel="next" href="../schema_changelog/">
       
       
         
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#channel-selection-logic" class="md-skip">
+        <a href="#channel-selection" class="md-skip">
           Skip to content
         </a>
       
@@ -715,14 +715,25 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Terminology">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channel-manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channel manifest
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Channel manifest">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-default-behavior-if-no-overrides" class="md-nav__link">
+  <a href="#path-a-cell-dive-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Default Behavior (if no overrides)
+        Path A: Cell DIVE data
       
     </span>
   </a>
@@ -730,10 +741,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-using-include_channels" class="md-nav__link">
+  <a href="#path-b-any-other-data-manifest-csv" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Using include_channels
+        Path B: Any other data (manifest CSV)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path B: Any other data (manifest CSV)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#csv-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CSV format
       
     </span>
   </a>
@@ -741,10 +764,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-using-exclude_channels" class="md-nav__link">
+  <a href="#marker-names-matter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Using exclude_channels
+        Marker names matter
       
     </span>
   </a>
@@ -752,21 +775,26 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-using-use_markers" class="md-nav__link">
+  <a href="#creating-the-csv" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Using use_markers
+        Creating the CSV
       
     </span>
   </a>
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+        
           <li class="md-nav__item">
-  <a href="#5-using-ignore_markers" class="md-nav__link">
+  <a href="#previewing-the-channels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Using ignore_markers
+        Previewing the channels
       
     </span>
   </a>
@@ -779,6 +807,95 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#selection-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selection rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Selection rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#order-of-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order of operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-manifest-use-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Manifest use column
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-default-round-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Default round selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-using-include_channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Using include_channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-using-exclude_channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Using exclude_channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-using-use_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Using use_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-using-ignore_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Using ignore_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -802,10 +919,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-force-earlier-prb-round-to-be-used" class="md-nav__link">
+  <a href="#example-2-force-an-earlier-prb-round" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Force earlier pRB round to be used
+        Example 2: Force an earlier pRB round
       
     </span>
   </a>
@@ -835,10 +952,48 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#conflicts-and-priority" class="md-nav__link">
+  <a href="#example-5-exclude-a-file-in-the-manifest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conflicts and Priority
+        Example 5: Exclude a file in the manifest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-6-keep-two-rounds-of-the-same-marker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 6: Keep two rounds of the same marker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-7-hoechst-as-the-nuclear-stain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 7: Hoechst as the nuclear stain
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conflicting-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conflicting settings
       
     </span>
   </a>
@@ -850,10 +1005,49 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#checking-what-was-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking what was used
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schema_changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1094,14 +1288,25 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Terminology">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#channel-manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channel manifest
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Channel manifest">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-default-behavior-if-no-overrides" class="md-nav__link">
+  <a href="#path-a-cell-dive-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Default Behavior (if no overrides)
+        Path A: Cell DIVE data
       
     </span>
   </a>
@@ -1109,10 +1314,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-using-include_channels" class="md-nav__link">
+  <a href="#path-b-any-other-data-manifest-csv" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Using include_channels
+        Path B: Any other data (manifest CSV)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path B: Any other data (manifest CSV)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#csv-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CSV format
       
     </span>
   </a>
@@ -1120,10 +1337,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-using-exclude_channels" class="md-nav__link">
+  <a href="#marker-names-matter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Using exclude_channels
+        Marker names matter
       
     </span>
   </a>
@@ -1131,21 +1348,26 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-using-use_markers" class="md-nav__link">
+  <a href="#creating-the-csv" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Using use_markers
+        Creating the CSV
       
     </span>
   </a>
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+        
           <li class="md-nav__item">
-  <a href="#5-using-ignore_markers" class="md-nav__link">
+  <a href="#previewing-the-channels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Using ignore_markers
+        Previewing the channels
       
     </span>
   </a>
@@ -1158,6 +1380,95 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#selection-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selection rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Selection rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#order-of-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order of operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-manifest-use-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Manifest use column
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-default-round-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Default round selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-using-include_channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Using include_channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-using-exclude_channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Using exclude_channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-using-use_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Using use_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-using-ignore_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Using ignore_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1181,10 +1492,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-force-earlier-prb-round-to-be-used" class="md-nav__link">
+  <a href="#example-2-force-an-earlier-prb-round" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Force earlier pRB round to be used
+        Example 2: Force an earlier pRB round
       
     </span>
   </a>
@@ -1214,10 +1525,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#conflicts-and-priority" class="md-nav__link">
+  <a href="#example-5-exclude-a-file-in-the-manifest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conflicts and Priority
+        Example 5: Exclude a file in the manifest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-6-keep-two-rounds-of-the-same-marker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 6: Keep two rounds of the same marker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-7-hoechst-as-the-nuclear-stain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example 7: Hoechst as the nuclear stain
       
     </span>
   </a>
@@ -1226,6 +1559,33 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conflicting-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conflicting settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-what-was-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking what was used
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1249,86 +1609,336 @@
   
 
 
-<h1 id="channel-selection-logic">🎯 Channel Selection Logic</h1>
+<h1 id="channel-selection">🎯 Channel Selection</h1>
+<p>Deciding which images enter the analysis happens in two stages:</p>
+<ol>
+<li><strong>Channel manifest — what exists.</strong> A list of every input file with its marker and round. It comes either from the file names (a naming preset) or from a CSV you provide.</li>
+<li><strong>Selection rules — what is used.</strong> Settings such as <code>include_channels</code>, <code>exclude_channels</code>, <code>use_markers</code>, <code>ignore_markers</code> and <code>earliest_round_markers</code> choose one channel per marker from the manifest.</li>
+</ol>
+<p>All of these settings live in the <code>channels:</code> section of the config YAML file.</p>
+<p>Both happen at the <a href="../../analysis_steps/02_roi_cutting/">ROI cutting step</a>. Channels left out there never reach the SpatialData objects, so <a href="#previewing-the-channels">preview the selection</a> before cutting.</p>
 <h2 id="terminology">Terminology</h2>
-<p>To understand how channels are selected, it is important to distinguish between:</p>
 <ul>
-<li><strong>Marker Name</strong>: The biological target being imaged (e.g., <code>DAPI</code>, <code>CD44</code>, <code>pRB</code>). This is derived from the filename.</li>
-<li><strong>Channel Name</strong>: The unique identifier for a specific image acquisition, combining the <strong>round number</strong> and the <strong>marker name</strong> (e.g., <code>001_DAPI</code>, <code>002_CD44</code>). This format (<code>{round:03d}_{marker}</code>) allows the pipeline to distinguish between the same marker imaged in different rounds.</li>
+<li><strong>Marker name</strong>: the biological target being imaged (e.g. <code>DAPI</code>, <code>CD44</code>, <code>pRB</code>). It becomes the image layer name in each ROI's SpatialData object, and it is what you refer to in <code>additional_elements</code> (e.g. <code>input: [DAPI, CD44]</code>).</li>
+<li><strong>Round</strong>: the imaging round (cycle) in which the file was acquired.</li>
+<li><strong>Channel name</strong>: one acquisition, written as <code>{round:03d}_{marker}</code> (e.g. <code>001_DAPI</code>, <code>002_CD44</code>). It distinguishes the same marker imaged in different rounds.</li>
+<li><strong>Channel manifest</strong>: the list of all input files with their marker, round, and an optional <code>use</code> flag.</li>
 </ul>
 <hr />
-<p>The pipeline supports fine-grained control over which imaging channels are included in processing. This is essential because:</p>
+<h2 id="channel-manifest">Channel manifest</h2>
+<p>PlexPipe needs a manifest: for every file in <code>image_dir</code>, its marker and round. How you provide it depends on your data. Choose your path:</p>
 <ul>
-<li>The same marker may be imaged multiple times across rounds (e.g., re-staining or optimization).</li>
-<li>DAPI is typically acquired in every round for registration but usually only one version should be kept for the analysis.</li>
+<li><strong><a href="#path-a-cell-dive-data">Path A: Cell DIVE data</a></strong>: files with their original Cell DIVE names. Nothing to prepare.</li>
+<li><strong><a href="#path-b-any-other-data-manifest-csv">Path B: Any other data (manifest CSV)</a></strong>: you provide a CSV listing every file with its marker and round.</li>
 </ul>
-<p>The selection process follows this logic:</p>
-<h3 id="1-default-behavior-if-no-overrides">1. <strong>Default Behavior (if no overrides)</strong></h3>
+<p>All settings below go in your <strong>config YAML file</strong>, which is the single source of truth for an analysis. After changing the YAML, load the config again (<code>config = plex_pipe.load_config("your_config.yaml")</code>) before running anything.</p>
+<h3 id="path-a-cell-dive-data">Path A: Cell DIVE data</h3>
+<p>This is the default. In the config YAML file you can leave it implicit or state it:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">channels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">file_naming</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">celldive</span><span class="w">        </span><span class="c1"># default; may be left out</span>
+</code></pre></div>
+<p>Marker and round are parsed from the Cell DIVE file names:</p>
+<p>Format: <code>[Prefix]_[Round].0.4_R000_[Dye]_[Marker]-[Suffix]_[...].ome.tif</code></p>
 <ul>
-<li>For each marker imaged in multiple rounds, the <strong>latest round</strong> is used by default.</li>
-<li>For DAPI, only <code>001_DAPI</code> is included unless specified otherwise.</li>
+<li><strong>Round</strong>: the number before <code>.0.4</code> (e.g. <code>1</code> from <code>..._1.0.4_...</code>, giving channel <code>001_...</code>).</li>
+<li><strong>Marker</strong>:<ul>
+<li>If the <code>[Dye]</code> segment contains <code>DAPI</code> (any case), the marker is <code>DAPI</code>.</li>
+<li>Otherwise, the marker is the segment after the dye with its <strong>last</strong> <code>-suffix</code> removed
+  (<code>pH2AX-AF555</code> → <code>pH2AX</code>, <code>Ki-67-AF488</code> → <code>Ki-67</code>).</li>
 </ul>
-<h3 id="2-using-include_channels">2. <strong>Using <code>include_channels</code></strong></h3>
+</li>
+<li>The <code>_[...]</code> part after the marker is optional (<code>..._Cy3_CK7-01.ome.tif</code> → <code>CK7</code>).</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Round</th>
+<th>Marker</th>
+<th>Channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BLCA-1_1.0.4_R000_Cy3_pH2AX-AF555_FINAL_AFR_F.ome.tif</code></td>
+<td>1</td>
+<td><code>pH2AX</code></td>
+<td><code>001_pH2AX</code></td>
+</tr>
+<tr>
+<td><code>BLCA-1_1.0.4_R000_DAPI__FINAL_F.ome.tif</code></td>
+<td>1</td>
+<td><code>DAPI</code></td>
+<td><code>001_DAPI</code></td>
+</tr>
+</tbody>
+</table>
+<p>Check the result with <a href="#previewing-the-channels"><code>preview_channels</code></a> before cutting.</p>
+<div class="admonition tip">
+<p class="admonition-title">Any issues? Switch to Path B</p>
+<p>If files are not recognised, marker names come out wrong, two files resolve to the same channel, or you want to rename markers, switch to <a href="#path-b-any-other-data-manifest-csv">Path B</a>.
+In the <code>channels:</code> section of the YAML file, replace <code>file_naming</code> with <code>manifest: /path/to/channels.csv</code>, reload the config and run <code>plex_pipe.save_manifest(config)</code>. It reads markers and rounds from your Cell DIVE file names into the new CSV, so you only edit what needs fixing.</p>
+</div>
+<h3 id="path-b-any-other-data-manifest-csv">Path B: Any other data (manifest CSV)</h3>
+<p>You provide a CSV listing every file in <code>image_dir</code> with its marker and round.</p>
+<h4 id="csv-format">CSV format</h4>
+<div class="highlight"><pre><span></span><code>file,marker,round,use
+slide1_cycle1_Hoechst.tif,Hoechst,1,
+slide1_cycle2_CD45.tif,CD45,2,
+slide1_cycle3_CD45.tif,CD45,3,no
+slide1_cycle3_CD8.tif,CD8,3,
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Required</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file</code></td>
+<td>yes</td>
+<td>File name in <code>image_dir</code> (no folders). Must match an existing file exactly.</td>
+</tr>
+<tr>
+<td><code>marker</code></td>
+<td>yes</td>
+<td>Marker name used throughout the pipeline.</td>
+</tr>
+<tr>
+<td><code>round</code></td>
+<td>no</td>
+<td>Imaging round, a whole number ≥ 0. Blank or missing column → <code>1</code>.</td>
+</tr>
+<tr>
+<td><code>use</code></td>
+<td>no</td>
+<td>Blank or missing column → the file may be used. <code>no</code> removes the file <strong>before</strong> the selection rules run.</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>This is a list of channel names like <code>002_CD44</code>, <code>001_DAPI</code>.</li>
-<li>If set, only these channels are included for a given marker — <strong>they override automatic selection</strong>.</li>
-<li>Use this to <strong>force inclusion of earlier rounds</strong> or <strong>include duplicates</strong> for comparison.</li>
+<li>Accepted <code>use</code> values (any case): <code>yes</code>, <code>y</code>, <code>true</code>, <code>t</code>, <code>1</code> and <code>no</code>, <code>n</code>, <code>false</code>, <code>f</code>, <code>0</code>. Anything else is an error that names the row.</li>
+<li>Comma, semicolon or tab separators are all accepted, so the CSV can be saved by any editor or spreadsheet program, in any locale.</li>
+<li>Extra columns (e.g. <code>notes</code>) are ignored.</li>
+<li>Every file listed must exist in <code>image_dir</code>. Otherwise, the run stops and names the missing files. When files are sourced through Globus, no transfer is started.</li>
+<li>Files in <code>image_dir</code> that are not in the CSV are ignored and listed in the log.</li>
+<li>Rows with an empty marker, and two rows with the same marker and round, are rejected with the row numbers named, so an unfinished CSV cannot be used by accident.</li>
 </ul>
-<h3 id="3-using-exclude_channels">3. <strong>Using <code>exclude_channels</code></strong></h3>
+<h4 id="marker-names-matter">Marker names matter</h4>
 <ul>
-<li>This is a list of channel names to skip.</li>
-<li>If <code>include_channels</code> is not set, <code>exclude_channels</code> can be used to <strong>remove undesired versions</strong>.</li>
-<li>Example: to exclude <code>003_pRB</code> in favor of earlier versions (or none).</li>
+<li><strong>One channel is kept per marker.</strong> To keep two rounds of the same marker, give them different marker names, e.g. <code>CD45</code> and <code>CD45_1</code>. The rules then treat them as separate markers.</li>
+<li><strong>Use the real name of your nuclear stain.</strong> By default the earliest round is kept for <code>DAPI</code> and the latest round for every other marker. For a stain such as Hoechst, keep the name <code>Hoechst</code> and add it to <a href="#2-default-round-selection"><code>earliest_round_markers</code></a> in the config YAML file.</li>
 </ul>
-<h3 id="4-using-use_markers">4. <strong>Using <code>use_markers</code></strong></h3>
-<ul>
-<li>This is a list of <strong>base marker names</strong> (like <code>DAPI</code>, <code>pRB</code>, <code>CD44</code>) <strong>after stripping the round prefix</strong>.</li>
-<li>After all other filtering, <code>use_markers</code> is applied as a final filter.</li>
-<li>Use it to <strong>narrow the final channel set to specific markers</strong>, regardless of which round was selected.</li>
-</ul>
-<h3 id="5-using-ignore_markers">5. <strong>Using <code>ignore_markers</code></strong></h3>
-<ul>
-<li>This is a list of <strong>base marker names</strong> to exclude from the final set.</li>
-<li>It is applied after <code>use_markers</code>.</li>
-<li>Use it to <strong>discard specific markers</strong> entirely (e.g. if a marker failed quality control across all rounds).</li>
-</ul>
+<h4 id="creating-the-csv">Creating the CSV</h4>
+<p><strong>1. Point the config YAML file at the CSV.</strong> The CSV does not need to exist yet. Remove <code>file_naming</code> if it is there (setting both is an error).</p>
+<div class="highlight"><pre><span></span><code><span class="nt">channels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">manifest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/channels.csv</span>
+</code></pre></div>
+<p><strong>2. Create the CSV.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">plex_pipe</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">plex_pipe</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">"your_config.yaml"</span><span class="p">)</span>
+<span class="n">plex_pipe</span><span class="o">.</span><span class="n">save_manifest</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+<p>This writes the CSV at the <code>manifest</code> path, with one row per file in <code>image_dir</code>. For files with Cell DIVE names, <code>marker</code> and <code>round</code> are read from the name; all other rows have an empty <code>marker</code> and <code>round</code> for you to fill in. An existing file is never overwritten unless you pass <code>overwrite=True</code>.</p>
+<p><strong>3. Fill in the CSV</strong> in any program that opens CSV files (a text editor or a spreadsheet program), following the <a href="#csv-format">format above</a>. Set <code>use</code> to <code>no</code>, or delete the row, for files you never want.</p>
+<p><strong>4. Check the selection</strong> with <a href="#previewing-the-channels"><code>preview_channels(config)</code></a>. The CSV is read each time, so you don't need to reload the config after editing it.</p>
+<p><strong>5. Cut.</strong> Until the CSV exists and every row has a marker, the ROI cutting step stops with a message saying what is missing.</p>
+<div class="admonition note">
+<p class="admonition-title">Paths</p>
+<p>A relative <code>manifest</code> path (like <code>image_dir</code>) is resolved against the folder you <strong>run from</strong>.
+A path that works from <code>notebooks/</code> will not work for a script started from the repository root.
+For scripts and Slurm jobs, use absolute paths.</p>
+<p>If <code>manifest</code> is not set, <code>save_manifest(config)</code> writes to <code>channels.csv</code> in the analysis directory; you can also pass any path: <code>save_manifest(config, "my_channels.csv")</code>.</p>
+</div>
+<h3 id="previewing-the-channels">Previewing the channels</h3>
+<div class="highlight"><pre><span></span><code><span class="n">table</span> <span class="o">=</span> <span class="n">plex_pipe</span><span class="o">.</span><span class="n">preview_channels</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+<p><code>preview_channels</code> shows which files will be used, and why, before anything is cut. <strong>Nothing is saved</strong>: the result is a table (a pandas DataFrame) held in the variable, which you can print or display in a notebook. It has one row per file: <code>file, marker, round, use, channel, selected, reason</code>.</p>
+<p>It runs exactly the same rules as the real run, but never stops at the first problem: unrecognised files, duplicate channels, files missing from <code>image_dir</code>, files not in the CSV, or a CSV not created yet all appear as rows with a reason.</p>
+<p>For the example dataset (with <code>ignore_markers: [bCat]</code> in the config):</p>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>marker</th>
+<th>round</th>
+<th>channel</th>
+<th>selected</th>
+<th>reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sample_1.0.4_R000_Cy5_CD45-AF647_FINAL_AFR_F.tiff</code></td>
+<td>CD45</td>
+<td>1</td>
+<td><code>001_CD45</code></td>
+<td>True</td>
+<td>selected</td>
+</tr>
+<tr>
+<td><code>sample_1.0.4_R000_DAPI__FINAL_F.tiff</code></td>
+<td>DAPI</td>
+<td>1</td>
+<td><code>001_DAPI</code></td>
+<td>True</td>
+<td>selected</td>
+</tr>
+<tr>
+<td><code>sample_1.0.4_R000_Cy7_NaKATPase-AF750_FINAL_AFR_F.tiff</code></td>
+<td>NaKATPase</td>
+<td>1</td>
+<td><code>001_NaKATPase</code></td>
+<td>True</td>
+<td>selected</td>
+</tr>
+<tr>
+<td><code>sample_1.0.4_R000_Cy3_bCat-AF555_FINAL_AFR_F.tiff</code></td>
+<td>bCat</td>
+<td>1</td>
+<td><code>001_bCat</code></td>
+<td>False</td>
+<td>ignore_markers</td>
+</tr>
+</tbody>
+</table>
+<p>It also checks the rest of the config: if a step in <code>additional_elements</code> or a <code>markers_to_quantify</code> list needs a marker that is not selected, it logs a warning, so you can fix the config before cutting rather than find out at segmentation or quantification. The same check runs when cutting starts.</p>
+<p>Both <code>preview_channels</code> and <code>save_manifest</code> also work for Globus data: pass <code>gc=...</code> (see <a href="../../usage/globus/#configuration-registry">Globus Configuration</a>).</p>
 <hr />
-<h2 id="examples">Examples</h2>
-<h3 id="example-1-default-automatic-selection">Example 1: Default automatic selection</h3>
-<div class="highlight"><pre><span></span><code><span class="nt">include_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
-<span class="nt">exclude_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
-<span class="nt">use_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<h2 id="selection-rules">Selection rules</h2>
+<p>The pipeline supports fine-grained control over which channels are processed. This is needed because:</p>
+<ul>
+<li>The same marker may be imaged in several rounds (e.g. re-staining or optimization).</li>
+<li>DAPI is typically acquired in every round for registration, but usually only one version is kept for analysis.</li>
+</ul>
+<p><strong>One channel is kept per marker.</strong> The rules below decide which one.</p>
+<h3 id="order-of-operations">Order of operations</h3>
+<p>The rules are applied <strong>on top of the manifest</strong>, in this order:</p>
+<ol>
+<li><strong>Manifest <code>use</code> column</strong>: files with <code>use</code> = <code>no</code> are removed first.</li>
+<li><strong>Per marker, choose one channel:</strong><ol>
+<li><code>include_channels</code>: if any channel of this marker is listed, it is used; round selection is skipped.</li>
+<li><code>exclude_channels</code>: listed channels are removed.</li>
+<li><strong>Default round selection</strong>: the <strong>latest round</strong> is kept; for markers in <code>earliest_round_markers</code> (default: <code>DAPI</code>), the <strong>earliest round</strong>.</li>
+</ol>
+</li>
+<li><strong>Filter whole markers:</strong> <code>use_markers</code>, then <code>ignore_markers</code>.</li>
+</ol>
+<h3 id="1-manifest-use-column">1. <strong>Manifest <code>use</code> column</strong></h3>
+<ul>
+<li>Optional column in a <a href="#csv-format">manifest CSV</a>; blank means the file may be used.</li>
+<li><code>no</code> removes that file before any rule runs. Round selection then works with what is left: excluding round 3 of CD45 makes round 2 the latest.</li>
+<li>Not available on Path A (Cell DIVE names); there, exclude a single file with <code>exclude_channels</code> (e.g. <code>002_CD45</code>), since each file is one channel.</li>
+</ul>
+<h3 id="2-default-round-selection">2. <strong>Default round selection</strong></h3>
+<ul>
+<li>For each marker imaged in several rounds, the <strong>latest round</strong> is used.</li>
+<li>For markers listed in <code>earliest_round_markers</code>, the <strong>earliest available round</strong> is used instead (<code>001_DAPI</code> for Cell DIVE data). Marker names are matched regardless of case.</li>
+<li>This is typically the marker used to align the rounds (e.g. DAPI); its first round usually has the best quality.</li>
+<li>The default is <code>earliest_round_markers: ["DAPI"]</code>. Change it in the config YAML file, for example for a different nuclear stain:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">channels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">earliest_round_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"Hoechst"</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <ul>
-<li>Keeps only the <strong>latest round per marker</strong>, and <code>001_DAPI</code>.</li>
+<li>Set it to <code>[]</code> to keep the latest round for every marker.</li>
 </ul>
-<hr />
-<h3 id="example-2-force-earlier-prb-round-to-be-used">Example 2: Force earlier pRB round to be used</h3>
+<h3 id="3-using-include_channels">3. <strong>Using <code>include_channels</code></strong></h3>
+<ul>
+<li>A list of channel names like <code>002_CD44</code>, <code>001_DAPI</code>.</li>
+<li>If a marker has a listed channel, that channel is used; this <strong>overrides automatic selection</strong> for that marker.</li>
+<li>Use it to <strong>force an earlier round</strong>.</li>
+<li>Listing several channels of the same marker is an error (one channel per marker). To keep two rounds, give them different marker names in a <a href="#marker-names-matter">manifest CSV</a>.</li>
+</ul>
+<h3 id="4-using-exclude_channels">4. <strong>Using <code>exclude_channels</code></strong></h3>
+<ul>
+<li>A list of channel names to skip.</li>
+<li>For markers without an <code>include_channels</code> entry, the listed channels are removed before round selection.</li>
+<li>Example: excluding <code>003_pRB</code> falls back to <code>002_pRB</code> (or drops pRB if it has no other round).</li>
+</ul>
+<h3 id="5-using-use_markers">5. <strong>Using <code>use_markers</code></strong></h3>
+<ul>
+<li>A list of <strong>marker names</strong> (like <code>DAPI</code>, <code>pRB</code>, <code>CD44</code>), without the round prefix.</li>
+<li>Applied after channel selection: only these markers are kept.</li>
+</ul>
+<h3 id="6-using-ignore_markers">6. <strong>Using <code>ignore_markers</code></strong></h3>
+<ul>
+<li>A list of <strong>marker names</strong> to drop from the final set.</li>
+<li>Applied after <code>use_markers</code>.</li>
+<li>Use it to <strong>discard a marker entirely</strong> (e.g. if it failed quality control in every round).</li>
+</ul>
+<h3 id="examples">Examples</h3>
+<p>All examples below go in the <code>channels:</code> section.</p>
+<h4 id="example-1-default-automatic-selection">Example 1: Default automatic selection</h4>
+<div class="highlight"><pre><span></span><code><span class="nt">channels</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">include_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">exclude_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">use_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">ignore_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">  </span><span class="nt">earliest_round_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"DAPI"</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<ul>
+<li>Keeps the <strong>latest round per marker</strong>, and the <strong>earliest DAPI round</strong>.</li>
+</ul>
+<h4 id="example-2-force-an-earlier-prb-round">Example 2: Force an earlier pRB round</h4>
 <div class="highlight"><pre><span></span><code><span class="nt">include_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"001_pRB"</span><span class="p p-Indicator">]</span>
-<span class="nt">use_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 </code></pre></div>
 <ul>
 <li><code>001_pRB</code> is used even if <code>003_pRB</code> exists.</li>
 </ul>
-<hr />
-<h3 id="example-3-exclude-a-problematic-round">Example 3: Exclude a problematic round</h3>
+<h4 id="example-3-exclude-a-problematic-round">Example 3: Exclude a problematic round</h4>
 <div class="highlight"><pre><span></span><code><span class="nt">exclude_channels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"003_CD44"</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <ul>
-<li>Automatically selects an earlier round (if available) for CD44.</li>
+<li>The latest remaining round of CD44 is used (e.g. <code>002_CD44</code>).</li>
 </ul>
-<hr />
-<h3 id="example-4-only-process-dapi-and-cd44">Example 4: Only process DAPI and CD44</h3>
+<h4 id="example-4-only-process-dapi-and-cd44">Example 4: Only process DAPI and CD44</h4>
 <div class="highlight"><pre><span></span><code><span class="nt">use_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"DAPI"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"CD44"</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <ul>
-<li>Filters final output to only include these two base markers.</li>
+<li>The final set contains only these two markers.</li>
 </ul>
-<hr />
-<h3 id="conflicts-and-priority">Conflicts and Priority</h3>
+<h4 id="example-5-exclude-a-file-in-the-manifest">Example 5: Exclude a file in the manifest</h4>
+<div class="highlight"><pre><span></span><code>file,marker,round,use
+slide1_cycle2_CD45.tif,CD45,2,
+slide1_cycle3_CD45.tif,CD45,3,no
+</code></pre></div>
 <ul>
-<li>If a channel is listed in both <code>include_channels</code> and <code>exclude_channels</code>, a <code>ValueError</code> is raised.</li>
-<li><code>use_channels</code> is applied <strong>last</strong>, on the base names after channel selection.</li>
+<li>Round 3 is removed by the manifest; the default rule then keeps round 2 (<code>002_CD45</code>).</li>
+</ul>
+<h4 id="example-6-keep-two-rounds-of-the-same-marker">Example 6: Keep two rounds of the same marker</h4>
+<div class="highlight"><pre><span></span><code>file,marker,round,use
+slide1_cycle2_CD45.tif,CD45_1,2,
+slide1_cycle3_CD45.tif,CD45,3,
+</code></pre></div>
+<ul>
+<li><code>CD45_1</code> and <code>CD45</code> are different markers, so both are kept as separate image layers.</li>
+</ul>
+<h4 id="example-7-hoechst-as-the-nuclear-stain">Example 7: Hoechst as the nuclear stain</h4>
+<div class="highlight"><pre><span></span><code><span class="nt">earliest_round_markers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"Hoechst"</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<ul>
+<li>The earliest Hoechst round is kept, and the image layer is named <code>Hoechst</code>.</li>
+</ul>
+<h3 id="conflicting-settings">Conflicting settings</h3>
+<p>Settings that ask for and reject the same thing are an error. The config does not load, so nothing runs:</p>
+<ul>
+<li>several channels of the same marker in <code>include_channels</code>;</li>
+<li>the same channel in <code>include_channels</code> and <code>exclude_channels</code>;</li>
+<li>a channel in <code>include_channels</code> whose marker is in <code>ignore_markers</code>, or missing from <code>use_markers</code> when <code>use_markers</code> is set;</li>
+<li>the same marker in <code>use_markers</code> and <code>ignore_markers</code>.</li>
+</ul>
+<p>A channel in <code>include_channels</code> whose file has <code>use</code> = <code>no</code> in the manifest is also an error, raised when the channels are selected. <code>preview_channels</code> shows it in that file's reason instead.</p>
+<p>A marker in <code>use_markers</code> or <code>ignore_markers</code> that is not found only produces a warning.</p>
+<hr />
+<h2 id="checking-what-was-used">Checking what was used</h2>
+<ul>
+<li><strong>Before running:</strong> <code>plex_pipe.preview_channels(config)</code> gives every file a <code>reason</code> (e.g. <code>superseded by 003_CD3</code>, <code>exclude_channels</code>, <code>ignore_markers</code>, <code>excluded in manifest (use=no)</code>). See <a href="#previewing-the-channels">Previewing the channels</a>.</li>
+<li><strong>After running:</strong> the ROI cutting log (in the analysis <code>logs/</code> folder when run through <code>scripts/02_cut_rois.py</code>) records the channel source (<code>Channel source: naming preset 'celldive'</code> or <code>Channel source: manifest &lt;path&gt;</code>), the final selected channels, every unused file with its reason, and files that were not recognised or not listed in the manifest.</li>
 </ul>
 
 
