@@ -43,12 +43,12 @@ def parse_args():
     parser.add_argument(
         "--from_collection",
         help="Key for source collection in Globus config.",
-        default="r_collection_id",
+        default="remote_source",
     )
     parser.add_argument(
         "--to_collection",
         help="Key for destination collection in Globus config.",
-        default="crcd_collection_id",
+        default="local_workstation",
     )
     parser.add_argument(
         "--cleanup",

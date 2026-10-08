@@ -35,7 +35,7 @@ roi_definition:
 roi_cutting:
   roi_dir_tif: null # => ${analysis_dir}/temp
   roi_dir_output: null # => ${analysis_dir}/rois
-  roi_cleanup_enabled: True
+  roi_cleanup_enabled: True # delete per-ROI TIFFs in roi_dir_tif once assembled
 
 ######################################################
 # segmentation

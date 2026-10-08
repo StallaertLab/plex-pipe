@@ -24,7 +24,10 @@ class GlobusEndpoint:
 
         Args:
             collection_id: The Globus collection ID.
-            root: The root path for the collection. Defaults to None.
+            root: Local folder that the collection's Globus path "/" points to.
+                None (default) means full paths on Mac/Linux, as Globus Connect
+                Personal uses (/Users/me/data -> /Users/me/data), and
+                drive-letter paths on Windows (D:\\data -> /D/data).
         """
 
         self.collection_id = collection_id
@@ -33,7 +36,7 @@ class GlobusEndpoint:
             if os.name == "nt":
                 self.shared_root = None
             else:
-                self.shared_root = Path.home().resolve()
+                self.shared_root = Path("/")
         else:
             self.shared_root = Path(root).resolve()
 

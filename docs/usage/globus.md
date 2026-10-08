@@ -67,7 +67,7 @@ The `root` parameter in your Globus configuration defines the entry point (or "s
 
 - **Multi-Drive** (Windows only): Set `root: null`. This allows the use of standard Windows paths (e.g., `D:\Data`) which map to Globus virtual paths (e.g., `/D/Data`).
 
-- **Home Directory** (Linux/Mac): Set `root: null`. This defaults the scope to your user home folder (~/).
+- **Full Paths** (Linux/Mac): Set `root: null`. Local paths are sent to Globus unchanged (e.g. `/Users/me/data`), as Globus Connect Personal expects.
 
 - **Restricted/Rooted**: Set root: `/data/images`. Use this to "jail" the converter to a specific directory if Globus was configured with a restricted access point.
 
