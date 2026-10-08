@@ -54,7 +54,11 @@ def parse_args():
         "--cleanup",
         "-c",
         action="store_true",
-        help="Enable deletion of Globus transfered image files.",
+        help=(
+            "Delete each image transferred via Globus once its ROIs are cut "
+            "(same as transfer_cleanup_enabled: true under roi_cutting: in the "
+            "config YAML file)."
+        ),
     )
 
     return parser.parse_args()
@@ -93,7 +97,10 @@ def main():
     if gc:
         # initialize Globus transfer
         strategy = GlobusFileStrategy(
-            config=config, gc=gc, cleanup_enabled=args.cleanup
+            config=config,
+            gc=gc,
+            cleanup_enabled=args.cleanup
+            or bool(config.roi_cutting.transfer_cleanup_enabled),
         )
         strategy.submit_all_transfers(batch_size=1)
     else:
@@ -110,6 +117,7 @@ def main():
         max_pyramid_levels=config.sdata_storage.max_pyramid_level,
         chunk_size=config.sdata_storage.chunk_size,
         downscale=config.sdata_storage.downscale,
+        temp_roi_delete=bool(config.roi_cutting.roi_cleanup_enabled),
     )
 
     # run core cutting

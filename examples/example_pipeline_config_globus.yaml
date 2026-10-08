@@ -1,9 +1,6 @@
 # configuration file for the analysis pipeline
 
-# Version of the config file format, "MAJOR.MINOR" (keep the quotes).
-# Older files are upgraded automatically when loaded; see the docs,
-# Configuration > Overview > Schema Version and Migration.
-schema_version: "2.0"
+schema_version: "2.0"  # config format version; keep the quotes
 
 ######################################################
 # general settings
