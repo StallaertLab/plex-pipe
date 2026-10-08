@@ -20,7 +20,7 @@ def configure_logging(settings):
 
     log_file = (
         settings.log_dir_path
-        / f"cores_segmenation_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
+        / f"cores_segmentation_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
 
     logger.remove()

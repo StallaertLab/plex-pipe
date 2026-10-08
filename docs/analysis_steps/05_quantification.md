@@ -61,6 +61,7 @@ To complete the process, execute the following sections sequentially:
 * **Read in config**: Specify the path to the analysis configuration file and load the required settings.
 * **Specify the overwriting strategy**: Set the `OVERWRITE_FLAG`. If `False`, the pipeline will throw an error to prevent overwriting existing table. If `True`, existing table will be replaced. Use with caution!
 * **Define the logger**: Initialize the logging protocol to track execution progress and document the processing steps.
+* **Save a config snapshot (optional)**: Save the config used to the `configs/` folder of the analysis directory (see [Config Snapshots](../configuration/config_overview.md#config-snapshots)).
 * **Define ROIs for processing**: Identify the `SpatialData` objects to be processed. A demonstration cell is provided to truncate this list for faster testing.
 * **Setup quantifiers**: Initialize the quantifying objects defined in your configuration. These objects are created once and reused across all ROIs.
 * **Run ROIs Quantification**: Quantify the ROIs.

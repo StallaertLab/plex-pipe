@@ -19,7 +19,7 @@
 
 ## Key Features
 
-* **Input Data:** The pipeline accepts sets of individual TIFF files. It follows the naming conventions used by the **Cell DIVE** system. For specific requirements regarding file naming, refer to [Input Data](usage/input_data.md).
+* **Input Data:** The pipeline accepts sets of individual TIFF files, one per channel. Marker names and imaging rounds are read from **Cell DIVE** file names, or from a channel manifest CSV for data from any other platform (see [Input Data](usage/input_data.md) and [Channel Selection](configuration/channel-selection.md)).
 * **Remote Data Sourcing:** Seamlessly source and transfer large-scale imaging datasets from institutional endpoints or personal collections using [Globus](https://www.globus.org/). This ensures secure and reliable data movement directly into your processing environment (see: [Globus Integration](usage/globus.md)).
 * **Data Integration:** Outputs are stored as [SpatialData](https://spatialdata.scverse.org/en/latest/index.html) objects, making them ready for downstream analysis within the [scverse](https://scverse.org/) ecosystem or interactive exploration via the [napari-spatialdata plugin](https://github.com/scverse/napari-spatialdata).
 * **Flexible Execution:** PlexPipe can be implemented in two ways based on your needs:

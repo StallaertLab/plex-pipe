@@ -1,4 +1,4 @@
-# 🎯 Channels: Manifest and Selection
+# 🎯 Channel Selection
 
 Deciding which images enter the analysis happens in two stages:
 

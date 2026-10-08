@@ -15,7 +15,7 @@ You can provide this information in two ways:
 * **Cell DIVE data** is supported out of the box: marker and round are read from the original Cell DIVE file names.
 * **Any other TIFFs** can be used by providing a short CSV (a *channel manifest*) that lists each file with its marker and, optionally, its round.
 
-The CSV format and the rules for keeping and skipping images are described in [Channels: manifest and selection](../configuration/channel-selection.md).
+The CSV format and the rules for keeping and skipping images are described in [Channel Selection](../configuration/channel-selection.md).
 
 ---
 

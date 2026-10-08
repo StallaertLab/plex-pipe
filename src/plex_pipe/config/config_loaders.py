@@ -113,10 +113,6 @@ def _format_validation_error(
     for err in exc.errors():
         location = ".".join(str(part) for part in err["loc"]) or "<root>"
         lines.append(f"  - {location}: {err['msg']}")
-    lines.append(
-        "If this is an older config, migrate it first: "
-        "plex_pipe.migrate_config(<path>)."
-    )
     return "\n".join(lines)
 
 

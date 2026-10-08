@@ -468,9 +468,10 @@ def preview_channels(
     Lists ``image_dir`` (locally, or over Globus when ``gc`` is given),
     builds the manifest exactly as a run would (from ``channels.manifest`` in
     the config if set, otherwise with the naming preset), applies the selection
-    rules from the ``channels`` section, and returns one row per file. Unlike a run it never stops
-    at the first problem: unrecognised files, duplicate channels, files missing
-    from ``image_dir`` and files not in the manifest are reported as rows.
+    rules from the ``channels`` section, and returns one row per file. Unlike a
+    run it never stops at the first problem: unrecognised files, duplicate
+    channels, files missing from ``image_dir`` and files not in the manifest
+    are reported as rows.
 
     To get an editable manifest CSV, call :func:`save_manifest` with the same
     config (it does not need this table).
