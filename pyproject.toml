@@ -53,6 +53,9 @@ dependencies = [
     "pooch>=1.8",
 ]
 
+[project.scripts]
+plexpipe = "plex_pipe.cli:main"
+
 [project.optional-dependencies]
 jupyter = [
     "ipykernel>=6.0",

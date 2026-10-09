@@ -88,3 +88,17 @@ def list_local_files(image_dir: str | Path) -> list[str]:
     """
     image_dir = Path(image_dir)  # Ensures uniform behavior
     return [str(p) for p in image_dir.glob("*.tif*")]
+
+
+def list_roi_stores(roi_dir: str | Path) -> list[Path]:
+    """Lists the ROI SpatialData stores (``*.zarr``) in a folder, sorted.
+
+    Other entries (e.g. ``.DS_Store``) are ignored.
+
+    Args:
+        roi_dir: Folder with the assembled ROIs (``roi_dir_output_path``).
+
+    Returns:
+        Sorted paths of the ``.zarr`` stores.
+    """
+    return sorted(p for p in Path(roi_dir).iterdir() if p.suffix == ".zarr")

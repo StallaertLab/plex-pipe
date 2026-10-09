@@ -2,14 +2,11 @@ import argparse
 import sys
 from datetime import datetime
 
-import pandas as pd
 from loguru import logger
 
 from plex_pipe.config.config_loaders import load_config, save_config_snapshot
 from plex_pipe.io.globus import GlobusConfig
-from plex_pipe.stages.roi_preparation.controller import (
-    RoiPreparationController,
-)
+from plex_pipe.runners import cleanup_setting, prepare_rois
 from plex_pipe.stages.roi_preparation.file_strategy import (
     GlobusFileStrategy,
     LocalFileStrategy,
@@ -54,11 +51,12 @@ def parse_args():
         "--cleanup",
         "-c",
         action="store_true",
-        help=(
-            "Delete each image transferred via Globus once its ROIs are cut "
-            "(same as transfer_cleanup_enabled: true under roi_cutting: in the "
-            "config YAML file)."
-        ),
+        help="Delete each image transferred via Globus once its ROIs are cut.",
+    )
+    parser.add_argument(
+        "--roi_cleanup",
+        action="store_true",
+        help="Delete the per-ROI TIFFs once each ROI is assembled.",
     )
 
     return parser.parse_args()
@@ -89,39 +87,22 @@ def main():
 
         gc = None
 
-    # get cores coordinates
-    df_path = config.roi_info_file_path
-    df = pd.read_pickle(df_path)
-
     # define file access
     if gc:
         # initialize Globus transfer
         strategy = GlobusFileStrategy(
             config=config,
             gc=gc,
-            cleanup_enabled=args.cleanup
-            or bool(config.roi_cutting.transfer_cleanup_enabled),
+            cleanup_enabled=cleanup_setting(
+                "cleanup", args.cleanup, config.roi_cutting.transfer_cleanup_enabled
+            ),
         )
         strategy.submit_all_transfers(batch_size=1)
     else:
         strategy = LocalFileStrategy(config=config)
 
-    # setup cutting controller
-    controller = RoiPreparationController(
-        metadata_df=df,  # df defines which cores to process
-        file_strategy=strategy,
-        temp_dir=config.roi_dir_tif_path,
-        output_dir=config.roi_dir_output_path,
-        margin=config.roi_cutting.margin,
-        mask_value=config.roi_cutting.mask_value,
-        max_pyramid_levels=config.sdata_storage.max_pyramid_level,
-        chunk_size=config.sdata_storage.chunk_size,
-        downscale=config.sdata_storage.downscale,
-        temp_roi_delete=bool(config.roi_cutting.roi_cleanup_enabled),
-    )
-
-    # run core cutting
-    controller.run()
+    # cut and assemble all ROIs
+    prepare_rois(config, strategy, roi_cleanup=args.roi_cleanup).run()
 
 
 if __name__ == "__main__":

@@ -1,8 +1,12 @@
+from pathlib import Path
 from typing import Any
 
 import cv2
 import numpy as np
 import pandas as pd
+from loguru import logger
+
+from plex_pipe.io.filesystem import read_ome_tiff, write_temp_tiff
 
 
 class CoreCutter:
@@ -71,3 +75,36 @@ class CoreCutter:
 
         else:
             raise ValueError(f"Unknown poly_type: {row['poly_type']}")
+
+    def cut_image(
+        self,
+        file_path: str | Path,
+        channel: str,
+        metadata_df: pd.DataFrame,
+        temp_dir: str | Path,
+    ) -> None:
+        """Cut every ROI from one channel image and save each as a TIFF.
+
+        Writes ``<temp_dir>/<roi_name>/<channel>.tiff`` for every row of
+        ``metadata_df``. The image file is closed even if cutting fails.
+
+        Args:
+            file_path: Path to the source OME-TIFF file of this channel.
+            channel: Name of the channel (used as the TIFF file name).
+            metadata_df: ROI table; one row per ROI, with a ``roi_name``
+                column and the columns used by :meth:`extract_core`.
+            temp_dir: Directory for the per-ROI TIFFs.
+        """
+        full_img, store = read_ome_tiff(str(file_path))
+
+        try:
+            for _, row in metadata_df.iterrows():
+                roi_id = row["roi_name"]
+                roi_img = self.extract_core(full_img, row)
+                write_temp_tiff(roi_img, roi_id, channel, str(temp_dir))
+                logger.debug(f"Cut and saved ROI {roi_id}, channel {channel}.")
+        finally:
+            # Ensures file is closed even if something fails mid-cut
+            if hasattr(store, "close"):
+                store.close()
+                logger.debug(f"Closed file handle for channel {channel}.")

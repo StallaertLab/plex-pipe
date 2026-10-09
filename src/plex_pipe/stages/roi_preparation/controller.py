@@ -4,7 +4,6 @@ from pathlib import Path
 import pandas as pd
 from loguru import logger
 
-from plex_pipe.io.filesystem import read_ome_tiff, write_temp_tiff
 from plex_pipe.stages.roi_preparation.assembler import CoreAssembler
 from plex_pipe.stages.roi_preparation.cutter import CoreCutter
 from plex_pipe.stages.roi_preparation.file_strategy import (
@@ -66,28 +65,6 @@ class RoiPreparationController:
         self.completed_channels: list[str] = []
         self.completed_cores: list[str] = []
 
-    def _cut_channel(self, channel: str, file_path: str | Path) -> None:
-        """Extract and save ROIs from a single channel image.
-
-        Args:
-            channel: Name of the channel being processed.
-            file_path: Path to the source OME-TIFF file.
-        """
-
-        full_img, store = read_ome_tiff(str(file_path))
-
-        try:
-            for _, row in self.metadata_df.iterrows():
-                core_id = row["roi_name"]
-                core_img = self.cutter.extract_core(full_img, row)
-                write_temp_tiff(core_img, core_id, channel, self.temp_dir)
-                logger.debug(f"Cut and saved ROI {core_id}, channel {channel}.")
-        finally:
-            # Ensures file is closed even if something fails mid-cut
-            if hasattr(store, "close"):
-                store.close()
-                logger.debug(f"Closed file handle for channel {channel}.")
-
     def run(self) -> None:
         """Execute the ROI preparation pipeline.
 
@@ -101,7 +78,7 @@ class RoiPreparationController:
 
             # Process the newly arrived image
             logger.info(f"Channel {channel} ready. Starting cutting...")
-            self._cut_channel(channel, path)
+            self.cutter.cut_image(path, channel, self.metadata_df, self.temp_dir)
 
             # Cleanup - Strategy handles the temp file
             self.file_strategy.cleanup(Path(path))

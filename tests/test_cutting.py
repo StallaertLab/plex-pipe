@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, patch
+
 import dask.array as da
 import numpy as np
 import pandas as pd
@@ -178,3 +180,55 @@ def test_polygon_with_margin(sample_image):
     # Pixel at (0,0) local is global (5,5).
     # This is well outside the polygon. Should be masked (default 0).
     assert cutout[0, 0] == 0
+
+
+# --- Tests for cutting a whole channel image ---
+
+
+@pytest.fixture
+def two_roi_metadata():
+    """ROI table with two rectangular ROIs."""
+    return pd.DataFrame(
+        {
+            "roi_name": ["ROI_01", "ROI_02"],
+            "row_start": [0, 50],
+            "row_stop": [10, 60],
+            "column_start": [0, 50],
+            "column_stop": [10, 60],
+            "poly_type": ["rectangle", "rectangle"],
+        }
+    )
+
+
+def test_cut_image_writes_one_tiff_per_roi(sample_image, two_roi_metadata, tmp_path):
+    """Every ROI is written as <temp_dir>/<roi_name>/<channel>.tiff."""
+    import tifffile
+
+    image_path = tmp_path / "DAPI.ome.tif"
+    tifffile.imwrite(image_path, sample_image)
+    temp_dir = tmp_path / "temp"
+
+    CoreCutter().cut_image(image_path, "DAPI", two_roi_metadata, temp_dir)
+
+    for roi, (y0, x0) in [("ROI_01", (0, 0)), ("ROI_02", (50, 50))]:
+        out = tifffile.imread(temp_dir / roi / "DAPI.tiff")
+        np.testing.assert_array_equal(out, sample_image[y0 : y0 + 10, x0 : x0 + 10])
+
+
+def test_cut_image_closes_file_on_error(two_roi_metadata):
+    """The image file is closed even if cutting fails part-way."""
+    store = MagicMock()
+    cutter = CoreCutter()
+    with (
+        patch(
+            "plex_pipe.stages.roi_preparation.cutter.read_ome_tiff",
+            return_value=(np.zeros((100, 100)), store),
+        ),
+        patch.object(
+            cutter, "extract_core", side_effect=RuntimeError("Cutting failed!")
+        ),
+        pytest.raises(RuntimeError),
+    ):
+        cutter.cut_image("bad_file.tif", "DAPI", two_roi_metadata, "/tmp/x")
+
+    store.close.assert_called_once()
