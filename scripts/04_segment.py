@@ -1,16 +1,12 @@
 import argparse
-import os
 import sys
 from datetime import datetime
 
-import spatialdata as sd
 from loguru import logger
 
 from plex_pipe.config.config_loaders import load_config, save_config_snapshot
-from plex_pipe.ops import build_processor
-from plex_pipe.stages.resource_building.controller import (
-    ResourceBuildingController,
-)
+from plex_pipe.io.filesystem import list_roi_stores
+from plex_pipe.runners import build_resource_controllers, segment_roi
 
 
 def configure_logging(settings):
@@ -58,58 +54,13 @@ def main():
     save_config_snapshot(settings)
 
     # setup builders of additional data elements
-    if getattr(settings, "additional_elements", None):
-
-        builders_list = []
-
-        for builder_settings in settings.additional_elements:
-
-            params = dict(getattr(builder_settings, "parameters", None)) or {}
-
-            builder = build_processor(
-                builder_settings.category, builder_settings.type, **params
-            )
-
-            builder_controller = ResourceBuildingController(
-                builder=builder,
-                input_names=builder_settings.input,
-                output_names=builder_settings.output,
-                keep=builder_settings.keep,
-                overwrite=args.overwrite,
-                pyramid_levels=settings.sdata_storage.max_pyramid_level,
-                downscale=settings.sdata_storage.downscale,
-                chunk_size=settings.sdata_storage.chunk_size,
-            )
-
-            logger.info(
-                f"Image processor of type '{builder_settings.type}' for image '{builder_settings.input}' has been created."
-            )
-
-            builders_list.append(builder_controller)
-
-    else:
-        builders_list = []
-        logger.info("No resource builders specified.")
-
-    # define the cores for the analysis
-    core_dir = settings.analysis_dir / "rois"
-    path_list = [core_dir / f for f in os.listdir(core_dir)]
-    path_list.sort()
+    builders_list = build_resource_controllers(settings, overwrite=args.overwrite)
 
     # run processing
-    for sd_path in path_list:
+    for sd_path in list_roi_stores(settings.roi_dir_output_path):
 
         logger.info(f"Processing {sd_path.name}")
-
-        # get sdata
-        sdata = sd.read_zarr(sd_path)
-
-        # check that the pipeline can run on provide sdata
-        settings.validate_pipeline(sdata)
-
-        # run builders of additional elements
-        for builder_controller in builders_list:
-            sdata = builder_controller.run(sdata)
+        segment_roi(settings, sd_path, builders_list)
 
 
 if __name__ == "__main__":
