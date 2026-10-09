@@ -30,7 +30,8 @@ class CoreAssembler:
             downscale: Downsampling factor between levels.
             chunk_size: Chunk dimensions (C, Y, X) for the Zarr array.
             allowed_channels: List of channel names to process. If None, all
-                found channels are used.
+                found channels are used. If given, every one of them must be
+                present for each ROI (a missing one raises ``ValueError``).
             cleanup: Whether to delete intermediate TIFF files after assembly.
         """
         self.temp_dir = temp_dir
@@ -69,6 +70,18 @@ class CoreAssembler:
         )
         if not channel_files:
             raise ValueError(f"No TIFFs found for core: {core_id}")
+
+        # Every ROI of an analysis must have the same channels, so that the
+        # quantification tables are comparable.
+        if self.allowed_channels:
+            found = {os.path.splitext(f)[0] for f in channel_files}
+            missing = [c for c in self.allowed_channels if c not in found]
+            if missing:
+                raise ValueError(
+                    f"ROI '{core_id}' is missing channels {missing} in "
+                    f"{core_path}. Every ROI must have all selected channels; "
+                    "check that cutting finished for these channels."
+                )
 
         used_channels = []
 
