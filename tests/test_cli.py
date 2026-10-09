@@ -10,14 +10,11 @@ import spatialdata as sd
 import tifffile
 import yaml
 
-from plex_pipe import cli
+from plex_pipe import cli, runners
 from plex_pipe.config.config_loaders import load_config
 from plex_pipe.runners import (
     build_quant_controllers,
     build_resource_controllers,
-)
-from plex_pipe.stages.roi_preparation.controller import (
-    RoiPreparationController,
 )
 from plex_pipe.stages.roi_preparation.file_strategy import LocalFileStrategy
 
@@ -82,7 +79,7 @@ def analysis(tmp_path):
 def run_per_unit(config_path, out_dir):
     """Runs setup, cut-image per channel and assemble-roi per ROI."""
     cli.main(["setup", "--exp_config", str(config_path), "--out_dir", str(out_dir)])
-    images = cli.read_images_file(out_dir / cli.IMAGES_FILE)
+    images = runners.read_images_file(out_dir / runners.IMAGES_FILE)
     for row in images:
         cli.main(
             [
@@ -95,7 +92,7 @@ def run_per_unit(config_path, out_dir):
                 row["path"],
             ]
         )
-    with open(out_dir / cli.ROIS_FILE, newline="") as f:
+    with open(out_dir / runners.ROIS_FILE, newline="") as f:
         rois = list(csv.DictReader(f))
     for row in rois:
         cli.main(
@@ -106,7 +103,7 @@ def run_per_unit(config_path, out_dir):
                 "--roi",
                 row["roi_name"],
                 "--images",
-                str(out_dir / cli.IMAGES_FILE),
+                str(out_dir / runners.IMAGES_FILE),
             ]
         )
     return images, rois
@@ -117,11 +114,11 @@ def test_setup_writes_image_and_roi_lists(analysis, tmp_path):
     out_dir = tmp_path / "work"
     cli.main(["setup", "--exp_config", str(config_path), "--out_dir", str(out_dir)])
 
-    images = cli.read_images_file(out_dir / cli.IMAGES_FILE)
+    images = runners.read_images_file(out_dir / runners.IMAGES_FILE)
     assert {r["channel"] for r in images} == {"DAPI", "CD45", "NaKATPase"}
     assert all(r["task_id"] == "" for r in images)
 
-    rois = pd.read_csv(out_dir / cli.ROIS_FILE)
+    rois = pd.read_csv(out_dir / runners.ROIS_FILE)
     assert rois["roi_name"].tolist() == ["ROI_000", "ROI_001"]
     assert rois["path"].tolist() == [
         str(tmp_path / "per_unit" / "rois" / "ROI_000.zarr"),
@@ -134,16 +131,7 @@ def test_per_unit_matches_controller(analysis, tmp_path):
     _, rois = run_per_unit(analysis("per_unit"), tmp_path / "work")
 
     config = load_config(analysis("controller"))
-    RoiPreparationController(
-        metadata_df=pd.read_pickle(config.roi_info_file_path),
-        file_strategy=LocalFileStrategy(config=config),
-        temp_dir=str(config.roi_dir_tif_path),
-        output_dir=str(config.roi_dir_output_path),
-        max_pyramid_levels=config.sdata_storage.max_pyramid_level,
-        chunk_size=config.sdata_storage.chunk_size,
-        downscale=config.sdata_storage.downscale,
-        temp_roi_delete=False,
-    ).run()
+    runners.prepare_rois(config, LocalFileStrategy(config=config)).run()
 
     for row in rois:
         a = sd.read_zarr(row["path"])
@@ -168,9 +156,46 @@ def test_assemble_roi_fails_if_a_channel_is_missing(analysis, tmp_path):
                 "--roi",
                 "ROI_001",
                 "--images",
-                str(out_dir / cli.IMAGES_FILE),
+                str(out_dir / runners.IMAGES_FILE),
             ]
         )
+
+
+def test_setup_can_be_called_from_python(analysis, tmp_path):
+    """runners.setup gives the same lists as `plexpipe setup`."""
+    config = load_config(analysis("per_unit"))
+    images_file, rois_file = runners.setup(config, tmp_path / "py")
+    assert images_file == tmp_path / "py" / runners.IMAGES_FILE
+    assert {r["channel"] for r in runners.read_images_file(images_file)} == {
+        "DAPI",
+        "CD45",
+        "NaKATPase",
+    }
+    assert pd.read_csv(rois_file)["roi_name"].tolist() == ["ROI_000", "ROI_001"]
+
+
+def test_assemble_roi_cleanup_flag(analysis, tmp_path):
+    """--roi_cleanup deletes the ROI's TIFFs; without it they stay."""
+    config_path = analysis("per_unit")
+    out_dir = tmp_path / "work"
+    run_per_unit(config_path, out_dir)  # assembles both ROIs without cleanup
+    temp = tmp_path / "per_unit" / "temp"
+    assert len(list((temp / "ROI_000").glob("*.tiff"))) == 3
+
+    cli.main(
+        [
+            "assemble-roi",
+            "--exp_config",
+            str(config_path),
+            "--roi",
+            "ROI_000",
+            "--images",
+            str(out_dir / runners.IMAGES_FILE),
+            "--roi_cleanup",
+        ]
+    )
+    assert list((temp / "ROI_000").glob("*.tiff")) == []
+    assert len(list((temp / "ROI_001").glob("*.tiff"))) == 3
 
 
 @pytest.mark.usefixtures("_in_tmp")

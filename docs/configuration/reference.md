@@ -93,8 +93,8 @@ roi_cutting:
 | `roi_dir_output` | `Path` (optional) | Final destination for SpatialData (Zarr) outputs. Defaults to `rois` in the analysis directory. |
 | `margin` | `int` (optional) | Number of pixels to pad around each bounding box when cutting ROIs. Defaults to 0. |
 | `mask_value` | `int` (optional) | Value used to fill the background for polygonal ROI masks. Defaults to 0. |
-| `transfer_cleanup_enabled` | `bool` (optional) | Whether to delete each image transferred via Globus once its ROIs are cut. Defaults to false. The `--cleanup` option of `02_cut_rois.py` also turns it on. |
-| `roi_cleanup_enabled` | `bool` (optional) | Whether to delete the per-ROI TIFFs in `roi_dir_tif` once each ROI is assembled into its SpatialData object. Defaults to false. |
+| `transfer_cleanup_enabled` | `bool` (optional) | Whether to delete each image transferred via Globus once its ROIs are cut. Defaults to false. Prefer the `--cleanup` option of `02_cut_rois.py` / `plexpipe cut-image` (a run setting, logged with the run). |
+| `roi_cleanup_enabled` | `bool` (optional) | Whether to delete the per-ROI TIFFs in `roi_dir_tif` once each ROI is assembled into its SpatialData object. Defaults to false. Prefer the `--roi_cleanup` option of `02_cut_rois.py` / `plexpipe assemble-roi` (a run setting, logged with the run). |
 
 ## Quality Control
 

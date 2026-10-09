@@ -20,7 +20,6 @@ absolute, because each job may run in a different working directory.
 from __future__ import annotations
 
 import argparse
-import csv
 import sys
 import time
 from collections.abc import Sequence
@@ -32,11 +31,6 @@ from loguru import logger
 
 if TYPE_CHECKING:
     from plex_pipe.config.config_schema import AnalysisConfig
-
-IMAGES_FILE = "images.csv"
-ROIS_FILE = "rois.csv"
-IMAGES_COLUMNS = ("channel", "path", "task_id")
-ROIS_COLUMNS = ("roi_name", "path")
 
 
 # ----------------------------------------------------------------------------
@@ -110,19 +104,6 @@ def load_job_config(exp_config: str, command: str, unit: str) -> AnalysisConfig:
     return config
 
 
-def read_images_file(path: str | Path) -> list[dict[str, str]]:
-    """Reads the image list written by ``plexpipe setup``.
-
-    Args:
-        path: Path to ``images.csv``.
-
-    Returns:
-        One dict per channel with ``channel``, ``path`` and ``task_id``.
-    """
-    with open(path, newline="") as f:
-        return list(csv.DictReader(f))
-
-
 def wait_for_globus_task(
     tc: Any, task_id: str, timeout_hours: float, poll_seconds: float
 ) -> None:
@@ -162,70 +143,21 @@ def wait_for_globus_task(
 
 def cmd_setup(args: argparse.Namespace) -> None:
     """Finds channels, starts transfers and writes the image and ROI lists."""
-    import pandas as pd
+    from plex_pipe.runners import setup
 
     config = load_job_config(args.exp_config, "setup", "analysis")
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
 
-    rows: list[dict[str, str]] = []
+    gc = None
     if args.globus_config:
         from plex_pipe.io.globus import GlobusConfig
-        from plex_pipe.stages.roi_preparation.file_strategy import (
-            GlobusFileStrategy,
-        )
 
         gc = GlobusConfig.from_yaml(
             args.globus_config,
             source_key=args.from_collection,
             dest_key=args.to_collection,
         )
-        # cleanup is done by each cut-image job, after cutting
-        strategy = GlobusFileStrategy(config=config, gc=gc, cleanup_enabled=False)
-        local_paths = {
-            ch: gc.destination.globus_to_local(local)
-            for ch, (_remote, local) in strategy.transfer_map.items()
-        }
 
-        # skip files that are already here, unless a checksum is requested
-        if not args.file_checksum:
-            for ch, path in local_paths.items():
-                if Path(path).exists():
-                    logger.info(f"{ch}: {path} already present; not transferred.")
-                    strategy.transfer_map.pop(ch)
-
-        strategy.submit_all_transfers(batch_size=1)
-        # batch_size=1: one task per channel, in transfer_map order
-        task_ids = dict(zip(strategy.transfer_map, strategy.pending_tasks, strict=True))
-        for ch, path in local_paths.items():
-            rows.append(
-                {"channel": ch, "path": str(path), "task_id": task_ids.get(ch, "")}
-            )
-    else:
-        from plex_pipe.stages.roi_preparation.file_strategy import (
-            LocalFileStrategy,
-        )
-
-        local = LocalFileStrategy(config=config)
-        for ch, image_path in local.channel_map.items():
-            rows.append({"channel": ch, "path": str(image_path), "task_id": ""})
-
-    images_file = out_dir / IMAGES_FILE
-    with open(images_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=IMAGES_COLUMNS)
-        writer.writeheader()
-        writer.writerows(rows)
-    logger.info(f"Wrote {len(rows)} channels to {images_file}")
-
-    df = pd.read_pickle(config.roi_info_file_path)
-    rois_file = out_dir / ROIS_FILE
-    with open(rois_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=ROIS_COLUMNS)
-        writer.writeheader()
-        for roi in df["roi_name"]:
-            path = config.roi_dir_output_path / f"{roi}.zarr"
-            writer.writerow({"roi_name": roi, "path": str(path)})
-    logger.info(f"Wrote {len(df)} ROIs to {rois_file}")
+    setup(config, args.out_dir, gc=gc, file_checksum=args.file_checksum)
 
 
 def cmd_cut_image(args: argparse.Namespace) -> None:
@@ -252,11 +184,11 @@ def cmd_cut_image(args: argparse.Namespace) -> None:
 
 def cmd_assemble_roi(args: argparse.Namespace) -> None:
     """Assembles one ROI from its channel TIFFs."""
-    from plex_pipe.runners import assemble_roi
+    from plex_pipe.runners import assemble_roi, read_images_file
 
     config = load_job_config(args.exp_config, "assemble-roi", args.roi)
     channels = [row["channel"] for row in read_images_file(args.images)]
-    assemble_roi(config, args.roi, channels)
+    assemble_roi(config, args.roi, channels, roi_cleanup=args.roi_cleanup)
 
 
 def cmd_segment_roi(args: argparse.Namespace) -> None:
@@ -353,8 +285,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--cleanup",
         "-c",
         action="store_true",
-        help="Delete the transferred image once cut (same as "
-        "transfer_cleanup_enabled: true under roi_cutting: in the config).",
+        help="Delete the transferred image once cut (Globus runs only).",
     )
 
     p = add(
@@ -364,6 +295,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--roi", required=True, help="ROI name (roi_name).")
     p.add_argument("--images", required=True, help="images.csv written by setup.")
+    p.add_argument(
+        "--roi_cleanup",
+        action="store_true",
+        help="Delete this ROI's TIFFs once it is assembled.",
+    )
 
     for name, func, text in (
         ("segment-roi", cmd_segment_roi, "Run additional_elements on one ROI."),
