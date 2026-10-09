@@ -6,6 +6,24 @@ Interactive [steps](../analysis_steps/00_steps_overview.md) (1 - Core detection 
 
 ---
 
+## Choosing how to run
+
+| Way to run | Use it for | Runs |
+|---|---|---|
+| **Notebooks** | Inspecting, prototyping, learning | Whatever you call, step by step |
+| **Scripts** (`02_cut_rois.py`, `04_segment.py`, `05_quantify.py`) | Whole analyses on one machine | All channels / all ROIs in one process |
+| **`plexpipe` command** ([Command Line](cli.md)) | Workflow managers such as Nextflow; re-running a single ROI | One channel image or one ROI per call |
+
+All three use the same code, organised in three layers:
+
+1. **Classes** in `plex_pipe.stages` (for example `CoreCutter`, `CoreAssembler`, `ResourceBuildingController`, `QuantificationController`) do the work. They take explicit arguments and do not read the config file. Notebooks can use them directly.
+2. **`plex_pipe.runners`** reads the config and builds and runs these classes for one unit of work (for example `cut_image`, `assemble_roi`, `segment_roi`, `quantify_roi`). Notebooks can call these functions too.
+3. **Orchestration** decides how many units run and when: the scripts loop over all channels and ROIs, `plexpipe` runs one unit per call, and Nextflow starts many `plexpipe` calls in parallel.
+
+Because the scripts and `plexpipe` call the same functions in `plex_pipe.runners`, they give the same results.
+
+---
+
 ## Command-Line Usage
 
 To run the pipeline from the command line, use the provided scripts:
@@ -16,11 +34,15 @@ To run the pipeline from the command line, use the provided scripts:
 python scripts/02_cut_rois.py --exp_config ../examples/example_pipeline_config.yaml
 ```
 
+Add `--roi_cleanup` to delete the per-ROI TIFFs once each ROI is assembled.
+
 or alternatively with [remote sourcing](./input_data.md#sourcing-image-files) of the image files:
 
 ```bash
 python scripts/02_cut_rois.py --exp_config '../examples/example_pipeline_config_globus.yaml' --globus_config '../examples/example_globus_config.yaml' --from_collection 'remote_source' --to_collection 'local_workstation' --cleanup
 ```
+
+`--cleanup` deletes each transferred image once its ROIs are cut.
 
 ### Image Processing
 ```bash

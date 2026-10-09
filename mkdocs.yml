@@ -45,6 +45,7 @@ nav:
       - Schema Changelog: configuration/schema_changelog.md
   - How To Use:
     - Execution Modes: usage/execution_modes.md
+    - Command Line (plexpipe): usage/cli.md
     - Input Data: usage/input_data.md
     - Globus Setup: usage/globus.md
     - Processors: usage/processors.md
