@@ -162,7 +162,8 @@ def setup(
 
     images_file = out_dir / IMAGES_FILE
     with open(images_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=IMAGES_COLUMNS)
+        # "\n" line endings: the files are read by shell tools and Nextflow
+        writer = csv.DictWriter(f, fieldnames=IMAGES_COLUMNS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     logger.info(f"Wrote {len(rows)} channels to {images_file}")
@@ -170,7 +171,7 @@ def setup(
     df = pd.read_pickle(config.roi_info_file_path)
     rois_file = out_dir / ROIS_FILE
     with open(rois_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=ROIS_COLUMNS)
+        writer = csv.DictWriter(f, fieldnames=ROIS_COLUMNS, lineterminator="\n")
         writer.writeheader()
         for roi in df["roi_name"]:
             path = config.roi_dir_output_path / f"{roi}.zarr"

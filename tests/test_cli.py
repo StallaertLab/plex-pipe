@@ -120,6 +120,10 @@ def test_setup_writes_image_and_roi_lists(analysis, tmp_path):
 
     rois = pd.read_csv(out_dir / runners.ROIS_FILE)
     assert rois["roi_name"].tolist() == ["ROI_000", "ROI_001"]
+
+    # Unix line endings, so shell loops and Nextflow read clean paths
+    for name in (runners.IMAGES_FILE, runners.ROIS_FILE):
+        assert b"\r" not in (out_dir / name).read_bytes()
     assert rois["path"].tolist() == [
         str(tmp_path / "per_unit" / "rois" / "ROI_000.zarr"),
         str(tmp_path / "per_unit" / "rois" / "ROI_001.zarr"),
