@@ -898,6 +898,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../usage/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command Line (plexpipe)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../usage/input_data/" class="md-nav__link">
         
   
@@ -1170,7 +1198,7 @@ It provides parameters for all stages of the pipeline divided into sections corr
 <p>The full set of fields for the current schema is documented in the <a href="../reference/">Reference</a>.</p>
 <hr />
 <h2 id="config-snapshots">Config Snapshots</h2>
-<p>Each pipeline script (<code>02_cut_rois.py</code>, <code>04_segment.py</code>, <code>05_quantify.py</code>) saves the config it ran with to the <code>configs/</code> folder of the analysis directory. Your own config file is not changed.</p>
+<p>Each pipeline script (<code>02_cut_rois.py</code>, <code>04_segment.py</code>, <code>05_quantify.py</code>) and each <a href="../../usage/cli/"><code>plexpipe</code> command</a> saves the config it ran with to the <code>configs/</code> folder of the analysis directory. Your own config file is not changed.</p>
 <ul>
 <li>Each distinct config is saved once, as <code>configs/config_&lt;hash&gt;.yaml</code>, where <code>&lt;hash&gt;</code> is a short fingerprint of its content (e.g. <code>config_7837c2df.yaml</code>). Steps run with the same config share one file; changing any setting gives a new file.</li>
 <li>The snapshot is the config as used, already upgraded to the current schema. You can load it with <code>plex_pipe.load_config</code> to repeat a run.</li>

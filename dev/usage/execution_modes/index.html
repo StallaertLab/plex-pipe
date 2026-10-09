@@ -14,7 +14,7 @@
         <link rel="prev" href="../../configuration/schema_changelog/">
       
       
-        <link rel="next" href="../input_data/">
+        <link rel="next" href="../cli/">
       
       
         
@@ -817,6 +817,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#choosing-how-to-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing how to run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#command-line-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -881,6 +892,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command Line (plexpipe)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1031,6 +1070,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#choosing-how-to-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing how to run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#command-line-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1115,14 +1165,51 @@
 <p>PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see <a href="https://github.com/StallaertLab/plex-pipe-nextflow">plex-pipe-nextflow</a>).</p>
 <p>Interactive <a href="../../analysis_steps/00_steps_overview/">steps</a> (1 - Core detection and 3 - Quality Control) are designed to be executed using <a href="https://napari.org/">Napari</a> with designed widgets.</p>
 <hr />
+<h2 id="choosing-how-to-run">Choosing how to run</h2>
+<table>
+<thead>
+<tr>
+<th>Way to run</th>
+<th>Use it for</th>
+<th>Runs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Notebooks</strong></td>
+<td>Inspecting, prototyping, learning</td>
+<td>Whatever you call, step by step</td>
+</tr>
+<tr>
+<td><strong>Scripts</strong> (<code>02_cut_rois.py</code>, <code>04_segment.py</code>, <code>05_quantify.py</code>)</td>
+<td>Whole analyses on one machine</td>
+<td>All channels / all ROIs in one process</td>
+</tr>
+<tr>
+<td><strong><code>plexpipe</code> command</strong> (<a href="../cli/">Command Line</a>)</td>
+<td>Workflow managers such as Nextflow; re-running a single ROI</td>
+<td>One channel image or one ROI per call</td>
+</tr>
+</tbody>
+</table>
+<p>All three use the same code, organised in three layers:</p>
+<ol>
+<li><strong>Classes</strong> in <code>plex_pipe.stages</code> (for example <code>CoreCutter</code>, <code>CoreAssembler</code>, <code>ResourceBuildingController</code>, <code>QuantificationController</code>) do the work. They take explicit arguments and do not read the config file. Notebooks can use them directly.</li>
+<li><strong><code>plex_pipe.runners</code></strong> reads the config and builds and runs these classes for one unit of work (for example <code>cut_image</code>, <code>assemble_roi</code>, <code>segment_roi</code>, <code>quantify_roi</code>). Notebooks can call these functions too.</li>
+<li><strong>Orchestration</strong> decides how many units run and when: the scripts loop over all channels and ROIs, <code>plexpipe</code> runs one unit per call, and Nextflow starts many <code>plexpipe</code> calls in parallel.</li>
+</ol>
+<p>Because the scripts and <code>plexpipe</code> call the same functions in <code>plex_pipe.runners</code>, they give the same results.</p>
+<hr />
 <h2 id="command-line-usage">Command-Line Usage</h2>
 <p>To run the pipeline from the command line, use the provided scripts:</p>
 <h3 id="prepare-cores">Prepare Cores</h3>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
 </code></pre></div>
+<p>Add <code>--roi_cleanup</code> to delete the per-ROI TIFFs once each ROI is assembled.</p>
 <p>or alternatively with <a href="../input_data/#sourcing-image-files">remote sourcing</a> of the image files:</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">'../examples/example_pipeline_config_globus.yaml'</span><span class="w"> </span>--globus_config<span class="w"> </span><span class="s1">'../examples/example_globus_config.yaml'</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">'remote_source'</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">'local_workstation'</span><span class="w"> </span>--cleanup
 </code></pre></div>
+<p><code>--cleanup</code> deletes each transferred image once its ROIs are cut.</p>
 <h3 id="image-processing">Image Processing</h3>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>04_segment.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite
 </code></pre></div>

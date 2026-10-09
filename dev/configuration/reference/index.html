@@ -944,6 +944,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../usage/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command Line (plexpipe)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../usage/input_data/" class="md-nav__link">
         
   
@@ -1409,12 +1437,12 @@
 <tr>
 <td style="text-align: left;"><code>transfer_cleanup_enabled</code></td>
 <td style="text-align: left;"><code>bool</code> (optional)</td>
-<td style="text-align: left;">Whether to delete each image transferred via Globus once its ROIs are cut. Defaults to false. The <code>--cleanup</code> option of <code>02_cut_rois.py</code> also turns it on.</td>
+<td style="text-align: left;">Whether to delete each image transferred via Globus once its ROIs are cut. Defaults to false. Prefer the <code>--cleanup</code> option of <code>02_cut_rois.py</code> / <code>plexpipe cut-image</code> (a run setting, logged with the run).</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>roi_cleanup_enabled</code></td>
 <td style="text-align: left;"><code>bool</code> (optional)</td>
-<td style="text-align: left;">Whether to delete the per-ROI TIFFs in <code>roi_dir_tif</code> once each ROI is assembled into its SpatialData object. Defaults to false.</td>
+<td style="text-align: left;">Whether to delete the per-ROI TIFFs in <code>roi_dir_tif</code> once each ROI is assembled into its SpatialData object. Defaults to false. Prefer the <code>--roi_cleanup</code> option of <code>02_cut_rois.py</code> / <code>plexpipe assemble-roi</code> (a run setting, logged with the run).</td>
 </tr>
 </tbody>
 </table>

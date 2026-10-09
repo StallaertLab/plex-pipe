@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/05_quantification/">
+        <link rel="canonical" href="https://stallaertlab.github.io/plex-pipe/dev/usage/cli/">
       
       
-        <link rel="prev" href="../04_image_processing/">
+        <link rel="prev" href="../execution_modes/">
       
       
-        <link rel="next" href="../../configuration/config_overview/">
+        <link rel="next" href="../input_data/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>05_Quantification - PlexPipe</title>
+        <title>Command Line (plexpipe) - PlexPipe</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#quantification" class="md-skip">
+        <a href="#command-line-plexpipe" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              05_Quantification
+              Command Line (plexpipe)
             
           </span>
         </div>
@@ -293,7 +293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -317,20 +317,18 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -351,7 +349,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -369,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../00_steps_overview/" class="md-nav__link">
+      <a href="../../analysis_steps/00_steps_overview/" class="md-nav__link">
         
   
   
@@ -397,7 +395,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../01_roi_definition/" class="md-nav__link">
+      <a href="../../analysis_steps/01_roi_definition/" class="md-nav__link">
         
   
   
@@ -425,7 +423,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../02_roi_cutting/" class="md-nav__link">
+      <a href="../../analysis_steps/02_roi_cutting/" class="md-nav__link">
         
   
   
@@ -453,7 +451,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../03_quality_control/" class="md-nav__link">
+      <a href="../../analysis_steps/03_quality_control/" class="md-nav__link">
         
   
   
@@ -481,7 +479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../04_image_processing/" class="md-nav__link">
+      <a href="../../analysis_steps/04_image_processing/" class="md-nav__link">
         
   
   
@@ -506,37 +504,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    05_Quantification
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../analysis_steps/05_quantification/" class="md-nav__link">
         
   
   
@@ -552,120 +523,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supported-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supported features
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#linking-anndata-tables-to-segmentation-masks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Linking AnnData Tables to Segmentation Masks
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Linking AnnData Tables to Segmentation Masks">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#option-1-distributed-tables-matching-links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 1: Distributed Tables (Matching Links)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#option-2-consolidated-table-single-link" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Option 2: Consolidated Table (Single Link)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Execution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#notebook-workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notebook workflow
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#script-execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Script execution
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -848,18 +705,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -880,7 +739,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -898,7 +757,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/execution_modes/" class="md-nav__link">
+      <a href="../execution_modes/" class="md-nav__link">
         
   
   
@@ -923,10 +782,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../usage/cli/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command Line (plexpipe)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -942,6 +828,175 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start-absolute-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start: absolute paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-order-of-the-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The order of the commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-files-written-by-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The files written by setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-cut-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe cut-image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-assemble-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe assemble-roi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-segment-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe segment-roi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-quantify-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe quantify-roi
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logs-and-config-snapshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs and config snapshots
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-running-one-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Re-running one ROI
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -954,7 +1009,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/input_data/" class="md-nav__link">
+      <a href="../input_data/" class="md-nav__link">
         
   
   
@@ -982,7 +1037,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/globus/" class="md-nav__link">
+      <a href="../globus/" class="md-nav__link">
         
   
   
@@ -1010,7 +1065,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/processors/" class="md-nav__link">
+      <a href="../processors/" class="md-nav__link">
         
   
   
@@ -1092,10 +1147,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Installation
       
     </span>
   </a>
@@ -1103,10 +1158,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-features" class="md-nav__link">
+  <a href="#before-you-start-absolute-paths" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported features
+        Before you start: absolute paths
       
     </span>
   </a>
@@ -1114,22 +1169,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linking-anndata-tables-to-segmentation-masks" class="md-nav__link">
+  <a href="#the-order-of-the-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Linking AnnData Tables to Segmentation Masks
+        The order of the commands
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Linking AnnData Tables to Segmentation Masks">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-files-written-by-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The files written by setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#option-1-distributed-tables-matching-links" class="md-nav__link">
+  <a href="#plexpipe-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option 1: Distributed Tables (Matching Links)
+        plexpipe setup
       
     </span>
   </a>
@@ -1137,10 +1214,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-2-consolidated-table-single-link" class="md-nav__link">
+  <a href="#plexpipe-cut-image" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Option 2: Consolidated Table (Single Link)
+        plexpipe cut-image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-assemble-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe assemble-roi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-segment-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe segment-roi
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plexpipe-quantify-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        plexpipe quantify-roi
       
     </span>
   </a>
@@ -1153,10 +1263,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#execution" class="md-nav__link">
+  <a href="#run-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Execution
+        Run settings
       
     </span>
   </a>
@@ -1164,10 +1274,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notebook-workflow" class="md-nav__link">
+  <a href="#logs-and-config-snapshots" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notebook workflow
+        Logs and config snapshots
       
     </span>
   </a>
@@ -1175,10 +1285,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#script-execution" class="md-nav__link">
+  <a href="#re-running-one-roi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Script execution
+        Re-running one ROI
       
     </span>
   </a>
@@ -1205,98 +1315,276 @@
   
 
 
-<h1 id="quantification">Quantification</h1>
-<h2 id="overview">Overview</h2>
-<p>The final step extracts features from the segmented objects and stores them in the <code>AnnData</code> table(s) within <code>SpatialData</code> objects.</p>
-<ul>
-<li><strong>Input:</strong> <code>SpatialData</code> objects containing segmentation masks and intensity images.</li>
-<li><strong>Output:</strong> <code>AnnData</code> tables containing single-cell feature matrices added to <code>SpatialData</code> objects.</li>
-</ul>
-<p>Parameters of this step are defined in the Quantification part of <a href="../../configuration/reference/#quantification">configuration</a>.</p>
+<h1 id="command-line-plexpipe">Command Line (<code>plexpipe</code>)</h1>
+<p><code>plexpipe</code> runs PlexPipe <strong>one unit of work at a time</strong>: one channel image, or one ROI. It is meant for workflow managers such as <a href="https://www.nextflow.io/">Nextflow</a> (<a href="https://github.com/StallaertLab/plex-pipe-nextflow">plex-pipe-nextflow</a>), which start one job per unit and run many of them in parallel. It is also handy for re-running a single ROI by hand.</p>
+<p>To run a whole analysis in one go, use the scripts <code>02_cut_rois.py</code>, <code>04_segment.py</code> and <code>05_quantify.py</code> instead (see <a href="../execution_modes/">Execution Modes</a>). Both call the same functions in <code>plex_pipe.runners</code>, so they give the same results.</p>
 <hr />
-<h2 id="supported-features">Supported features</h2>
-<ul>
-<li><strong>Morphological Features:</strong> Geometric attributes such as area, centroid, eccentricity, and orientation. All <a href="https://scikit-image.org/docs/0.25.x/api/skimage.measure.html#skimage.measure.regionprops">skimage.measure.regionprops</a> properties are supported.</li>
-<li><strong>Intensity Features:</strong> Statistical summaries (e.g., mean or median expression) for specified markers across the masked regions.</li>
-</ul>
-<!-- METRICS_START -->
-
+<h2 id="installation">Installation</h2>
+<p><code>plexpipe</code> is installed together with the package; it is registered in <code>pyproject.toml</code> under <code>[project.scripts]</code>. After installing (or, for an existing editable install, after re-running <code>pip install -e .</code> / <code>uv pip install -e .</code> once), check:</p>
+<div class="highlight"><pre><span></span><code>plexpipe<span class="w"> </span>--help
+</code></pre></div>
+<p>The same commands are also available as <code>python -m plex_pipe &lt;command&gt; ...</code>.</p>
+<hr />
+<h2 id="before-you-start-absolute-paths">Before you start: absolute paths</h2>
+<p>Each <code>plexpipe</code> call may run in a different folder (Nextflow gives every job its own working directory), so <strong>all paths in the config YAML file must be absolute</strong>: <code>general.image_dir</code>, <code>general.analysis_dir</code>, and, if set, <code>general.log_dir</code>, <code>channels.manifest</code>, <code>roi_definition.roi_info_file_path</code>, <code>roi_cutting.roi_dir_tif</code> and <code>roi_cutting.roi_dir_output</code>. Every command stops with an error that lists any relative path.</p>
+<p>The ROIs must already be defined (the ROI table at <code>roi_info_file_path</code>, see <a href="../../analysis_steps/01_roi_definition/">ROI Definition</a>).</p>
+<hr />
+<h2 id="the-order-of-the-commands">The order of the commands</h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Feature Name</th>
-<th style="text-align: left;">Source / Implementation</th>
-<th style="text-align: left;">Description</th>
+<th>Step</th>
+<th>Command</th>
+<th>Runs once per</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>mean</strong></td>
-<td style="text-align: left;">Skimage: <code>mean_intensity</code></td>
-<td style="text-align: left;">Standard intensity property from <code>skimage.measure.regionprops</code>.</td>
+<td>1</td>
+<td><code>plexpipe setup</code></td>
+<td>analysis</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>max</strong></td>
-<td style="text-align: left;">Skimage: <code>max_intensity</code></td>
-<td style="text-align: left;">Standard intensity property from <code>skimage.measure.regionprops</code>.</td>
+<td>2</td>
+<td><code>plexpipe cut-image</code></td>
+<td>channel (row of <code>images.csv</code>)</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>min</strong></td>
-<td style="text-align: left;">Skimage: <code>min_intensity</code></td>
-<td style="text-align: left;">Standard intensity property from <code>skimage.measure.regionprops</code>.</td>
+<td>3</td>
+<td><code>plexpipe assemble-roi</code></td>
+<td>ROI (row of <code>rois.csv</code>), after <strong>all</strong> channels are cut</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>median</strong></td>
-<td style="text-align: left;">Custom: <code>calculate_median</code></td>
-<td style="text-align: left;">Calculates the median intensity of the region.</td>
+<td>4</td>
+<td><code>plexpipe segment-roi</code></td>
+<td>ROI</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>sum</strong></td>
-<td style="text-align: left;">Custom: <code>calculate_sum</code></td>
-<td style="text-align: left;">Calculates the sum intensity of the region.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>std</strong></td>
-<td style="text-align: left;">Custom: <code>calculate_std</code></td>
-<td style="text-align: left;">Calculates the standard deviation of intensity of the region.</td>
+<td>5</td>
+<td><code>plexpipe quantify-roi</code></td>
+<td>ROI</td>
 </tr>
 </tbody>
 </table>
-<!-- METRICS_END -->
+<p>Step 3 must wait until step 2 has finished for every channel, because each ROI is assembled from all of its channels. Steps 3–5 can run in parallel for different ROIs.</p>
+<p>The same sequence as a plain shell script (one job after the other, without Nextflow):</p>
+<div class="highlight"><pre><span></span><code><span class="nv">C</span><span class="o">=</span>/abs/path/to/config.yaml
+<span class="nv">J</span><span class="o">=</span>/abs/path/to/work<span class="w">        </span><span class="c1"># where setup writes images.csv and rois.csv</span>
 
+plexpipe<span class="w"> </span>setup<span class="w"> </span>--exp_config<span class="w"> </span><span class="s2">"</span><span class="nv">$C</span><span class="s2">"</span><span class="w"> </span>--out_dir<span class="w"> </span><span class="s2">"</span><span class="nv">$J</span><span class="s2">"</span>
+
+tail<span class="w"> </span>-n<span class="w"> </span>+2<span class="w"> </span><span class="s2">"</span><span class="nv">$J</span><span class="s2">/images.csv"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="nv">IFS</span><span class="o">=</span>,<span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>ch<span class="w"> </span>path<span class="w"> </span>task<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>plexpipe<span class="w"> </span>cut-image<span class="w"> </span>--exp_config<span class="w"> </span><span class="s2">"</span><span class="nv">$C</span><span class="s2">"</span><span class="w"> </span>--channel<span class="w"> </span><span class="s2">"</span><span class="nv">$ch</span><span class="s2">"</span><span class="w"> </span>--image_path<span class="w"> </span><span class="s2">"</span><span class="nv">$path</span><span class="s2">"</span>
+<span class="k">done</span>
+
+tail<span class="w"> </span>-n<span class="w"> </span>+2<span class="w"> </span><span class="s2">"</span><span class="nv">$J</span><span class="s2">/rois.csv"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="nv">IFS</span><span class="o">=</span>,<span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>roi<span class="w"> </span>path<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>plexpipe<span class="w"> </span>assemble-roi<span class="w"> </span>--exp_config<span class="w"> </span><span class="s2">"</span><span class="nv">$C</span><span class="s2">"</span><span class="w"> </span>--roi<span class="w"> </span><span class="s2">"</span><span class="nv">$roi</span><span class="s2">"</span><span class="w"> </span>--images<span class="w"> </span><span class="s2">"</span><span class="nv">$J</span><span class="s2">/images.csv"</span>
+<span class="w">  </span>plexpipe<span class="w"> </span>segment-roi<span class="w">  </span>--exp_config<span class="w"> </span><span class="s2">"</span><span class="nv">$C</span><span class="s2">"</span><span class="w"> </span>--roi_path<span class="w"> </span><span class="s2">"</span><span class="nv">$path</span><span class="s2">"</span>
+<span class="w">  </span>plexpipe<span class="w"> </span>quantify-roi<span class="w"> </span>--exp_config<span class="w"> </span><span class="s2">"</span><span class="nv">$C</span><span class="s2">"</span><span class="w"> </span>--roi_path<span class="w"> </span><span class="s2">"</span><span class="nv">$path</span><span class="s2">"</span>
+<span class="k">done</span>
+</code></pre></div>
 <hr />
-<h2 id="linking-anndata-tables-to-segmentation-masks">Linking AnnData Tables to Segmentation Masks</h2>
-<p>In the <code>SpatialData</code> framework, every table should ideally be linked to a set of regions (masks).
-You can choose between two primary organizational strategies:</p>
-<h3 id="option-1-distributed-tables-matching-links">Option 1: Distributed Tables (Matching Links)</h3>
-<p>Separate <strong>quantification groups</strong> are defined to create distinct AnnData tables for each mask.
-* <strong>Example:</strong> A "cell" table linked to the cell mask and a "nucleus" table linked to the nucleus mask.
-* <strong>Benefit:</strong> Provides a strict 1:1 mapping between the table rows and the spatial labels.</p>
-<h3 id="option-2-consolidated-table-single-link">Option 2: Consolidated Table (Single Link)</h3>
-<p>Results from multiple masks are stored in a <strong>single AnnData table</strong>.
-* <strong>Example:</strong> Measurements for both "cell" and "nucleus" regions are stored in one table and linked to the "cell" segmentation mask.
-* <strong>Benefit:</strong> Simplifies downstream analysis by keeping all properties of a biological cell in one place.</p>
-<p>Both approaches are supported; choose the one that best fits your downstream analysis workflow.</p>
+<h2 id="the-files-written-by-setup">The files written by <code>setup</code></h2>
+<p><code>setup</code> writes two CSV files (Unix line endings) into <code>--out_dir</code>. The other commands, or the workflow manager, read them.</p>
+<p><strong><code>images.csv</code></strong>: one row per selected channel.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>channel</code></td>
+<td>Channel name, as selected by the <code>channels:</code> section of the config.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>Local path of the channel image (for Globus runs: where the transferred copy will appear).</td>
+</tr>
+<tr>
+<td><code>task_id</code></td>
+<td>Globus transfer task to wait for before cutting; empty for local images and for images already present.</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>rois.csv</code></strong>: one row per ROI in the ROI table.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>roi_name</code></td>
+<td>ROI name.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>The ROI's SpatialData store (<code>&lt;roi_dir_output&gt;/&lt;roi_name&gt;.zarr</code>).</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h2 id="execution">Execution</h2>
-<p>This module is fully parameterized via the <a href="../../configuration/reference/#roi-cutting">configuration file</a> and does not require manual intervention.
-Consequently, it can be executed via a Jupyter Notebook, standalone script, or as a component of the Nextflow pipeline; further details are available in the <a href="../../usage/execution_modes/">Execution Modes</a> documentation.</p>
+<h2 id="commands">Commands</h2>
+<p>All commands take <code>--exp_config</code> (path to the config YAML file).</p>
+<h3 id="plexpipe-setup"><code>plexpipe setup</code></h3>
+<p>Finds the selected channels (warning if later steps need markers that will not be cut), starts the Globus transfers if requested, and writes <code>images.csv</code> and <code>rois.csv</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--out_dir</code></td>
+<td>Folder for <code>images.csv</code> and <code>rois.csv</code> (default: current folder).</td>
+</tr>
+<tr>
+<td><code>--globus_config</code></td>
+<td>Globus config YAML; fetch the images from a remote collection (see <a href="../globus/">Globus Setup</a>). One transfer task per channel.</td>
+</tr>
+<tr>
+<td><code>--from_collection</code></td>
+<td>Key of the source collection in the Globus config (default <code>remote_source</code>).</td>
+</tr>
+<tr>
+<td><code>--to_collection</code></td>
+<td>Key of the destination collection, this machine (default <code>local_workstation</code>).</td>
+</tr>
+<tr>
+<td><code>--file_checksum</code></td>
+<td>Transfer images that are already present too (Globus compares checksums). By default they are skipped.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="plexpipe-cut-image"><code>plexpipe cut-image</code></h3>
+<p>Cuts every ROI from one channel image and saves one TIFF per ROI in <code>roi_dir_tif</code>. Uses <code>roi_cutting.margin</code> and <code>mask_value</code> from the config.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--channel</code></td>
+<td>Channel name (from <code>images.csv</code>).</td>
+</tr>
+<tr>
+<td><code>--image_path</code></td>
+<td>Path to the image (from <code>images.csv</code>).</td>
+</tr>
+<tr>
+<td><code>--task_id</code></td>
+<td>Globus task to wait for before cutting (from <code>images.csv</code>); needs <code>--globus_config</code>.</td>
+</tr>
+<tr>
+<td><code>--globus_config</code>, <code>--from_collection</code>, <code>--to_collection</code></td>
+<td>As for <code>setup</code>; only needed with <code>--task_id</code>.</td>
+</tr>
+<tr>
+<td><code>--wait_hours</code></td>
+<td>How long to wait for the Globus task (default 12).</td>
+</tr>
+<tr>
+<td><code>--poll_seconds</code></td>
+<td>Seconds between Globus status checks (default 30).</td>
+</tr>
+<tr>
+<td><code>--cleanup</code>, <code>-c</code></td>
+<td>Delete the transferred image once it is cut. Only images transferred into the analysis <code>temp</code> folder are deleted, never the originals.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="plexpipe-assemble-roi"><code>plexpipe assemble-roi</code></h3>
+<p>Assembles one ROI's channel TIFFs into its SpatialData store. Every channel listed in <code>images.csv</code> must have been cut for this ROI; otherwise the command stops and names the missing channels. This keeps all ROIs of an analysis with the same channels, so their quantification tables are comparable.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--roi</code></td>
+<td>ROI name (from <code>rois.csv</code>).</td>
+</tr>
+<tr>
+<td><code>--images</code></td>
+<td>Path to <code>images.csv</code>.</td>
+</tr>
+<tr>
+<td><code>--roi_cleanup</code></td>
+<td>Delete this ROI's TIFFs once it is assembled.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="plexpipe-segment-roi"><code>plexpipe segment-roi</code></h3>
+<p>Runs the <code>additional_elements</code> steps of the config (image enhancement, segmentation, mask building) on one ROI, after checking that every step's inputs exist.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--roi_path</code></td>
+<td>Path to the ROI's <code>.zarr</code> store (from <code>rois.csv</code>).</td>
+</tr>
+<tr>
+<td><code>--overwrite</code></td>
+<td>Overwrite elements that already exist.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="plexpipe-quantify-roi"><code>plexpipe quantify-roi</code></h3>
+<p>Runs the <code>quant</code> tables of the config on one ROI.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--roi_path</code></td>
+<td>Path to the ROI's <code>.zarr</code> store (from <code>rois.csv</code>).</td>
+</tr>
+<tr>
+<td><code>--overwrite</code></td>
+<td>Overwrite tables that already exist.</td>
+</tr>
+</tbody>
+</table>
 <hr />
-<h2 id="notebook-workflow">Notebook workflow</h2>
-<p>The example <a href="https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/05_quantification_demo.ipynb">Jupyter Notebook</a> demonstrates the execution workflow using locally available data.</p>
-<p>To complete the process, execute the following sections sequentially:</p>
-<ul>
-<li><strong>Read in config</strong>: Specify the path to the analysis configuration file and load the required settings.</li>
-<li><strong>Specify the overwriting strategy</strong>: Set the <code>OVERWRITE_FLAG</code>. If <code>False</code>, the pipeline will throw an error to prevent overwriting existing table. If <code>True</code>, existing table will be replaced. Use with caution!</li>
-<li><strong>Define the logger</strong>: Initialize the logging protocol to track execution progress and document the processing steps.</li>
-<li><strong>Save a config snapshot (optional)</strong>: Save the config used to the <code>configs/</code> folder of the analysis directory (see <a href="../../configuration/config_overview/#config-snapshots">Config Snapshots</a>).</li>
-<li><strong>Define ROIs for processing</strong>: Identify the <code>SpatialData</code> objects to be processed. A demonstration cell is provided to truncate this list for faster testing.</li>
-<li><strong>Setup quantifiers</strong>: Initialize the quantifying objects defined in your configuration. These objects are created once and reused across all ROIs.</li>
-<li><strong>Run ROIs Quantification</strong>: Quantify the ROIs.</li>
-</ul>
+<h2 id="run-settings">Run settings</h2>
+<p>Some options change how a run behaves but not what the results are: <code>--cleanup</code>, <code>--roi_cleanup</code>, <code>--overwrite</code>, <code>--file_checksum</code> and the Globus options. They are command-line options, not config settings, and each run writes the cleanup settings it used to its log, for example:</p>
+<div class="highlight"><pre><span></span><code>Run setting roi_cleanup: on (command line)
+</code></pre></div>
+<p>For existing configs, <code>transfer_cleanup_enabled</code> and <code>roi_cleanup_enabled</code> under <code>roi_cutting:</code> still turn cleanup on (the log then says <code>on (config)</code>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Cleanup and retries</p>
+<p>With <code>--cleanup</code>, a transferred image is deleted after it is cut. If that <code>cut-image</code> job is then run again (for example by an automatic retry), its input is gone. Do not retry <code>cut-image</code> jobs that use <code>--cleanup</code>.</p>
+</div>
 <hr />
-<h2 id="script-execution">Script execution</h2>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>05_quantify.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite
+<h2 id="logs-and-config-snapshots">Logs and config snapshots</h2>
+<p>Every command writes its own log file to the analysis <code>logs</code> folder, named after the command and the unit, for example <code>cut-image_DAPI_2026-10-09_18-47-19.log</code> or <code>segment-roi_ROI_000_2026-10-09_18-47-24.log</code>. Every command also records which <a href="../../configuration/config_overview/#config-snapshots">config snapshot</a> it used, like the scripts do.</p>
+<hr />
+<h2 id="re-running-one-roi">Re-running one ROI</h2>
+<p>To redo a single ROI, for example after changing a segmentation step in the config, run only the commands for that ROI:</p>
+<div class="highlight"><pre><span></span><code>plexpipe<span class="w"> </span>segment-roi<span class="w">  </span>--exp_config<span class="w"> </span>/abs/path/to/config.yaml<span class="w"> </span>--roi_path<span class="w"> </span>/abs/path/to/analysis/rois/ROI_007.zarr<span class="w"> </span>--overwrite
+plexpipe<span class="w"> </span>quantify-roi<span class="w"> </span>--exp_config<span class="w"> </span>/abs/path/to/config.yaml<span class="w"> </span>--roi_path<span class="w"> </span>/abs/path/to/analysis/rois/ROI_007.zarr<span class="w"> </span>--overwrite
 </code></pre></div>
 
 
