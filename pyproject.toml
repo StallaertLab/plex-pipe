@@ -127,6 +127,10 @@ dev = [
 conflicts = [
     [{ extra = "all" }, { extra = "all-cuda" }],
 ]
+# The version comes from git (setuptools_scm), so rebuild the editable install
+# after a new commit or tag; otherwise the installed version goes stale.
+# Setting cache-keys replaces uv's defaults, so pyproject.toml is listed again.
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true } }]
 
 [[tool.uv.index]]
 name = "pytorch-cuda"
