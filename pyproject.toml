@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 # =============================================================================
 [project]
 name = "plex_pipe"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dynamic = ["version"]
 description = "A pipeline for analyzing multiplexed data."
 readme = "README.md"
@@ -22,6 +22,9 @@ authors = [
 
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent"
 ]
 
@@ -162,7 +165,8 @@ git_describe_command = "git describe --dirty --tags --long --match v[0-9]*"
 
 [tool.black]
 line-length = 79
-target-version = ['py311', 'py312', 'py313']
+# py314 is not a target in black 24.10 (pre-commit pin); py313 covers 3.14.
+target-version = ['py312', 'py313']
 
 [tool.ruff]
 line-length = 79
@@ -214,7 +218,7 @@ exclude = [
 "tests/*" = ["ARG001", "ARG002"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 
 mypy_path = "src"
 explicit_package_bases = true
