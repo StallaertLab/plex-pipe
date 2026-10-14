@@ -16,8 +16,8 @@ def example_sdata_copy(tmp_path_factory):
     Create a single session-level copy of the example .zarr dataset.
     """
     project_root = Path(__file__).parent
-    src = project_root / "example_data" / "Core_000.zarr"
-    dst = tmp_path_factory.mktemp("example_sdata") / "Core_000.zarr"
+    src = project_root / "example_data" / "ROI_001_crop.zarr"
+    dst = tmp_path_factory.mktemp("example_sdata") / "ROI_001_crop.zarr"
     shutil.copytree(src, dst)
     return dst
 
@@ -388,7 +388,7 @@ def test_all_rois_must_have_the_same_channels(sdata_read):
     with pytest.raises(ValueError, match=r"different channels from the first ROI") as e:
         qc.validate_sdata_as_input(sdata_read)
     assert f"Missing: ['{dropped}']" in str(e.value)
-    assert "Core_000.zarr" in str(e.value)
+    assert "ROI_001_crop.zarr" in str(e.value)
 
 
 def test_markers_to_quantify_checked_for_every_roi(sdata_read):

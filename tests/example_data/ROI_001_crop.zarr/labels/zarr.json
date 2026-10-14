@@ -1,0 +1,14 @@
+{
+  "attributes": {
+    "ome": {
+      "labels": [
+        "cytoplasm",
+        "instanseg_cell",
+        "instanseg_nucleus",
+        "ring"
+      ]
+    }
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}
