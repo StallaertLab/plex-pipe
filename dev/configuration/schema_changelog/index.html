@@ -1210,6 +1210,7 @@
 <li><strong>Breaking:</strong> <code>include_channels</code>, <code>exclude_channels</code>, <code>use_markers</code> and <code>ignore_markers</code> moved from <code>roi_cutting</code> to <code>channels</code>.</li>
 <li><code>schema_version</code> format changed to <code>"MAJOR.MINOR"</code>.</li>
 <li>Contradicting selection settings in <code>channels</code> are rejected.</li>
+<li>Unknown keys are rejected, so a misspelled key stops loading instead of being ignored. A config with a newer MINOR version still loads; keys this version does not know are ignored with a warning.</li>
 </ul>
 <h2 id="1">1</h2>
 <h3 id="changed_1">Changed</h3>

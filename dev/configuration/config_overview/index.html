@@ -1193,7 +1193,11 @@ It provides parameters for all stages of the pipeline divided into sections corr
 <div class="highlight"><pre><span></span><code><span class="n">plex_pipe</span><span class="o">.</span><span class="n">migrate_config</span><span class="p">(</span><span class="s2">"analysis_old.yaml"</span><span class="p">,</span> <span class="s2">"analysis.yaml"</span><span class="p">)</span>
 </code></pre></div>
 <p>If the file is already at the current schema, nothing is written.</p>
-<p><strong>A config that is too new.</strong> If you load a config written for a newer MAJOR version than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe. If only the MINOR version is newer (e.g. <code>"2.1"</code> with a PlexPipe that knows <code>"2.0"</code>), the config loads with a warning: settings your PlexPipe does not know yet would be ignored.</p>
+<p><strong>A config that is too new.</strong> If you load a config written for a newer MAJOR version than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe. If only the MINOR version is newer (e.g. <code>"2.1"</code> with a PlexPipe that knows <code>"2.0"</code>), the config loads with a warning that names the settings your PlexPipe does not know yet; those settings are ignored.</p>
+<p><strong>Unknown keys.</strong> Every other config must contain only keys PlexPipe knows. A misspelled key (for example <code>roi_cleanup_enable</code> instead of <code>roi_cleanup_enabled</code>) stops loading with an error that names it, instead of being ignored while the setting keeps its default:</p>
+<div class="highlight"><pre><span></span><code>ValueError: Config 'my_config.yaml' is not valid for schema 2.0:
+  - roi_cutting.roi_cleanup_enable: Extra inputs are not permitted
+</code></pre></div>
 <p><strong>What changed in each version</strong> is listed in the <a href="../schema_changelog/">Schema Changelog</a>.</p>
 <p>The full set of fields for the current schema is documented in the <a href="../reference/">Reference</a>.</p>
 <hr />
