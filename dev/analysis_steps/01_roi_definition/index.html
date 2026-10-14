@@ -1340,8 +1340,8 @@
 <p>The notebook requires the absolute paths to both the SAM2 model checkpoints and the Python executable of the SAM2 environment.</p>
 <p>You may define these parameters manually as a dictionary:</p>
 <div class="highlight"><pre><span></span><code><span class="n">sam_config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'model_path'</span><span class="p">:</span> <span class="s1">'/mnt/d/sam2_test/sam2'</span><span class="p">,</span> <span class="c1"># Absolute path to SAM2 checkpoints</span>
-    <span class="s1">'sam_env'</span><span class="p">:</span> <span class="s1">'/home/kasia/miniforge3/envs/sam2-env/bin/python'</span> <span class="c1"># Path to SAM2 Python executable</span>
+    <span class="s1">'model_path'</span><span class="p">:</span> <span class="s1">'/mnt/d/path/to/sam2'</span><span class="p">,</span> <span class="c1"># Absolute path to SAM2 checkpoints</span>
+    <span class="s1">'sam_env'</span><span class="p">:</span> <span class="s1">'/home/&lt;username&gt;/sam2_env/bin/python'</span> <span class="c1"># Path to SAM2 Python executable</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Alternatively, use the <code>load_workstation_config</code> helper function to import settings from a YAML file.
@@ -1350,7 +1350,7 @@ This approach allows a single centralized file to manage configurations for mult
 <div class="highlight"><pre><span></span><code><span class="nt">workstations</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">WORKSTATION_HOSTNAME</span><span class="p">:</span><span class="w"> </span><span class="c1"># As returned by platform.node()</span>
 <span class="w">    </span><span class="nt">model_path</span><span class="p">:</span><span class="w"> </span><span class="s">"path/to/model"</span>
-<span class="w">    </span><span class="nt">sam2_env</span><span class="p">:</span><span class="w"> </span><span class="s">"path/to/environment/python"</span>
+<span class="w">    </span><span class="nt">sam_env</span><span class="p">:</span><span class="w"> </span><span class="s">"path/to/environment/python"</span>
 </code></pre></div>
 <p>Template configuration files are available in the project's <a href="https://github.com/StallaertLab/plex-pipe/tree/main/examples">examples</a> folder.</p>
 <div class="admonition note">
