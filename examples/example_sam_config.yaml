@@ -2,9 +2,5 @@
 workstations:
 
   WORKSTATION_NAME_1: # workstation name (to get it: `hostname`(bash) or platform.node() (python))
-    model_path: "" # path to the SAM2 model
-    sam2_env: "" # path to the SAM2 environment
-
-  DESKTOP-S71S74E:
-    model_path: "/mnt/d/sam2_test/sam2"
-    sam_env: "/home/kasia/miniforge3/envs/sam2-env/bin/python"
+    model_path: "/mnt/d/path/to/sam2" # path to the SAM2 model checkpoints (WSL path on Windows)
+    sam_env: "/home/<username>/sam2_env/bin/python" # python of the SAM2 environment

@@ -85,8 +85,8 @@ You may define these parameters manually as a dictionary:
 
 ```python
 sam_config = {
-    'model_path': '/mnt/d/sam2_test/sam2', # Absolute path to SAM2 checkpoints
-    'sam_env': '/home/kasia/miniforge3/envs/sam2-env/bin/python' # Path to SAM2 Python executable
+    'model_path': '/mnt/d/path/to/sam2', # Absolute path to SAM2 checkpoints
+    'sam_env': '/home/<username>/sam2_env/bin/python' # Path to SAM2 Python executable
 }
 ```
 
@@ -99,7 +99,7 @@ The file structure is as follows:
 workstations:
   WORKSTATION_HOSTNAME: # As returned by platform.node()
     model_path: "path/to/model"
-    sam2_env: "path/to/environment/python"
+    sam_env: "path/to/environment/python"
 ```
 
 Template configuration files are available in the project's [examples](https://github.com/StallaertLab/plex-pipe/tree/main/examples) folder.
