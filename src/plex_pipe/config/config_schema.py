@@ -11,6 +11,7 @@ from typing import (
 
 from pydantic import (
     BaseModel,
+    ConfigDict,
     Field,
     PrivateAttr,
     create_model,
@@ -49,12 +50,24 @@ else:
 DEFAULT_FILE_NAMING = DEFAULT_PRESET
 
 
+class ConfigSection(BaseModel):
+    """Base for every config model: a key the model doesn't know is an error.
+
+    Without this, a misspelled key (e.g. ``roi_cleanup_enable``) would be
+    dropped silently and its setting would fall back to the default. A config
+    with a newer MINOR schema version may legitimately contain keys this build
+    doesn't know; :func:`plex_pipe.config.config_loaders.load_config` drops
+    those with a warning instead.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+
 def _reject_moved_keys(section: str, data: object, moved: dict[str, str]) -> None:
     """Fail clearly when a key that moved to ``channels`` is still in ``section``.
 
-    Without this, the old key would be silently ignored (the models don't
-    reject unknown keys), and e.g. an ``ignore_markers`` list would quietly
-    stop working.
+    The models reject unknown keys anyway; this gives the moved keys a message
+    that says where they went.
     """
     if not isinstance(data, dict):
         return
@@ -68,7 +81,7 @@ def _reject_moved_keys(section: str, data: object, moved: dict[str, str]) -> Non
         )
 
 
-class GeneralSettings(BaseModel):
+class GeneralSettings(ConfigSection):
     """Configuration for general analysis settings."""
 
     image_dir: str
@@ -87,7 +100,7 @@ class GeneralSettings(BaseModel):
         return data
 
 
-class ChannelSettings(BaseModel):
+class ChannelSettings(ConfigSection):
     """Which images are used, and under which marker names.
 
     The channel manifest (every input file with its marker and round) comes
@@ -171,7 +184,7 @@ class ChannelSettings(BaseModel):
         return self
 
 
-class RoiDefinitionSettings(BaseModel):
+class RoiDefinitionSettings(ConfigSection):
     """Configuration for ROI definition."""
 
     detection_image: str
@@ -179,7 +192,7 @@ class RoiDefinitionSettings(BaseModel):
     im_level: float | None = None
 
 
-class RoiCuttingSettings(BaseModel):
+class RoiCuttingSettings(ConfigSection):
     """Configuration for ROI cutting and processing."""
 
     roi_dir_tif: str | None = None
@@ -209,7 +222,7 @@ class RoiCuttingSettings(BaseModel):
         return data
 
 
-class QcSettings(BaseModel):
+class QcSettings(ConfigSection):
     """Configuration for Quality Control settings."""
 
     prefix: str
@@ -228,7 +241,7 @@ DEFAULT_morphological_properties = [
 DEFAULT_intensity_properties = ["mean", "median"]
 
 
-class QuantTask(BaseModel):
+class QuantTask(ConfigSection):
     """Configuration for a quantification task."""
 
     name: str
@@ -255,7 +268,7 @@ class QuantTask(BaseModel):
         return v
 
 
-class StorageSettings(BaseModel):
+class StorageSettings(ConfigSection):
     """Configuration for storage settings."""
 
     chunk_size: list[int] | None = [1, 512, 512]
@@ -266,7 +279,7 @@ class StorageSettings(BaseModel):
 ###################################################################
 # Pipeline Step Models (for 'additional_elements')
 ###################################################################
-class BaseStep(BaseModel):
+class BaseStep(ConfigSection):
     """Base configuration for a pipeline step."""
 
     category: Kind
@@ -310,7 +323,7 @@ else:
     PipelineStep = BaseStep if not step_models else reduce(operator.or_, step_models)
 
 
-class AnalysisConfig(BaseModel):
+class AnalysisConfig(ConfigSection):
     """The root model for the entire plex_pipe analysis configuration.
 
     This class acts as the main entry point for parsing and validating the

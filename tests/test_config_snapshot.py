@@ -139,3 +139,58 @@ def test_log_line_records_the_run(tmp_path, log_messages):
         and m.endswith("schema 1.0 in the source file, upgraded to 2.0)")
         for m in log_messages
     )
+
+
+def _write_config(src: Path, tmp_path: Path, edit) -> Path:
+    """Copy a config into tmp_path, apply ``edit`` to the parsed YAML."""
+    path = _copy_config(src, tmp_path)
+    raw = yaml.safe_load(path.read_text())
+    edit(raw)
+    path.write_text(yaml.safe_dump(raw, sort_keys=False))
+    return path
+
+
+@pytest.mark.parametrize(
+    ("section", "key"),
+    [
+        ("roi_cutting", "roi_cleanup_enable"),
+        ("general", "analysis_nam"),
+        ("channels", "ignore_marker"),
+        ("sdata_storage", "chunksize"),
+    ],
+)
+def test_misspelled_key_is_an_error(tmp_path, section, key):
+    def edit(raw):
+        raw.setdefault(section, {})[key] = True
+
+    path = _write_config(EXAMPLE_V2, tmp_path, edit)
+    with pytest.raises(ValueError, match=rf"{section}\.{key}: Extra inputs"):
+        load_config(path)
+
+
+def test_unknown_top_level_and_step_keys_are_errors(tmp_path):
+    def edit(raw):
+        raw["unknown_section"] = {}
+        raw["additional_elements"][0]["paramters"] = {}
+        raw["additional_elements"][0]["parameters"]["hihg"] = 99.8
+
+    path = _write_config(EXAMPLE_V2, tmp_path, edit)
+    with pytest.raises(ValueError, match="unknown_section: Extra inputs") as excinfo:
+        load_config(path)
+    assert "paramters: Extra inputs" in str(excinfo.value)
+    assert "parameters.hihg: Extra inputs" in str(excinfo.value)
+
+
+def test_newer_minor_ignores_unknown_keys_with_warning(tmp_path, log_messages):
+    def edit(raw):
+        raw["schema_version"] = "2.7"
+        raw["roi_cutting"]["future_option"] = 1
+        raw["additional_elements"][0]["parameters"]["future_param"] = 1
+
+    path = _write_config(EXAMPLE_V2, tmp_path, edit)
+    config = load_config(path)
+
+    assert not hasattr(config.roi_cutting, "future_option")
+    warning = next(m for m in log_messages if m.startswith("Ignoring settings"))
+    assert "roi_cutting.future_option" in warning
+    assert "future_param" in warning

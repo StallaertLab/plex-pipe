@@ -29,7 +29,13 @@ class OutputType(str, Enum):
 
 
 class ProcessorParamsBase(BaseModel):
-    """Base model for processor parameters that logs warnings for missing optional parameters."""
+    """Base model for processor parameters.
+
+    Unknown parameters are an error (a misspelled one would otherwise be
+    ignored and its default used); missing optional ones are logged.
+    """
+
+    model_config = ConfigDict(extra="forbid")
 
     @model_validator(mode="before")
     @classmethod

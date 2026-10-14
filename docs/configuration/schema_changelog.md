@@ -16,6 +16,7 @@ All notable changes to the config file format, by `schema_version`. The format f
 - **Breaking:** `include_channels`, `exclude_channels`, `use_markers` and `ignore_markers` moved from `roi_cutting` to `channels`.
 - `schema_version` format changed to `"MAJOR.MINOR"`.
 - Contradicting selection settings in `channels` are rejected.
+- Unknown keys are rejected, so a misspelled key stops loading instead of being ignored. A config with a newer MINOR version still loads; keys this version does not know are ignored with a warning.
 
 ## 1
 

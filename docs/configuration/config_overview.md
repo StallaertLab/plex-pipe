@@ -58,7 +58,14 @@ plex_pipe.migrate_config("analysis_old.yaml", "analysis.yaml")
 
 If the file is already at the current schema, nothing is written.
 
-**A config that is too new.** If you load a config written for a newer MAJOR version than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe. If only the MINOR version is newer (e.g. `"2.1"` with a PlexPipe that knows `"2.0"`), the config loads with a warning: settings your PlexPipe does not know yet would be ignored.
+**A config that is too new.** If you load a config written for a newer MAJOR version than your installed PlexPipe understands, loading stops with a clear error asking you to upgrade PlexPipe. If only the MINOR version is newer (e.g. `"2.1"` with a PlexPipe that knows `"2.0"`), the config loads with a warning that names the settings your PlexPipe does not know yet; those settings are ignored.
+
+**Unknown keys.** Every other config must contain only keys PlexPipe knows. A misspelled key (for example `roi_cleanup_enable` instead of `roi_cleanup_enabled`) stops loading with an error that names it, instead of being ignored while the setting keeps its default:
+
+```
+ValueError: Config 'my_config.yaml' is not valid for schema 2.0:
+  - roi_cutting.roi_cleanup_enable: Extra inputs are not permitted
+```
 
 **What changed in each version** is listed in the [Schema Changelog](schema_changelog.md).
 

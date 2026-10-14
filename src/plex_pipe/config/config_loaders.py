@@ -73,7 +73,10 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
     # expand placeholders
     settings = expand_pipeline(settings)
 
-    # Validate and get the "blueprint" object
+    # Validate and get the "blueprint" object. Unknown keys are an error,
+    # except in a config with a newer MINOR schema (see _drop_unknown_keys).
+    if _is_newer_minor(start_version):
+        settings = _drop_unknown_keys(settings)
     try:
         config = AnalysisConfig.model_validate(settings)
     except ValidationError as exc:
@@ -94,6 +97,61 @@ def load_config(settings_path: str | Path) -> AnalysisConfig:
         os.makedirs(p, exist_ok=True)
 
     return config
+
+
+def _is_newer_minor(version: tuple[int, int]) -> bool:
+    """True if ``version`` has the current MAJOR but a newer MINOR."""
+    return (
+        version[0] == CURRENT_SCHEMA_VERSION[0]
+        and version[1] > CURRENT_SCHEMA_VERSION[1]
+    )
+
+
+def _drop_unknown_keys(settings: dict[str, Any]) -> dict[str, Any]:
+    """Remove the keys the schema doesn't know, with a warning naming them.
+
+    Only used for a config with a newer MINOR schema version: MINOR versions
+    add optional keys, so such a config may contain settings this build
+    doesn't know yet. They are ignored rather than failing the load.
+
+    Args:
+        settings: The expanded config dictionary.
+
+    Returns:
+        A copy of ``settings`` without the unknown keys.
+    """
+    settings = copy.deepcopy(settings)
+    try:
+        AnalysisConfig.model_validate(settings)
+        return settings
+    except ValidationError as exc:
+        unknown = [
+            err["loc"] for err in exc.errors() if err["type"] == "extra_forbidden"
+        ]
+    for loc in unknown:
+        _delete_at(settings, loc)
+    if unknown:
+        names = ", ".join(".".join(str(p) for p in loc) for loc in unknown)
+        logger.warning(
+            f"Ignoring settings this build of plex_pipe does not know: {names}."
+        )
+    return settings
+
+
+def _delete_at(data: Any, loc: tuple) -> None:
+    """Delete the key at a Pydantic error location from nested dicts/lists.
+
+    Location parts that aren't keys of the data (the step type that Pydantic
+    adds for ``additional_elements``) are skipped.
+    """
+    *parents, key = loc
+    for part in parents:
+        if (isinstance(data, list) and isinstance(part, int)) or (
+            isinstance(data, dict) and part in data
+        ):
+            data = data[part]
+    if isinstance(data, dict):
+        data.pop(key, None)
 
 
 def _format_validation_error(settings_path: str | Path, exc: ValidationError) -> str:
