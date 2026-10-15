@@ -40,9 +40,11 @@ uv sync --extra all
 
 `--extra all` installs every optional feature: the segmentation backends (Cellpose, InstanSeg, PyTorch), the napari GUI, Jupyter, and Globus transfer. On an NVIDIA machine you need a CUDA build of PyTorch, and on Windows there are a couple of extra notes, both covered in the [installation guide](https://stallaertlab.github.io/plex-pipe/usage/installation/). To use PlexPipe as a library in your own scripts rather than running the notebooks, that guide also has an import-only setup.
 
+**Supported platforms.** Python 3.12–3.14 on Linux, Windows and Apple Silicon Macs. Install `plex_pipe[all]`; PyTorch comes from PyPI and matches your platform (CUDA on Linux, CPU on Windows, CPU + Metal/MPS on macOS). On Windows with an NVIDIA GPU, install a CUDA build of PyTorch yourself, or use `uv sync --extra all-cuda` in a clone (see the [installation guide](https://stallaertlab.github.io/plex-pipe/usage/installation/)). Intel Macs are not supported: current PyTorch releases no longer include Intel-Mac builds.
+
 ## Try it on example data
 
-The notebooks run on a small example dataset, and the first notebook downloads it for you with `fetch_example()`, so you can go from a fresh clone to a running pipeline without hunting for data.
+The notebooks run on a small example dataset, and the first notebook downloads it for you with `fetch_example()`, so you can go from a fresh clone to a running pipeline without hunting for data. The notebooks and the example configuration come with a clone of the repository; they are not part of the installed package.
 
 Start with `01_roi_definition_demo.ipynb` and work through to `05`. Stages 1 and 3 open a napari window for the interactive steps; the rest run automatically from the shared configuration file.
 
@@ -53,6 +55,8 @@ For smaller datasets and prototyping, run the notebooks or standalone scripts lo
 ## Status
 
 PlexPipe is in active development (alpha). Interfaces and the configuration schema may still change before a 1.0 release. Bug reports and feedback are welcome on the [issue tracker](https://github.com/StallaertLab/plex-pipe/issues).
+
+Automatic ROI suggestion with SAM2 (Segment Anything Model 2) is optional and installed separately (Linux or WSL on Windows); ROIs can always be drawn by hand.
 
 ## Used in
 
