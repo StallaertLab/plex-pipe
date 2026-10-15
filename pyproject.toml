@@ -12,20 +12,29 @@ build-backend = "setuptools.build_meta"
 name = "plex_pipe"
 requires-python = ">=3.12"
 dynamic = ["version"]
-description = "A pipeline for analyzing multiplexed data."
+description = "A pipeline from multiplexed whole-slide images to single-cell data, with human-in-the-loop ROI definition and quality control."
 readme = "README.md"
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 authors = [
     { name = "Kasia Kedziora", email = "kedziorak@psc.edu" }
 ]
+keywords = [
+    "pipeline", "multiplexed imaging", "spatial proteomics", "Cell DIVE",
+    "tissue microarray", "segmentation", "single-cell", "napari", "spatialdata",
+    "scverse", "bioimage analysis",
+]
 
 classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
 ]
 
 # =============================================================================
@@ -55,6 +64,13 @@ dependencies = [
     "dearrayer>=0.1.0",
     "pooch>=1.8",
 ]
+
+[project.urls]
+Homepage = "https://github.com/StallaertLab/plex-pipe"
+Documentation = "https://stallaertlab.github.io/plex-pipe/"
+Repository = "https://github.com/StallaertLab/plex-pipe"
+Issues = "https://github.com/StallaertLab/plex-pipe/issues"
+Changelog = "https://github.com/StallaertLab/plex-pipe/blob/main/CHANGELOG.md"
 
 [project.scripts]
 plexpipe = "plex_pipe.cli:main"

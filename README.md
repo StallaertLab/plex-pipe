@@ -1,14 +1,14 @@
 # PlexPipe
 
-[![Tests](https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg)](https://github.com/StallaertLab/plex-pipe/actions)
+[![Tests](https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg?branch=main)](https://github.com/StallaertLab/plex-pipe/actions)
 [![codecov](https://codecov.io/github/StallaertLab/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/StallaertLab/plex-pipe)
 ![Python Versions](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-green)
 [![Docs](https://img.shields.io/badge/docs-online-blue)](https://stallaertlab.github.io/plex-pipe/)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/images/PlexPipe_logo_small_dark_transparent.png">
-  <source media="(prefers-color-scheme: light)" srcset="./docs/images/PlexPipe_logo_small.png">
-  <img alt="Logo" src="./docs/images/PlexPipe_logo_small.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/StallaertLab/plex-pipe/main/docs/images/PlexPipe_logo_small_dark_transparent.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/StallaertLab/plex-pipe/main/docs/images/PlexPipe_logo_small.png">
+  <img alt="Logo" src="https://raw.githubusercontent.com/StallaertLab/plex-pipe/main/docs/images/PlexPipe_logo_small.png">
 </picture>
 
 

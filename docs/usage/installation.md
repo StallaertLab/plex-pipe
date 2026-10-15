@@ -69,3 +69,5 @@ Install [pytorch-cuda](https://pytorch.org/get-started/locally/) version that ma
 ```bash
 uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128 --reinstall
 ```
+
+**With a clone of the repository:** instead of the manual install, `uv sync --extra all-cuda` installs a CUDA 12.6 build of PyTorch on Windows and Linux. This works only with `uv sync` in the cloned repository. Installed with `pip` or `uv pip install`, `plex_pipe[all-cuda]` installs the same packages as `plex_pipe[all]`; install the CUDA build of PyTorch yourself as shown above.
