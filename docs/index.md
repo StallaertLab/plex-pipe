@@ -10,7 +10,7 @@
 ![Logo](images/PlexPipe_logo_small_dark_transparent.png){ .logo-dark }
 
 [![Tests](https://github.com/plexpipe/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg)](https://github.com/plexpipe/plex-pipe/actions)
-[![codecov](https://codecov.io/github/plexpipe/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/plexpipe/plex-pipe)
+[![codecov](https://codecov.io/gh/plexpipe/plex-pipe/graph/badge.svg)](https://codecov.io/github/plexpipe/plex-pipe)
 ![Python Versions](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-green)
 
 ## Overview
