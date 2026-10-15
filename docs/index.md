@@ -9,8 +9,8 @@
 ![Logo](images/PlexPipe_logo_small.png){ .logo-light }
 ![Logo](images/PlexPipe_logo_small_dark_transparent.png){ .logo-dark }
 
-[![Tests](https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg)](https://github.com/StallaertLab/plex-pipe/actions)
-[![codecov](https://codecov.io/github/StallaertLab/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/StallaertLab/plex-pipe)
+[![Tests](https://github.com/plexpipe/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg)](https://github.com/plexpipe/plex-pipe/actions)
+[![codecov](https://codecov.io/github/plexpipe/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/plexpipe/plex-pipe)
 ![Python Versions](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-green)
 
 ## Overview
@@ -24,4 +24,4 @@
 * **Data Integration:** Outputs are stored as [SpatialData](https://spatialdata.scverse.org/en/latest/index.html) objects, making them ready for downstream analysis within the [scverse](https://scverse.org/) ecosystem or interactive exploration via the [napari-spatialdata plugin](https://github.com/scverse/napari-spatialdata).
 * **Flexible Execution:** PlexPipe can be implemented in two ways based on your needs:
     * **Local/Interactive:** Utilize the provided Python scripts or Jupyter Notebooks for smaller datasets or pipeline prototyping (see [Execution Modes](usage/execution_modes.md)).
-    * **High-Throughput:** For parallel processing and large-scale workflows, use the Nextflow-optimized version: [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow).
+    * **High-Throughput:** For parallel processing and large-scale workflows, use the Nextflow-optimized version: [plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow).

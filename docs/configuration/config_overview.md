@@ -97,4 +97,4 @@ Correct: C:/path/to/images Avoid: C:\path\to\images.
 ---
 ## Examples
 
-Full example configuration files can be found in the [examples folder](https://github.com/StallaertLab/plex-pipe/tree/main/examples).
+Full example configuration files can be found in the [examples folder](https://github.com/plexpipe/plex-pipe/tree/main/examples).

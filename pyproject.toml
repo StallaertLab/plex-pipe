@@ -66,11 +66,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/StallaertLab/plex-pipe"
-Documentation = "https://stallaertlab.github.io/plex-pipe/"
-Repository = "https://github.com/StallaertLab/plex-pipe"
-Issues = "https://github.com/StallaertLab/plex-pipe/issues"
-Changelog = "https://github.com/StallaertLab/plex-pipe/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/plexpipe/plex-pipe"
+Documentation = "https://plexpipe.github.io/plex-pipe/"
+Repository = "https://github.com/plexpipe/plex-pipe"
+Issues = "https://github.com/plexpipe/plex-pipe/issues"
+Changelog = "https://github.com/plexpipe/plex-pipe/blob/main/CHANGELOG.md"
 
 [project.scripts]
 plexpipe = "plex_pipe.cli:main"

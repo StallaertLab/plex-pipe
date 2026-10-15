@@ -1,6 +1,6 @@
 # Command Line (`plexpipe`)
 
-`plexpipe` runs PlexPipe **one unit of work at a time**: one channel image, or one ROI. It is meant for workflow managers such as [Nextflow](https://www.nextflow.io/) ([plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow)), which start one job per unit and run many of them in parallel. It is also handy for re-running a single ROI by hand.
+`plexpipe` runs PlexPipe **one unit of work at a time**: one channel image, or one ROI. It is meant for workflow managers such as [Nextflow](https://www.nextflow.io/) ([plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow)), which start one job per unit and run many of them in parallel. It is also handy for re-running a single ROI by hand.
 
 To run a whole analysis in one go, use the scripts `02_cut_rois.py`, `04_segment.py` and `05_quantify.py` instead (see [Execution Modes](execution_modes.md)). Both call the same functions in `plex_pipe.runners`, so they give the same results.
 

@@ -3,7 +3,7 @@
 ## Overview
 
 This is a manual step performed by user drawing exclusion shapes.
-To support it we provide a napari widget that can be easily operated from a Jupyter [notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/03_QC_demo.ipynb).
+To support it we provide a napari widget that can be easily operated from a Jupyter [notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/03_QC_demo.ipynb).
 
 *   **Input:** SpatialData objects containing marker images.
 *   **Output:** User-defined exclusion shapes for each marker (added to SpatialData objects).
@@ -15,7 +15,7 @@ Parameters of this step are defined in the Quality Control (QC) part of [configu
 ---
 ## Notebook Workflow
 
-Execute the following sections within the [Quality Control notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/03_QC_demo.ipynb) sequentially:
+Execute the following sections within the [Quality Control notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/03_QC_demo.ipynb) sequentially:
 
 * **Read in config**: Specify the absolute pathway to the analysis configuration file to initialize the session settings.
 * **Select SpatialData Object**: This section generates a list of available SpatialData objects. Adjust the `ind` parameter to select the specific ROI for review.
@@ -34,4 +34,4 @@ Execute the following sections within the [Quality Control notebook](https://git
 
 Since Step 2 ([ROI Extraction](02_roi_cutting.md)), Step 4 ([Image Processing](04_image_processing.md)), and Step 5 ([Quantification](05_quantification.md)) are fully automated and require no manual intervention, they may be executed sequentially. In this configuration, the Quality Control (QC) stage can be deferred until after the quantification is complete. This is possible because the QC process appends exclusion masks directly to the `AnnData` tables, and these geometries are not a prerequisite for the quantification itself.
 
-To implement quality control after the quantification phase, please refer to the [post-quantification QC notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/06_add_QC_after_quantification.ipynb).
+To implement quality control after the quantification phase, please refer to the [post-quantification QC notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/extras/06_QC_after_quant_demo.ipynb).

@@ -28,7 +28,7 @@ PlexPipe uses a Registry model to manage data locations. Instead of hardcoding I
 
 This configuration is stored in a YAML file. Throughout this documentation, we refer to this file as `globus_config.yaml`.
 
-To get started, a skeleton file containing the required structure and placeholders is provided in the [examples folder](https://github.com/StallaertLab/plex-pipe/tree/main/examples) of the repository.
+To get started, a skeleton file containing the required structure and placeholders is provided in the [examples folder](https://github.com/plexpipe/plex-pipe/tree/main/examples) of the repository.
 
 ```yaml
 gc:

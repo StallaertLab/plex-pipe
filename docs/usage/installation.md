@@ -14,7 +14,7 @@ Use this if you want to import `plex-pipe` into your own scripts.
 uv venv --python 3.12
 
 # Install plex-pipe with all optional features
-uv pip install "plex_pipe[all] @ git+https://github.com/StallaertLab/plex-pipe.git"
+uv pip install "plex_pipe[all] @ git+https://github.com/plexpipe/plex-pipe.git"
 ```
 
 The `[all]` extra pulls in every optional feature: segmentation (Cellpose,
@@ -29,7 +29,7 @@ Use this if you want to run the provided analysis notebooks and explore the exam
 
 ```bash
 # Clone the repository to get the notebooks and source
-git clone https://github.com/StallaertLab/plex-pipe.git
+git clone https://github.com/plexpipe/plex-pipe.git
 cd plex-pipe
 
 # Install with all optional features

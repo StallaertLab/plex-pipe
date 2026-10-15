@@ -12,7 +12,7 @@ The initial stage of the plex-pipe pipeline involves defining the coordinates fo
     * rois.png: A visual overview of the defined ROIs.
 
 
-This step is performed interactively using [01_roi_definition_demo.ipynb](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/01_roi_definition_demo.ipynb) Jupyter notebook.
+This step is performed interactively using [01_roi_definition_demo.ipynb](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/01_roi_definition_demo.ipynb) Jupyter notebook.
 
 The notebook is divided into two parts:
 
@@ -102,7 +102,7 @@ workstations:
     sam_env: "path/to/environment/python"
 ```
 
-Template configuration files are available in the project's [examples](https://github.com/StallaertLab/plex-pipe/tree/main/examples) folder.
+Template configuration files are available in the project's [examples](https://github.com/plexpipe/plex-pipe/tree/main/examples) folder.
 
 !!! note
     When configuring the workstation YAML, provide WSL-compliant paths (e.g., `/mnt/d/...`). However, the main analysis configuration file does not require modification; the notebook automatically handles path translations between Windows and WSL during execution.
@@ -143,4 +143,4 @@ This schema is provided for informational purposes only; the pipeline manages th
 | `poly_type` | Type of shape (`rectangle` or `polygon`). |
 | `polygon_vertices` | (y, x) coordinates defining the polygon. |
 
-Example output files can be found in the [examples folder](https://github.com/StallaertLab/plex-pipe/tree/main/examples).
+Example output files can be found in the [examples folder](https://github.com/plexpipe/plex-pipe/tree/main/examples).

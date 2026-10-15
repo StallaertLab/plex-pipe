@@ -28,7 +28,7 @@ def test_sha256_is_well_formed():
 def test_base_url_points_at_the_data_release():
     """The download URL is built from the dedicated data-release tag."""
     assert EXAMPLE_DATA_BASE_URL.startswith(
-        "https://github.com/StallaertLab/plex-pipe/releases/download/"
+        "https://github.com/plexpipe/plex-pipe/releases/download/"
     )
     assert EXAMPLE_DATA_TAG in EXAMPLE_DATA_BASE_URL
     # Pooch concatenates base_url and filename, so the trailing slash is required.
@@ -43,7 +43,7 @@ def test_archive_is_registered_with_its_hash():
 def test_resolved_asset_url_is_exact():
     """base_url joined with the archive name resolves to the release asset."""
     assert EXAMPLE_DATA_BASE_URL + EXAMPLE_DATA_ARCHIVE == (
-        "https://github.com/StallaertLab/plex-pipe/releases/download/"
+        "https://github.com/plexpipe/plex-pipe/releases/download/"
         "example-data-v1/plexpipe_example_data.zip"
     )
 

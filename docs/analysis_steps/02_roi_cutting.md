@@ -13,11 +13,11 @@ Parameters of this step are defined in the ROI Cutting part of the [config file]
 ---
 ## Data Sourcing
 
-This module supports dual modes of operation for data retrieval: **Local** and [**Globus**](https://www.globus.org/). For comprehensive instructions on configuring Globus for remote data sourcing, see [Globus Settings](../usage/globus.md) documentation and the corresponding [demonstration notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/02_roi_cutting_globus_demo.ipynb).
+This module supports dual modes of operation for data retrieval: **Local** and [**Globus**](https://www.globus.org/). For comprehensive instructions on configuring Globus for remote data sourcing, see [Globus Settings](../usage/globus.md) documentation and the corresponding [demonstration notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/extras/02_roi_cutting_globus_demo.ipynb).
 
 If switching from local ROI definition to remote processing, ensure that `image_dir` and `analysis_dir` in the [config](../configuration/reference.md) reflect the remote environment.
 
-You can automate the transfer of configuration and metadata using this [utility notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/extras/01a_prepare_remote_analysis.ipynb).
+You can automate the transfer of configuration and metadata using this [utility notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/extras/01a_prepare_remote_analysis.ipynb).
 
 ---
 {% include "includes/execution_snippet.md" %}
@@ -25,7 +25,7 @@ You can automate the transfer of configuration and metadata using this [utility 
 ---
 ## Notebook workflow
 
-The example [Jupyter Notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/02_roi_cutting_demo.ipynb) demonstrates the execution workflow using locally available data.
+The example [Jupyter Notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/02_roi_cutting_demo.ipynb) demonstrates the execution workflow using locally available data.
 
 To complete the process, execute the following sections sequentially:
 

@@ -1,6 +1,6 @@
 # Usage
 
-PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow)).
+PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see [plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow)).
 
 Interactive [steps](../analysis_steps/00_steps_overview.md) (1 - Core detection and 3 - Quality Control) are designed to be executed using [Napari](https://napari.org/) with designed widgets.
 

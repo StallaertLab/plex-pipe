@@ -36,7 +36,7 @@ Temporary outputs are useful for multi-step workflows—for example, normalized 
 ---
 ## Notebook workflow
 
-The example [Jupyter Notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/04_segmentation_demo.ipynb) demonstrates the execution workflow using locally available data.
+The example [Jupyter Notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/04_segmentation_demo.ipynb) demonstrates the execution workflow using locally available data.
 
 To complete the process, execute the following sections sequentially:
 

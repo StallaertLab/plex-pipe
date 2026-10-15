@@ -210,7 +210,7 @@ quant:
 
 For `morphological_properties`, any property supported by skimage.measure.regionprops can be used.
 
-For `intensity_properties`, currently implemented metrics include `mean`, `median` `min`, `max`, `std` and `sum`. If you require other metrics, please open an issue on [GitHub](https://github.com/StallaertLab/plex-pipe/issues).
+For `intensity_properties`, currently implemented metrics include `mean`, `median` `min`, `max`, `std` and `sum`. If you require other metrics, please open an issue on [GitHub](https://github.com/plexpipe/plex-pipe/issues).
 
 
 

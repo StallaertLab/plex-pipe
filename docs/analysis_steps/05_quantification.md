@@ -54,7 +54,7 @@ Both approaches are supported; choose the one that best fits your downstream ana
 ---
 ## Notebook workflow
 
-The example [Jupyter Notebook](https://github.com/StallaertLab/plex-pipe/blob/main/notebooks/05_quantification_demo.ipynb) demonstrates the execution workflow using locally available data.
+The example [Jupyter Notebook](https://github.com/plexpipe/plex-pipe/blob/main/notebooks/05_quantification_demo.ipynb) demonstrates the execution workflow using locally available data.
 
 To complete the process, execute the following sections sequentially:
 

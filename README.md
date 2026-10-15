@@ -1,14 +1,14 @@
 # PlexPipe
 
-[![Tests](https://github.com/StallaertLab/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg?branch=main)](https://github.com/StallaertLab/plex-pipe/actions)
-[![codecov](https://codecov.io/github/StallaertLab/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/StallaertLab/plex-pipe)
+[![Tests](https://github.com/plexpipe/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg?branch=main)](https://github.com/plexpipe/plex-pipe/actions)
+[![codecov](https://codecov.io/github/plexpipe/plex-pipe/graph/badge.svg?token=EI4L1DW720)](https://codecov.io/github/plexpipe/plex-pipe)
 ![Python Versions](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-green)
-[![Docs](https://img.shields.io/badge/docs-online-blue)](https://stallaertlab.github.io/plex-pipe/)
+[![Docs](https://img.shields.io/badge/docs-online-blue)](https://plexpipe.github.io/plex-pipe/)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/StallaertLab/plex-pipe/main/docs/images/PlexPipe_logo_small_dark_transparent.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/StallaertLab/plex-pipe/main/docs/images/PlexPipe_logo_small.png">
-  <img alt="Logo" src="https://raw.githubusercontent.com/StallaertLab/plex-pipe/main/docs/images/PlexPipe_logo_small.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/plexpipe/plex-pipe/main/docs/images/PlexPipe_logo_small_dark_transparent.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/plexpipe/plex-pipe/main/docs/images/PlexPipe_logo_small.png">
+  <img alt="Logo" src="https://raw.githubusercontent.com/plexpipe/plex-pipe/main/docs/images/PlexPipe_logo_small.png">
 </picture>
 
 
@@ -33,14 +33,14 @@ Outputs are stored as SpatialData (Zarr) objects with AnnData tables, so results
 PlexPipe uses [uv](https://docs.astral.sh/uv/) for environment management. To run the notebooks, clone the repository and sync the full environment:
 
 ```bash
-git clone https://github.com/StallaertLab/plex-pipe.git
+git clone https://github.com/plexpipe/plex-pipe.git
 cd plex-pipe
 uv sync --extra all
 ```
 
-`--extra all` installs every optional feature: the segmentation backends (Cellpose, InstanSeg, PyTorch), the napari GUI, Jupyter, and Globus transfer. On an NVIDIA machine you need a CUDA build of PyTorch, and on Windows there are a couple of extra notes, both covered in the [installation guide](https://stallaertlab.github.io/plex-pipe/usage/installation/). To use PlexPipe as a library in your own scripts rather than running the notebooks, that guide also has an import-only setup.
+`--extra all` installs every optional feature: the segmentation backends (Cellpose, InstanSeg, PyTorch), the napari GUI, Jupyter, and Globus transfer. On an NVIDIA machine you need a CUDA build of PyTorch, and on Windows there are a couple of extra notes, both covered in the [installation guide](https://plexpipe.github.io/plex-pipe/latest/usage/installation/). To use PlexPipe as a library in your own scripts rather than running the notebooks, that guide also has an import-only setup.
 
-**Supported platforms.** Python 3.12–3.14 on Linux, Windows and Apple Silicon Macs. Install `plex_pipe[all]`; PyTorch comes from PyPI and matches your platform (CUDA on Linux, CPU on Windows, CPU + Metal/MPS on macOS). On Windows with an NVIDIA GPU, install a CUDA build of PyTorch yourself, or use `uv sync --extra all-cuda` in a clone (see the [installation guide](https://stallaertlab.github.io/plex-pipe/usage/installation/)). Intel Macs are not supported: current PyTorch releases no longer include Intel-Mac builds.
+**Supported platforms.** Python 3.12–3.14 on Linux, Windows and Apple Silicon Macs. Install `plex_pipe[all]`; PyTorch comes from PyPI and matches your platform (CUDA on Linux, CPU on Windows, CPU + Metal/MPS on macOS). On Windows with an NVIDIA GPU, install a CUDA build of PyTorch yourself, or use `uv sync --extra all-cuda` in a clone (see the [installation guide](https://plexpipe.github.io/plex-pipe/latest/usage/installation/)). Intel Macs are not supported: current PyTorch releases no longer include Intel-Mac builds.
 
 ## Try it on example data
 
@@ -50,11 +50,11 @@ Start with `01_roi_definition_demo.ipynb` and work through to `05`. Stages 1 and
 
 ## Execution modes
 
-For smaller datasets and prototyping, run the notebooks or standalone scripts locally. For large-scale parallel processing on HPC, use the Nextflow version, [plex-pipe-nextflow](https://github.com/StallaertLab/plex-pipe-nextflow).
+For smaller datasets and prototyping, run the notebooks or standalone scripts locally. For large-scale parallel processing on HPC, use the Nextflow version, [plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow).
 
 ## Status
 
-PlexPipe is in active development (alpha). Interfaces and the configuration schema may still change before a 1.0 release. Bug reports and feedback are welcome on the [issue tracker](https://github.com/StallaertLab/plex-pipe/issues).
+PlexPipe is in active development (alpha). Interfaces and the configuration schema may still change before a 1.0 release. Bug reports and feedback are welcome on the [issue tracker](https://github.com/plexpipe/plex-pipe/issues).
 
 Automatic ROI suggestion with SAM2 (Segment Anything Model 2) is optional and installed separately (Linux or WSL on Windows); ROIs can always be drawn by hand.
 

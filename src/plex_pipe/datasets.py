@@ -33,7 +33,7 @@ EXAMPLE_DATA_SHA256 = "2ab09badbe18ec8c39dcb1206f158bba0c2b6667330039b8b11dcae7b
 
 #: Location the archive is downloaded from.
 EXAMPLE_DATA_BASE_URL = (
-    "https://github.com/StallaertLab/plex-pipe/releases/download/"
+    "https://github.com/plexpipe/plex-pipe/releases/download/"
     f"{EXAMPLE_DATA_TAG}/"
 )
 

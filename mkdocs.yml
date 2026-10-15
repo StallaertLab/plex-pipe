@@ -1,7 +1,7 @@
 site_name: PlexPipe
-site_url: https://stallaertlab.github.io/plex-pipe/
-repo_url: https://github.com/StallaertLab/plex-pipe
-repo_name: StallaertLab/plex-pipe
+site_url: https://plexpipe.github.io/plex-pipe/
+repo_url: https://github.com/plexpipe/plex-pipe
+repo_name: plexpipe/plex-pipe
 strict: true  # fail the build on any warning (broken links, pages missing from nav, etc.)
 theme:
   name: material
