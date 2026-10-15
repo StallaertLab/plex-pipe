@@ -54,6 +54,10 @@ For smaller datasets and prototyping, run the notebooks or standalone scripts lo
 
 PlexPipe is in active development (alpha). Interfaces and the configuration schema may still change before a 1.0 release. Bug reports and feedback are welcome on the [issue tracker](https://github.com/StallaertLab/plex-pipe/issues).
 
+## Used in
+
+- Yang Y, Bukkuri A, Poe D, McLaughlin J, Hao S, Brown DD, Kedziora KM, Stallaert W. Distinct p21 dynamics drive alternative routes to whole-genome duplication through a common CDK4/6-dependent polyploid G0 state. *bioRxiv* [Preprint]. 2026 Jan 15:2026.01.15.699545. doi: [10.64898/2026.01.15.699545](https://doi.org/10.64898/2026.01.15.699545). PMID: 41648389; PMCID: PMC12871375.
+
 ## Similar projects
 
 PlexPipe is one of several open pipelines for turning multiplexed images into single-cell data:
