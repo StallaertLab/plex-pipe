@@ -1165,6 +1165,7 @@ Look at the top-right corner of the table for "CUDA Version: XX.X".</p>
 <p>Install <a href="https://pytorch.org/get-started/locally/">pytorch-cuda</a> version that matches your CUDA version. For example for CUDA 12.8:</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>torchvision<span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu128<span class="w"> </span>--reinstall
 </code></pre></div>
+<p><strong>With a clone of the repository:</strong> instead of the manual install, <code>uv sync --extra all-cuda</code> installs a CUDA 12.6 build of PyTorch on Windows and Linux. This works only with <code>uv sync</code> in the cloned repository. Installed with <code>pip</code> or <code>uv pip install</code>, <code>plex_pipe[all-cuda]</code> installs the same packages as <code>plex_pipe[all]</code>; install the CUDA build of PyTorch yourself as shown above.</p>
 
 
 
