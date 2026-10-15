@@ -1141,6 +1141,9 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/plexp
 uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>all
 </code></pre></div>
 <p>Using an NVIDIA GPU? See <a href="#gpu-support-nvidia-cuda">GPU support</a> below.</p>
+<p>The first notebook downloads the example data (an archive of about 116 MB) with <code>fetch_example()</code>. The archive is downloaded once into your user cache folder (on macOS <code>~/Library/Caches/plex_pipe</code>, on Linux <code>~/.cache/plex_pipe</code>) and reused afterwards; it is safe to delete, and the next call downloads it again. To keep it somewhere else, for example on an HPC system with a small home directory, set the <code>PLEX_PIPE_DATA_DIR</code> environment variable. To see where it is on your machine:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import pooch; print(pooch.os_cache('plex_pipe'))"</span>
+</code></pre></div>
 <div class="admonition note windows encoding fix">
 <p class="admonition-title">Note</p>
 <p>To avoid UnicodeDecodeError when running interactive notebooks on Windows, you must enable Python's UTF-8 mode. Create a file named .env in the project root with this line:</p>

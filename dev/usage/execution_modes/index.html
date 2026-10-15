@@ -840,10 +840,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prepare-cores" class="md-nav__link">
+  <a href="#roi-cutting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prepare Cores
+        ROI Cutting
       
     </span>
   </a>
@@ -1093,10 +1093,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prepare-cores" class="md-nav__link">
+  <a href="#roi-cutting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prepare Cores
+        ROI Cutting
       
     </span>
   </a>
@@ -1163,7 +1163,7 @@
 
 <h1 id="usage">Usage</h1>
 <p>PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see <a href="https://github.com/plexpipe/plex-pipe-nextflow">plex-pipe-nextflow</a>).</p>
-<p>Interactive <a href="../../analysis_steps/00_steps_overview/">steps</a> (1 - Core detection and 3 - Quality Control) are designed to be executed using <a href="https://napari.org/">Napari</a> with designed widgets.</p>
+<p>The interactive <a href="../../analysis_steps/00_steps_overview/">steps</a> (1 - ROI Definition and 3 - Quality Control) run in <a href="https://napari.org/">napari</a> with PlexPipe's widgets, from the notebooks.</p>
 <hr />
 <h2 id="choosing-how-to-run">Choosing how to run</h2>
 <table>
@@ -1201,13 +1201,15 @@
 <p>Because the scripts and <code>plexpipe</code> call the same functions in <code>plex_pipe.runners</code>, they give the same results.</p>
 <hr />
 <h2 id="command-line-usage">Command-Line Usage</h2>
-<p>To run the pipeline from the command line, use the provided scripts:</p>
-<h3 id="prepare-cores">Prepare Cores</h3>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
+<p>To run the pipeline from the command line, use the scripts in <code>scripts/</code>. Run them from that folder, so that the relative paths in the example config (<code>../examples/...</code>) resolve:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>scripts
+</code></pre></div>
+<h3 id="roi-cutting">ROI Cutting</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
 </code></pre></div>
 <p>Add <code>--roi_cleanup</code> to delete the per-ROI TIFFs once each ROI is assembled.</p>
 <p>or alternatively with <a href="../input_data/#sourcing-image-files">remote sourcing</a> of the image files:</p>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>scripts/02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">'../examples/example_pipeline_config_globus.yaml'</span><span class="w"> </span>--globus_config<span class="w"> </span><span class="s1">'../examples/example_globus_config.yaml'</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">'remote_source'</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">'local_workstation'</span><span class="w"> </span>--cleanup
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">'../examples/example_pipeline_config_globus.yaml'</span><span class="w"> </span>--globus_config<span class="w"> </span><span class="s1">'../examples/example_globus_config.yaml'</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">'remote_source'</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">'local_workstation'</span><span class="w"> </span>--cleanup
 </code></pre></div>
 <p><code>--cleanup</code> deletes each transferred image once its ROIs are cut.</p>
 <h3 id="image-processing">Image Processing</h3>
@@ -1218,11 +1220,15 @@
 </code></pre></div>
 <hr />
 <h2 id="jupyter-notebook-usage">Jupyter Notebook Usage</h2>
-<p>For interactive inspection, prototyping, or educational purposes, the following notebooks illustrate how to use the components directly:</p>
+<p>For interactive inspection, prototyping, or learning, the notebooks in <code>notebooks/</code> walk through the five steps on the example data:</p>
 <ul>
-<li><strong><code>core_selection_demo.ipynb</code></strong>: An interactive notebook that enables users to define cores as rectangles or polygons using the Napari viewer. It supports automatic core detection via <a href="https://github.com/facebookresearch/sam2">Segment Anything v2</a>, with the option to manually correct the detected shapes or draw new ones from scratch. This step is interactive and only available as a notebook. The result is a <code>core_info.csv</code> file containing core metadata for use in subsequent steps via either Jupyter or CLI.</li>
-<li><strong><code>core_cutting_demo.ipynb</code></strong>: Demonstrates how to load a single image and metadata entry and apply the core cutting logic.</li>
+<li><strong><code>01_roi_definition_demo.ipynb</code></strong>: define the ROIs (for example the cores of a tissue microarray) as rectangles or polygons in the napari viewer. This step is interactive and only available as a notebook. It saves the ROI table (<code>rois.pkl</code> / <code>rois.csv</code>) used by all later steps. Optional automatic ROI suggestion with <a href="https://github.com/facebookresearch/sam2">SAM2</a> is in <code>extras/01_roi_definition_demo_sam.ipynb</code>.</li>
+<li><strong><code>02_roi_cutting_demo.ipynb</code></strong>: preview the channel selection and cut every ROI into its own SpatialData store.</li>
+<li><strong><code>03_QC_demo.ipynb</code></strong>: mark imaging artefacts in napari, per marker, for exclusion from analysis.</li>
+<li><strong><code>04_segmentation_demo.ipynb</code></strong>: image enhancement, segmentation and mask building.</li>
+<li><strong><code>05_quantification_demo.ipynb</code></strong>: per-cell measurements into an AnnData table.</li>
 </ul>
+<p><code>notebooks/extras/</code> has further examples: Globus transfers, Cellpose and InstanSeg on their own, the SpatialData viewer, and QC after quantification.</p>
 
 
 
