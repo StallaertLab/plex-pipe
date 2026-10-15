@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/api/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/api/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/00_steps_overview/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/analysis_steps/00_steps_overview/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/01_roi_definition/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/analysis_steps/01_roi_definition/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/02_roi_cutting/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/analysis_steps/02_roi_cutting/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/03_quality_control/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/analysis_steps/03_quality_control/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/04_image_processing/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/analysis_steps/04_image_processing/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/analysis_steps/05_quantification/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/analysis_steps/05_quantification/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/configuration/channel-selection/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/configuration/channel-selection/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/configuration/config_overview/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/configuration/config_overview/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/configuration/reference/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/configuration/reference/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/configuration/schema_changelog/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/configuration/schema_changelog/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/includes/execution_snippet/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/includes/execution_snippet/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/cli/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/cli/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/execution_modes/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/execution_modes/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/globus/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/globus/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/input_data/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/input_data/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/installation/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/installation/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/processors/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/processors/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
     <url>
-         <loc>https://stallaertlab.github.io/plex-pipe/dev/usage/sam2_wsl_setup/</loc>
+         <loc>https://plexpipe.github.io/plex-pipe/dev/usage/sam2_wsl_setup/</loc>
          <lastmod>2026-10-15</lastmod>
     </url>
 </urlset>
