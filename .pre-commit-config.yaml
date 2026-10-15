@@ -12,7 +12,6 @@ repos:
     rev: 24.10.0
     hooks:
       - id: black
-        args: ["--line-length=88"]
 
   # Metadata/Logic Checks
   - repo: https://github.com/pre-commit/pre-commit-hooks

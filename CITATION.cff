@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use PlexPipe, please cite it as below."
+title: "PlexPipe"
+abstract: "A pipeline from multiplexed whole-slide images to single-cell data, with human-in-the-loop ROI definition and quality control."
+type: software
+authors:
+  - family-names: Kedziora
+    given-names: Katarzyna M.
+    orcid: "https://orcid.org/0000-0001-6524-7731"
+license: BSD-3-Clause
+repository-code: "https://github.com/plexpipe/plex-pipe"
+url: "https://plexpipe.github.io/plex-pipe/"
