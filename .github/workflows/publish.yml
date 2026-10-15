@@ -1,0 +1,89 @@
+# Build and publish plex_pipe to TestPyPI and PyPI with trusted publishing
+# (OIDC: PyPI trusts this workflow, so no API token is stored in GitHub).
+#
+#   * tag vX.Y.ZrcN  -> build -> TestPyPI only (dry run)
+#   * tag vX.Y.Z     -> build -> TestPyPI -> PyPI (waits for approval in the
+#                       `pypi` environment)
+#
+# One-time setup: a pending trusted publisher on test.pypi.org and pypi.org
+# (owner `plexpipe`, repository `plex-pipe`, workflow `publish.yml`,
+# environments `testpypi` / `pypi`), and the two environments in the repo
+# settings (`pypi` with a required reviewer).
+name: publish
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # full history and tags for setuptools_scm
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.1.0
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Check the distributions
+        run: uvx twine check --strict dist/*
+
+      - name: Check the version matches the tag
+        run: |
+          expected="${GITHUB_REF_NAME#v}"
+          ls dist
+          test -f "dist/plex_pipe-${expected}.tar.gz"
+
+      - name: Store the distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/plex_pipe
+    permissions:
+      id-token: write  # trusted publishing
+    steps:
+      - name: Download the distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Upload to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: publish-testpypi
+    # Release candidates stop at TestPyPI.
+    if: ${{ !contains(github.ref_name, 'rc') }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/plex_pipe
+    permissions:
+      id-token: write  # trusted publishing
+    steps:
+      - name: Download the distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

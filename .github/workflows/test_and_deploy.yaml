@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - "v*" # Trigger deploy when you push a tag like v0.1.0
+      - "v*" # also test tagged commits (publishing is in publish.yml)
   pull_request:
     branches:
       - main
