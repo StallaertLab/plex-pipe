@@ -111,7 +111,7 @@ all-cuda = [
 # Documentation toolchain only. Kept as its own group so the docs CI can install
 # JUST these (+ the core package) — no torch/napari extras, no test tooling.
 docs = [
-    "mkdocs>=1.5.0",
+    "mkdocs>=1.5.0,<2",
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
     "mkdocs-macros-plugin>=1.5.0",

@@ -3,16 +3,16 @@ revision = 3
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform != 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform != 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and sys_platform != 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform != 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.13' and python_full_version < '3.15' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and sys_platform != 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version < '3.13' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
 ]
 conflicts = [[
@@ -1043,7 +1043,7 @@ resolution-markers = [
     "python_full_version < '3.13' and sys_platform != 'darwin'",
 ]
 dependencies = [
-    { name = "cuda-pathfinder", marker = "(sys_platform != 'darwin' and extra == 'extra-9-plex-pipe-all-cuda') or (extra == 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda')" },
+    { name = "cuda-pathfinder", marker = "(python_full_version < '3.15' and sys_platform != 'darwin' and extra == 'extra-9-plex-pipe-all-cuda') or (python_full_version >= '3.15' and extra == 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda') or (sys_platform == 'darwin' and extra == 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/15/d5/572ced1aecc8c8f3e617c3af58d3b1ed5378ed71531c607c960a3e48b516/cuda_bindings-12.9.9-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:88c41afe5be41acb17e57977dd534e335f86d0c96d284d71457168525f6327c0", size = 7063842, upload-time = "2026-09-23T03:20:45.94Z" },
@@ -1069,7 +1069,7 @@ resolution-markers = [
     "python_full_version < '3.13'",
 ]
 dependencies = [
-    { name = "cuda-pathfinder", marker = "extra == 'extra-9-plex-pipe-all' or extra != 'extra-9-plex-pipe-all-cuda'" },
+    { name = "cuda-pathfinder", marker = "(python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all') or (python_full_version < '3.15' and extra != 'extra-9-plex-pipe-all-cuda') or (extra == 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda')" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d7/38/87909f62598d02d9e5c536326aed1755f6bfa190285507b962bb601e0005/cuda_bindings-13.4.4-cp312-cp312-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:b346bfe1dda49537537c06cc4727b2210d949d8aee883cb591bca46581629d00", size = 6488222, upload-time = "2026-10-14T12:35:20.703Z" },
@@ -4535,7 +4535,7 @@ provides-extras = ["jupyter", "globus", "segmentation", "gui", "all", "all-cuda"
 dev = [
     { name = "black", specifier = ">=23.3.0" },
     { name = "mike", specifier = ">=2.2.0" },
-    { name = "mkdocs", specifier = ">=1.5.0" },
+    { name = "mkdocs", specifier = ">=1.5.0,<2" },
     { name = "mkdocs-macros-plugin", specifier = ">=1.5.0" },
     { name = "mkdocs-material", specifier = ">=9.5.0" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24.0" },
@@ -4549,7 +4549,7 @@ dev = [
 ]
 docs = [
     { name = "mike", specifier = ">=2.2.0" },
-    { name = "mkdocs", specifier = ">=1.5.0" },
+    { name = "mkdocs", specifier = ">=1.5.0,<2" },
     { name = "mkdocs-macros-plugin", specifier = ">=1.5.0" },
     { name = "mkdocs-material", specifier = ">=9.5.0" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.24.0" },
@@ -6406,13 +6406,13 @@ version = "2.14.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.13' and python_full_version < '3.15' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version < '3.13' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
 ]
 dependencies = [
@@ -6503,13 +6503,13 @@ version = "0.29.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version >= '3.13' and python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
-    "python_full_version < '3.13' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.15' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version >= '3.13' and python_full_version < '3.15' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version >= '3.13' and python_full_version < '3.15' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and sys_platform == 'darwin' and extra != 'extra-9-plex-pipe-all' and extra == 'extra-9-plex-pipe-all-cuda'",
+    "python_full_version < '3.13' and extra == 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
     "python_full_version < '3.13' and extra != 'extra-9-plex-pipe-all' and extra != 'extra-9-plex-pipe-all-cuda'",
 ]
 dependencies = [

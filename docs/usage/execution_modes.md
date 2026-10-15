@@ -2,7 +2,7 @@
 
 PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see [plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow)).
 
-Interactive [steps](../analysis_steps/00_steps_overview.md) (1 - Core detection and 3 - Quality Control) are designed to be executed using [Napari](https://napari.org/) with designed widgets.
+The interactive [steps](../analysis_steps/00_steps_overview.md) (1 - ROI Definition and 3 - Quality Control) run in [napari](https://napari.org/) with PlexPipe's widgets, from the notebooks.
 
 ---
 
@@ -26,12 +26,16 @@ Because the scripts and `plexpipe` call the same functions in `plex_pipe.runners
 
 ## Command-Line Usage
 
-To run the pipeline from the command line, use the provided scripts:
-
-### Prepare Cores
+To run the pipeline from the command line, use the scripts in `scripts/`. Run them from that folder, so that the relative paths in the example config (`../examples/...`) resolve:
 
 ```bash
-python scripts/02_cut_rois.py --exp_config ../examples/example_pipeline_config.yaml
+cd scripts
+```
+
+### ROI Cutting
+
+```bash
+python 02_cut_rois.py --exp_config ../examples/example_pipeline_config.yaml
 ```
 
 Add `--roi_cleanup` to delete the per-ROI TIFFs once each ROI is assembled.
@@ -39,7 +43,7 @@ Add `--roi_cleanup` to delete the per-ROI TIFFs once each ROI is assembled.
 or alternatively with [remote sourcing](./input_data.md#sourcing-image-files) of the image files:
 
 ```bash
-python scripts/02_cut_rois.py --exp_config '../examples/example_pipeline_config_globus.yaml' --globus_config '../examples/example_globus_config.yaml' --from_collection 'remote_source' --to_collection 'local_workstation' --cleanup
+python 02_cut_rois.py --exp_config '../examples/example_pipeline_config_globus.yaml' --globus_config '../examples/example_globus_config.yaml' --from_collection 'remote_source' --to_collection 'local_workstation' --cleanup
 ```
 
 `--cleanup` deletes each transferred image once its ROIs are cut.
@@ -58,7 +62,12 @@ python 05_quantify.py --exp_config ../examples/example_pipeline_config.yaml --ov
 
 ## Jupyter Notebook Usage
 
-For interactive inspection, prototyping, or educational purposes, the following notebooks illustrate how to use the components directly:
+For interactive inspection, prototyping, or learning, the notebooks in `notebooks/` walk through the five steps on the example data:
 
-* **`core_selection_demo.ipynb`**: An interactive notebook that enables users to define cores as rectangles or polygons using the Napari viewer. It supports automatic core detection via [Segment Anything v2](https://github.com/facebookresearch/sam2), with the option to manually correct the detected shapes or draw new ones from scratch. This step is interactive and only available as a notebook. The result is a `core_info.csv` file containing core metadata for use in subsequent steps via either Jupyter or CLI.
-* **`core_cutting_demo.ipynb`**: Demonstrates how to load a single image and metadata entry and apply the core cutting logic.
+* **`01_roi_definition_demo.ipynb`**: define the ROIs (for example the cores of a tissue microarray) as rectangles or polygons in the napari viewer. This step is interactive and only available as a notebook. It saves the ROI table (`rois.pkl` / `rois.csv`) used by all later steps. Optional automatic ROI suggestion with [SAM2](https://github.com/facebookresearch/sam2) is in `extras/01_roi_definition_demo_sam.ipynb`.
+* **`02_roi_cutting_demo.ipynb`**: preview the channel selection and cut every ROI into its own SpatialData store.
+* **`03_QC_demo.ipynb`**: mark imaging artefacts in napari, per marker, for exclusion from analysis.
+* **`04_segmentation_demo.ipynb`**: image enhancement, segmentation and mask building.
+* **`05_quantification_demo.ipynb`**: per-cell measurements into an AnnData table.
+
+`notebooks/extras/` has further examples: Globus transfers, Cellpose and InstanSeg on their own, the SpatialData viewer, and QC after quantification.

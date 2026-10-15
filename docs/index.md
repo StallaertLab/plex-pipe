@@ -15,7 +15,7 @@
 
 ## Overview
 
-**PlexPipe** is an multiplex analysis pipeline that processes images through a series of [modular steps](./analysis_steps/00_steps_overview.md), transforming raw whole-slide TIFF images into quantitative single-cell data.
+**PlexPipe** is a multiplex analysis pipeline that processes images through a series of [modular steps](./analysis_steps/00_steps_overview.md), transforming raw whole-slide TIFF images into quantitative single-cell data.
 
 ## Key Features
 
@@ -25,3 +25,7 @@
 * **Flexible Execution:** PlexPipe can be implemented in two ways based on your needs:
     * **Local/Interactive:** Utilize the provided Python scripts or Jupyter Notebooks for smaller datasets or pipeline prototyping (see [Execution Modes](usage/execution_modes.md)).
     * **High-Throughput:** For parallel processing and large-scale workflows, use the Nextflow-optimized version: [plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow).
+
+## Used in
+
+* Yang Y, Bukkuri A, Poe D, McLaughlin J, Hao S, Brown DD, Kedziora KM, Stallaert W. Distinct p21 dynamics drive alternative routes to whole-genome duplication through a common CDK4/6-dependent polyploid G0 state. *bioRxiv* [Preprint]. 2026 Jan 15:2026.01.15.699545. doi: [10.64898/2026.01.15.699545](https://doi.org/10.64898/2026.01.15.699545). PMID: 41648389; PMCID: PMC12871375.

@@ -38,6 +38,12 @@ uv sync --extra all
 
 Using an NVIDIA GPU? See [GPU support](#gpu-support-nvidia-cuda) below.
 
+The first notebook downloads the example data (an archive of about 116 MB) with `fetch_example()`. The archive is downloaded once into your user cache folder (on macOS `~/Library/Caches/plex_pipe`, on Linux `~/.cache/plex_pipe`) and reused afterwards; it is safe to delete, and the next call downloads it again. To keep it somewhere else, for example on an HPC system with a small home directory, set the `PLEX_PIPE_DATA_DIR` environment variable. To see where it is on your machine:
+
+```bash
+uv run python -c "import pooch; print(pooch.os_cache('plex_pipe'))"
+```
+
 !!! note Windows Encoding Fix
     To avoid UnicodeDecodeError when running interactive notebooks on Windows, you must enable Python's UTF-8 mode. Create a file named .env in the project root with this line:
 
