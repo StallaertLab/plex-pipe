@@ -3,7 +3,8 @@
 #
 #   * tag vX.Y.ZrcN  -> build -> TestPyPI only (dry run)
 #   * tag vX.Y.Z     -> build -> TestPyPI -> PyPI (waits for approval in the
-#                       `pypi` environment)
+#                       `pypi` environment) -> GitHub Release (notes from
+#                       the CHANGELOG.md section for X.Y.Z, wheel + sdist attached)
 #
 # One-time setup: a pending trusted publisher on test.pypi.org and pypi.org
 # (owner `plexpipe`, repository `plex-pipe`, workflow `publish.yml`,
@@ -39,6 +40,10 @@ jobs:
           expected="${GITHUB_REF_NAME#v}"
           ls dist
           test -f "dist/plex_pipe-${expected}.tar.gz"
+
+      - name: Check CHANGELOG.md has a section for this version
+        if: ${{ !contains(github.ref_name, 'rc') }}
+        run: python3 tools/release_notes.py "${GITHUB_REF_NAME#v}" > /dev/null
 
       - name: Store the distributions
         uses: actions/upload-artifact@v7
@@ -87,3 +92,28 @@ jobs:
 
       - name: Upload to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: Create the GitHub Release
+    needs: publish-pypi  # skipped for rc tags, like publish-pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # create the release
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+
+      - name: Download the distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          python3 tools/release_notes.py "$version" > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --verify-tag --title "PlexPipe $version" --notes-file notes.md
