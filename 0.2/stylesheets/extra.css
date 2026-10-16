@@ -1,0 +1,5 @@
+/* Force the first and second columns to never wrap */
+article table td:nth-child(1),
+article table td:nth-child(2) {
+    white-space: nowrap;
+}
