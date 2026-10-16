@@ -14,8 +14,10 @@ Use this if you want to import `plex-pipe` into your own scripts.
 uv venv --python 3.12
 
 # Install plex-pipe with all optional features
-uv pip install "plex_pipe[all] @ git+https://github.com/plexpipe/plex-pipe.git"
+uv pip install "plex_pipe[all]"
 ```
+
+Without uv, `pip install "plex_pipe[all]"` in any Python 3.12–3.14 environment does the same.
 
 The `[all]` extra pulls in every optional feature: segmentation (Cellpose,
 InstanSeg, and PyTorch), the napari GUI, Jupyter support, and Globus transfer.
@@ -76,4 +78,13 @@ Install [pytorch-cuda](https://pytorch.org/get-started/locally/) version that ma
 uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128 --reinstall
 ```
 
-**With a clone of the repository:** instead of the manual install, `uv sync --extra all-cuda` installs a CUDA 12.6 build of PyTorch on Windows and Linux. This works only with `uv sync` in the cloned repository. Installed with `pip` or `uv pip install`, `plex_pipe[all-cuda]` installs the same packages as `plex_pipe[all]`; install the CUDA build of PyTorch yourself as shown above.
+**With a clone of the repository:** instead of the manual install, `uv sync --extra all-cuda` installs a CUDA 12.6 build of PyTorch on Windows and Linux.
+
+!!! warning "`pip install plex_pipe[all-cuda]` does not install CUDA PyTorch"
+    The CUDA build comes only with `uv sync --extra all-cuda` in a clone. Installed with `pip` or `uv pip install`, `plex_pipe[all-cuda]` installs the same packages as `plex_pipe[all]`, with the CPU-only PyTorch on Windows. Install the CUDA build of PyTorch yourself as shown above. To check which build you have:
+
+    ```bash
+    python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+    ```
+
+    `+cpu False` means CPU only; a CUDA build on a working NVIDIA setup prints a `+cu…` version and `True`.

@@ -2,7 +2,7 @@
 
 All notable changes to the config file format, by `schema_version`. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## 2.0 (PlexPipe: Unreleased)
+## 2.0 (PlexPipe 0.1.0)
 
 ### Added
 

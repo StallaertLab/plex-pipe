@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/plexpipe/plex-pipe/graph/badge.svg)](https://codecov.io/github/plexpipe/plex-pipe)
 ![Python Versions](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-green)
 [![Docs](https://img.shields.io/badge/docs-online-blue)](https://plexpipe.github.io/plex-pipe/)
+[![PyPI](https://img.shields.io/pypi/v/plex-pipe)](https://pypi.org/project/plex-pipe/)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://github.com/plexpipe/plex-pipe/blob/main/LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/plexpipe/plex-pipe/main/docs/images/PlexPipe_logo_small_dark_transparent.png">
@@ -30,7 +32,15 @@ Outputs are stored as SpatialData (Zarr) objects with AnnData tables, so results
 
 ## Installation
 
-PlexPipe uses [uv](https://docs.astral.sh/uv/) for environment management. To run the notebooks, clone the repository and sync the full environment:
+Install PlexPipe from PyPI, with every optional feature:
+
+```bash
+pip install "plex_pipe[all]"
+```
+
+or, with [uv](https://docs.astral.sh/uv/), `uv pip install "plex_pipe[all]"`. This gives you the `plex_pipe` library and the `plexpipe` command.
+
+To run the notebooks, clone the repository and sync the full environment:
 
 ```bash
 git clone https://github.com/plexpipe/plex-pipe.git
@@ -38,7 +48,7 @@ cd plex-pipe
 uv sync --extra all
 ```
 
-`--extra all` installs every optional feature: the segmentation backends (Cellpose, InstanSeg, PyTorch), the napari GUI, Jupyter, and Globus transfer. On an NVIDIA machine you need a CUDA build of PyTorch, and on Windows there are a couple of extra notes, both covered in the [installation guide](https://plexpipe.github.io/plex-pipe/latest/usage/installation/). To use PlexPipe as a library in your own scripts rather than running the notebooks, that guide also has an import-only setup.
+`--extra all` installs every optional feature: the segmentation backends (Cellpose, InstanSeg, PyTorch), the napari GUI, Jupyter, and Globus transfer. On a Windows machine with an NVIDIA GPU you need a CUDA build of PyTorch, covered in the [installation guide](https://plexpipe.github.io/plex-pipe/latest/usage/installation/).
 
 **Supported platforms.** Python 3.12–3.14 on Linux, Windows and Apple Silicon Macs. Install `plex_pipe[all]`; PyTorch comes from PyPI and matches your platform (CUDA on Linux, CPU on Windows, CPU + Metal/MPS on macOS). On Windows with an NVIDIA GPU, install a CUDA build of PyTorch yourself, or use `uv sync --extra all-cuda` in a clone (see the [installation guide](https://plexpipe.github.io/plex-pipe/latest/usage/installation/)). Intel Macs are not supported: current PyTorch releases no longer include Intel-Mac builds.
 

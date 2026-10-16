@@ -4,7 +4,7 @@ All notable changes to PlexPipe are listed here, starting with the first release
 
 Changes to the config file format are listed in the Schema Changelog (`docs/configuration/schema_changelog.md`).
 
-## [Unreleased]
+## [0.1.0] - 2026-10-15
 
 First public release.
 
@@ -20,3 +20,5 @@ First public release.
 - Config checks: unknown or misspelled keys are an error, older configs are migrated, and each run saves a snapshot of its config with the PlexPipe version.
 - `fetch_example()` downloads a small example dataset for the notebooks.
 - Python 3.12–3.14 on Linux, Windows and Apple Silicon Macs.
+
+[0.1.0]: https://github.com/plexpipe/plex-pipe/releases/tag/v0.1.0
