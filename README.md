@@ -6,6 +6,7 @@
 [![Docs](https://img.shields.io/badge/docs-online-blue)](https://plexpipe.github.io/plex-pipe/)
 [![PyPI](https://img.shields.io/pypi/v/plex-pipe)](https://pypi.org/project/plex-pipe/)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://github.com/plexpipe/plex-pipe/blob/main/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23425779.svg)](https://doi.org/10.5281/zenodo.23425779)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/plexpipe/plex-pipe/main/docs/images/PlexPipe_logo_small_dark_transparent.png">

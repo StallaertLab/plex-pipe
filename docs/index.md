@@ -12,6 +12,7 @@
 [![Tests](https://github.com/plexpipe/plex-pipe/actions/workflows/test_and_deploy.yaml/badge.svg)](https://github.com/plexpipe/plex-pipe/actions)
 [![codecov](https://codecov.io/gh/plexpipe/plex-pipe/graph/badge.svg)](https://codecov.io/github/plexpipe/plex-pipe)
 ![Python Versions](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-green)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23425779.svg)](https://doi.org/10.5281/zenodo.23425779)
 
 ## Overview
 
