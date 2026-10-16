@@ -2,7 +2,7 @@
 
 PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see [plex-pipe-nextflow](https://github.com/plexpipe/plex-pipe-nextflow)).
 
-The interactive [steps](../analysis_steps/00_steps_overview.md) (1 - ROI Definition and 3 - Quality Control) run in [napari](https://napari.org/) with PlexPipe's widgets, from the notebooks.
+The interactive [steps](../analysis_steps/00_steps_overview.md) (1 - ROI Definition and 3 - Quality Control) run in [napari](https://napari.org/) with PlexPipe's widgets, from the notebooks or from the scripts `01_define_rois.py` and `03_qc.py`.
 
 ---
 
@@ -32,6 +32,14 @@ To run the pipeline from the command line, use the scripts in `scripts/`. Run th
 cd scripts
 ```
 
+### ROI Definition (interactive)
+
+```bash
+python 01_define_rois.py --exp_config ../examples/example_pipeline_config.yaml
+```
+
+Opens napari with the ROI widget. Draw or edit the ROIs, click **Save ROIs**, then close the window to finish.
+
 ### ROI Cutting
 
 ```bash
@@ -47,6 +55,14 @@ python 02_cut_rois.py --exp_config '../examples/example_pipeline_config_globus.y
 ```
 
 `--cleanup` deletes each transferred image once its ROIs are cut.
+
+### Quality Control (interactive)
+
+```bash
+python 03_qc.py --exp_config ../examples/example_pipeline_config.yaml
+```
+
+Opens one napari window per ROI with the QC widget. Draw exclusion shapes, click **Save All**, then close the window to move to the next ROI. Add `--roi ROI_001` to review a single ROI.
 
 ### Image Processing
 ```bash
