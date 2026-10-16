@@ -55,7 +55,36 @@ uv sync --extra all
 
 ## Try it on example data
 
-The notebooks run on a small example dataset, and the first notebook downloads it for you with `fetch_example()`, so you can go from a fresh clone to a running pipeline without hunting for data. The notebooks and the example configuration come with a clone of the repository; they are not part of the installed package.
+After `pip install "plex_pipe[all]"`, this script runs the pipeline on a small example dataset: two tissue cores imaged with DAPI and three markers. `setup_example()` downloads the images (about 116 MB, once), writes a ready-to-use config and two small ROIs, so the interactive steps (ROI definition and quality control in napari) are skipped:
+
+```python
+import plex_pipe
+from plex_pipe.io.filesystem import list_roi_stores
+from plex_pipe.runners import (
+    build_quant_controllers,
+    build_resource_controllers,
+    prepare_rois,
+    quantify_roi,
+    segment_roi,
+)
+
+# example images, a ready config and two small ROIs, in ./plexpipe_example
+config = plex_pipe.load_config(plex_pipe.setup_example("plexpipe_example"))
+
+# step 2: cut each ROI out of the images into its own SpatialData store
+prepare_rois(config, plex_pipe.LocalFileStrategy(config)).run()
+
+# steps 4 and 5: segment cells and nuclei, then measure them, ROI by ROI
+segmenters = build_resource_controllers(config)
+quantifiers = build_quant_controllers(config)
+for roi in list_roi_stores(config.roi_dir_output_path):
+    segment_roi(config, roi, segmenters)
+    quantify_roi(roi, quantifiers)
+```
+
+It takes about a minute on a laptop CPU. Each ROI ends up as a SpatialData store in `plexpipe_example/output/example/rois/`, with the cell and nucleus masks and the per-cell table `instanseg_table`; open it with `spatialdata.read_zarr()` or in napari with [napari-spatialdata](https://github.com/scverse/napari-spatialdata). The config, `plexpipe_example/config.yaml`, is the starting point for your own data.
+
+The notebooks walk through the same example step by step, including the interactive steps; they come with a clone of the repository, and the first notebook downloads the data with `fetch_example()`.
 
 Start with `01_roi_definition_demo.ipynb` and work through to `05`. Stages 1 and 3 open a napari window for the interactive steps; the rest run automatically from the shared configuration file.
 

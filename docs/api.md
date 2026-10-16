@@ -20,6 +20,18 @@ This section contains the reference documentation for the public functions and t
 
 ---
 
+## Example data
+
+::: plex_pipe.datasets.setup_example
+    options:
+      show_root_heading: true
+
+::: plex_pipe.datasets.fetch_example
+    options:
+      show_root_heading: true
+
+---
+
 ## Channels
 
 ::: plex_pipe.stages.roi_preparation.channel_scanner.preview_channels

@@ -22,7 +22,7 @@ if TYPE_CHECKING:  # for type checkers, IDEs and the API docs
         migrate_config,
         save_config_snapshot,
     )
-    from plex_pipe.datasets import fetch_example
+    from plex_pipe.datasets import fetch_example, setup_example
     from plex_pipe.stages.quantification.controller import QuantificationController
     from plex_pipe.stages.quantification.qc_shape_masker import QcShapeMasker
     from plex_pipe.stages.resource_building.controller import (
@@ -46,6 +46,7 @@ _LAZY = {
     "migrate_config": "plex_pipe.config.config_loaders",
     "save_config_snapshot": "plex_pipe.config.config_loaders",
     "fetch_example": "plex_pipe.datasets",
+    "setup_example": "plex_pipe.datasets",
     "RoiPreparationController": "plex_pipe.stages.roi_preparation.controller",
     "ResourceBuildingController": "plex_pipe.stages.resource_building.controller",
     "QuantificationController": "plex_pipe.stages.quantification.controller",
@@ -63,6 +64,7 @@ __all__ = [
     "migrate_config",
     "save_config_snapshot",
     "fetch_example",
+    "setup_example",
     "RoiPreparationController",
     "ResourceBuildingController",
     "QuantificationController",

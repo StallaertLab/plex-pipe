@@ -22,6 +22,8 @@ Without uv, `pip install "plex_pipe[all]"` in any Python 3.12–3.14 environment
 The `[all]` extra pulls in every optional feature: segmentation (Cellpose,
 InstanSeg, and PyTorch), the napari GUI, Jupyter support, and Globus transfer.
 
+To check the installation on example data, `plex_pipe.setup_example("plexpipe_example")` downloads the images and writes a ready-to-use config and ROIs; the short script that runs the pipeline on them is in the [README](https://github.com/plexpipe/plex-pipe#try-it-on-example-data).
+
 Using an NVIDIA GPU? See [GPU support](#gpu-support-nvidia-cuda) below.
 
 ---

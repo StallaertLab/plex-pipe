@@ -4,6 +4,12 @@ All notable changes to PlexPipe are listed here, starting with the first release
 
 Changes to the config file format are listed in the Schema Changelog (`docs/configuration/schema_changelog.md`).
 
+## [Unreleased]
+
+### Added
+
+- `setup_example()` sets up a ready-to-run example (images, config with absolute paths, two small ROIs), so the example runs after `pip install`, without a clone; README quickstart.
+
 ## [0.1.0] - 2026-10-15
 
 First public release.
