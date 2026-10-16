@@ -840,10 +840,32 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#roi-definition-interactive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROI Definition (interactive)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#roi-cutting" class="md-nav__link">
     <span class="md-ellipsis">
       
         ROI Cutting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quality-control-interactive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quality Control (interactive)
       
     </span>
   </a>
@@ -1093,10 +1115,32 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#roi-definition-interactive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROI Definition (interactive)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#roi-cutting" class="md-nav__link">
     <span class="md-ellipsis">
       
         ROI Cutting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quality-control-interactive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quality Control (interactive)
       
     </span>
   </a>
@@ -1163,7 +1207,7 @@
 
 <h1 id="usage">Usage</h1>
 <p>PlexPipe supports command-line execution and interactive analysis via Jupyter notebooks. For scalable workflows, it can also be orchestrated through Nextflow (see <a href="https://github.com/plexpipe/plex-pipe-nextflow">plex-pipe-nextflow</a>).</p>
-<p>The interactive <a href="../../analysis_steps/00_steps_overview/">steps</a> (1 - ROI Definition and 3 - Quality Control) run in <a href="https://napari.org/">napari</a> with PlexPipe's widgets, from the notebooks.</p>
+<p>The interactive <a href="../../analysis_steps/00_steps_overview/">steps</a> (1 - ROI Definition and 3 - Quality Control) run in <a href="https://napari.org/">napari</a> with PlexPipe's widgets, from the notebooks or from the scripts <code>01_define_rois.py</code> and <code>03_qc.py</code>.</p>
 <hr />
 <h2 id="choosing-how-to-run">Choosing how to run</h2>
 <table>
@@ -1204,6 +1248,10 @@
 <p>To run the pipeline from the command line, use the scripts in <code>scripts/</code>. Run them from that folder, so that the relative paths in the example config (<code>../examples/...</code>) resolve:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>scripts
 </code></pre></div>
+<h3 id="roi-definition-interactive">ROI Definition (interactive)</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>01_define_rois.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
+</code></pre></div>
+<p>Opens napari with the ROI widget. Draw or edit the ROIs, click <strong>Save ROIs</strong>, then close the window to finish.</p>
 <h3 id="roi-cutting">ROI Cutting</h3>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
 </code></pre></div>
@@ -1212,6 +1260,10 @@
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>02_cut_rois.py<span class="w"> </span>--exp_config<span class="w"> </span><span class="s1">'../examples/example_pipeline_config_globus.yaml'</span><span class="w"> </span>--globus_config<span class="w"> </span><span class="s1">'../examples/example_globus_config.yaml'</span><span class="w"> </span>--from_collection<span class="w"> </span><span class="s1">'remote_source'</span><span class="w"> </span>--to_collection<span class="w"> </span><span class="s1">'local_workstation'</span><span class="w"> </span>--cleanup
 </code></pre></div>
 <p><code>--cleanup</code> deletes each transferred image once its ROIs are cut.</p>
+<h3 id="quality-control-interactive">Quality Control (interactive)</h3>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>03_qc.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml
+</code></pre></div>
+<p>Opens one napari window per ROI with the QC widget. Draw exclusion shapes, click <strong>Save All</strong>, then close the window to move to the next ROI. Add <code>--roi ROI_001</code> to review a single ROI.</p>
 <h3 id="image-processing">Image Processing</h3>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>04_segment.py<span class="w"> </span>--exp_config<span class="w"> </span>../examples/example_pipeline_config.yaml<span class="w"> </span>--overwrite
 </code></pre></div>
