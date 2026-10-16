@@ -1,0 +1,11 @@
+# Trim the source distribution (sdist). setuptools_scm adds every file git
+# tracks; the rules below drop what is only needed for development, docs or
+# interactive use. Kept: src/, tests/ (with their example data), examples/
+# (the tests read the example configs), README, LICENSE, CHANGELOG, CITATION.
+prune docs
+prune notebooks
+prune scripts
+prune tools
+prune .github
+exclude uv.lock mkdocs.yml tox.ini .coveragerc .env.example .gitignore
+exclude .pre-commit-config.yaml CONTRIBUTING.md
