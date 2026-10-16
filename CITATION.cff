@@ -7,7 +7,7 @@ authors:
   - family-names: Kedziora
     given-names: Katarzyna M.
     orcid: "https://orcid.org/0000-0001-6524-7731"
-version: 0.1.0
+version: 0.2.0
 doi: 10.5281/zenodo.23425779
 identifiers:
   - type: doi
@@ -16,7 +16,7 @@ identifiers:
   - type: doi
     value: 10.5281/zenodo.23425780
     description: "PlexPipe 0.1.0"
-date-released: "2026-10-15"
+date-released: "2026-10-16"
 license: BSD-3-Clause
 repository-code: "https://github.com/plexpipe/plex-pipe"
 url: "https://plexpipe.github.io/plex-pipe/"

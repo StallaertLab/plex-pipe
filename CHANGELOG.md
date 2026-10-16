@@ -4,11 +4,12 @@ All notable changes to PlexPipe are listed here, starting with the first release
 
 Changes to the config file format are listed in the Schema Changelog (`docs/configuration/schema_changelog.md`).
 
-## [Unreleased]
+## [0.2.0] - 2026-10-16
 
 ### Added
 
 - `setup_example()` sets up a ready-to-run example (images, config with absolute paths, two small ROIs), so the example runs after `pip install`, without a clone; README quickstart.
+- Citable through Zenodo: DOI [10.5281/zenodo.23425779](https://doi.org/10.5281/zenodo.23425779) (all versions), also in `CITATION.cff`.
 
 ## [0.1.0] - 2026-10-15
 
@@ -27,4 +28,5 @@ First public release.
 - `fetch_example()` downloads a small example dataset for the notebooks.
 - Python 3.12–3.14 on Linux, Windows and Apple Silicon Macs.
 
+[0.2.0]: https://github.com/plexpipe/plex-pipe/releases/tag/v0.2.0
 [0.1.0]: https://github.com/plexpipe/plex-pipe/releases/tag/v0.1.0
