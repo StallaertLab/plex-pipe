@@ -1004,6 +1004,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#example-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.datasets.setup_example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.datasets.fetch_example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fetch_example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#channels" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1225,6 +1258,39 @@
     <span class="md-ellipsis">
       
         save_config_snapshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.datasets.setup_example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plex_pipe.datasets.fetch_example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fetch_example
       
     </span>
   </a>
@@ -1677,6 +1743,206 @@ written next to the source file.</p>
             <td>
               <div class="doc-md-description">
                 <p>from a file (nothing to save).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div><hr />
+<h2 id="example-data">Example data</h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.datasets.setup_example" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">setup_example</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Sets up a ready-to-run example analysis and returns its config path.</p>
+<p>Creates, in <code>dest</code>:</p>
+<ul>
+<li><code>input/</code>: the example images (see :func:<code>fetch_example</code>),</li>
+<li><code>config.yaml</code>: the example config, with absolute paths to <code>input/</code>
+  and <code>output/</code>,</li>
+<li><code>output/example/rois.pkl</code> (and <code>rois.csv</code>): two small ROIs
+  (:data:<code>EXAMPLE_ROI_CORNERS</code>), so the ROI definition step can be skipped.</li>
+</ul>
+<p>Files that already exist are left unchanged, so your edits to the config
+survive a second call.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>dest</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Folder for the example (created if needed).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to <code>config.yaml</code>, ready for :func:<code>plex_pipe.load_config</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="plex_pipe.datasets.fetch_example" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">plex_pipe</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fetch_example</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Download and unpack the example dataset, returning its image directory.</p>
+<p>The dataset contains DAPI plus three markers (bCat, CD45, NaKATPase) across
+two TMA cores at full resolution: raw intensities, without annotations.</p>
+<p>On the first call the archive is downloaded from the data release and
+validated against :data:<code>EXAMPLE_DATA_SHA256</code>. Subsequent calls reuse the
+cached archive and require no network access. The cache is disposable: if it
+is deleted, the next call downloads the archive again.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>dest</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | <span title="pathlib.Path">Path</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Directory to unpack the images into. Supplying a path means a
+config whose <code>general.image_dir</code> already points at that directory
+works unchanged, which keeps the config file the single source of
+truth for where the data lives. When omitted, the images are
+unpacked into the local cache and that location is returned instead.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the directory holding the example <code>.tiff</code> images, suitable for</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>use as the config's <code>general.image_dir</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the archive contains no images, indicating a corrupt
+archive or a change to its internal layout.</p>
               </div>
             </td>
           </tr>
