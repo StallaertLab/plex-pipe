@@ -82,6 +82,9 @@ def load_job_config(exp_config: str, command: str, unit: str) -> AnalysisConfig:
         save_config_snapshot,
     )
 
+    # Console logging from the start; the log file is added once the config is loaded.
+    logger.remove()
+    logger.add(sys.stdout, level="INFO")
     config = load_config(exp_config)
 
     relative = relative_config_paths(config)
@@ -95,8 +98,6 @@ def load_job_config(exp_config: str, command: str, unit: str) -> AnalysisConfig:
 
     stamp = f"{datetime.now():%Y-%m-%d_%H-%M-%S}"
     log_file = config.log_dir_path / f"{command}_{unit}_{stamp}.log"
-    logger.remove()
-    logger.add(sys.stdout, level="INFO")
     logger.add(log_file, level="DEBUG", enqueue=True)
     logger.info(f"plexpipe {command}: {unit}")
 

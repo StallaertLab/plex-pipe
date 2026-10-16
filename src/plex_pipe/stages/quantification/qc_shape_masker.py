@@ -6,6 +6,8 @@ from loguru import logger
 from shapely import Point, Polygon
 from shapely.strtree import STRtree
 
+from plex_pipe._quiet import quiet_zarr_io
+
 
 class QcShapeMasker:
     """Applies Quality Control (QC) masks based on spatial shapes.
@@ -82,7 +84,8 @@ class QcShapeMasker:
 
         try:
             sdata.delete_element_from_disk(self.table_name)
-            sdata.write_element(self.table_name, overwrite=True)
+            with quiet_zarr_io():
+                sdata.write_element(self.table_name, overwrite=True)
             logger.success(f"Table '{self.table_name}' written to {sdata.path}.")
         except Exception as e:
             logger.error(f"Failed to write table '{self.table_name}': {e}")

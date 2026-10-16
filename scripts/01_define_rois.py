@@ -18,12 +18,10 @@ from plex_pipe.ui import RoiWidget
 
 
 def configure_logging(settings):
-    """Log to the console and to a file in the analysis log folder."""
+    """Also log to a file in the analysis log folder (DEBUG level)."""
     log_file = (
         settings.log_dir_path / f"roi_definition_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
-    logger.remove()
-    logger.add(sys.stdout, level="INFO")
     logger.add(log_file, level="DEBUG", enqueue=True)
 
 
@@ -44,6 +42,10 @@ def modified_time(path):
 
 def main():
     args = parse_args()
+    # Console logging from the start; the log file is added once the config is loaded.
+    logger.remove()
+    logger.add(sys.stdout, level="INFO")
+
     settings = load_config(args.exp_config)
     configure_logging(settings)
 

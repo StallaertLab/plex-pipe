@@ -9,6 +9,7 @@ from loguru import logger
 from skimage.measure import regionprops_table
 from spatialdata.models import TableModel
 
+from plex_pipe._quiet import quiet_zarr_io
 from plex_pipe.config.config_schema import (
     DEFAULT_intensity_properties,
     DEFAULT_morphological_properties,
@@ -476,6 +477,8 @@ class QuantificationController:
         ########################################################################
 
         # create AnnData object
+        # AnnData wants string indexes (it would convert them itself, with a warning)
+        obs.index = obs.index.astype(str)
         adata = ad.AnnData(X=X, obs=obs, var=var, obsm=obsm)
 
         return adata
@@ -493,7 +496,7 @@ class QuantificationController:
             The updated SpatialData object.
         """
         if self.mask_to_annotate:
-            adata.obs["region"] = self.mask_to_annotate
+            adata.obs["region"] = pd.Categorical([self.mask_to_annotate] * adata.n_obs)
             adata.obs["cell"] = adata.obs.index.astype(int)
 
             # connect to the cell layer for napari-spatialdata compatibility
@@ -587,7 +590,8 @@ class QuantificationController:
         # Save adata table within sdata object
         ########################################################################
         try:
-            sdata.write_element(self.table_name)
+            with quiet_zarr_io():
+                sdata.write_element(self.table_name)
             logger.success(
                 f"Quantification complete. Table '{self.table_name}' written to {sdata.path}"
             )

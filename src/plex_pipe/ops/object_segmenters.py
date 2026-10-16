@@ -9,6 +9,7 @@ from pydantic import (
     Field,
 )
 
+from plex_pipe._quiet import quiet_model
 from plex_pipe.ops.base import (
     BaseOp,
     OutputType,
@@ -76,7 +77,8 @@ class InstansegSegmenter(BaseOp):
         # import model
         from instanseg import InstanSeg
 
-        self.model = InstanSeg(self.params.model, verbosity=1)
+        with quiet_model():
+            self.model = InstanSeg(self.params.model, verbosity=1)
 
     def prepare_input(
         self, in_image: tuple[np.ndarray, ...] | list[np.ndarray] | np.ndarray
@@ -124,7 +126,10 @@ class InstansegSegmenter(BaseOp):
         in_image = self.prepare_input(in_image)
 
         # Call InstanSeg
-        labeled_output, _ = self.model.eval_medium_image(in_image, **dict(self.params))
+        with quiet_model():
+            labeled_output, _ = self.model.eval_medium_image(
+                in_image, **dict(self.params)
+            )
 
         # extract result
         segm_arrays = [np.array(x).astype(np.int32) for x in labeled_output[0, :, :, :]]

@@ -22,8 +22,6 @@ def configure_logging(config):
         config.log_dir_path / f"cores_cutting_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
 
-    logger.remove()
-    logger.add(sys.stdout, level="INFO")
     logger.add(log_file, level="DEBUG", enqueue=True)
 
 
@@ -67,6 +65,10 @@ def main():
     args = parse_args()
 
     # read config file
+    # Console logging from the start; the log file is added once the config is loaded.
+    logger.remove()
+    logger.add(sys.stdout, level="INFO")
+
     config = load_config(args.exp_config)
 
     # setup logging

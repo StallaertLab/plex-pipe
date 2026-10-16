@@ -24,6 +24,7 @@ import pandas as pd
 import spatialdata as sd
 from loguru import logger
 
+from plex_pipe._quiet import quiet_zarr_io
 from plex_pipe.config.config_schema import AnalysisConfig
 from plex_pipe.ops.registry import build_processor
 from plex_pipe.stages.quantification.controller import QuantificationController
@@ -381,7 +382,8 @@ def segment_roi(
         sdata_path: Path to the ROI's SpatialData Zarr store.
         controllers: Controllers from :func:`build_resource_controllers`.
     """
-    sdata = sd.read_zarr(sdata_path)
+    with quiet_zarr_io():
+        sdata = sd.read_zarr(sdata_path)
     config.validate_pipeline(sdata)
     for controller in controllers:
         sdata = controller.run(sdata)
@@ -438,6 +440,7 @@ def quantify_roi(
         sdata_path: Path to the ROI's SpatialData Zarr store.
         controllers: Controllers from :func:`build_quant_controllers`.
     """
-    sdata = sd.read_zarr(sdata_path)
+    with quiet_zarr_io():
+        sdata = sd.read_zarr(sdata_path)
     for controller in controllers:
         controller.run(sdata)

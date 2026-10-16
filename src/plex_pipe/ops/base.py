@@ -32,7 +32,8 @@ class ProcessorParamsBase(BaseModel):
     """Base model for processor parameters.
 
     Unknown parameters are an error (a misspelled one would otherwise be
-    ignored and its default used); missing optional ones are logged.
+    ignored and its default used); missing optional ones are logged at DEBUG
+    level (they go to the log file, not the console).
     """
 
     model_config = ConfigDict(extra="forbid")
@@ -40,7 +41,7 @@ class ProcessorParamsBase(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _log_missing_optional_params(cls, data: dict[str, Any]) -> dict[str, Any]:
-        """Checks for optional fields that are missing from the input data and logs a warning.
+        """Logs (DEBUG) each optional field missing from the input and its default.
 
         Args:
             data: The input dictionary of parameters.
@@ -54,7 +55,7 @@ class ProcessorParamsBase(BaseModel):
             # and if the user did NOT provide it in their YAML.
             if field_info.get_default() is not None and field_name not in data:
                 default_value = field_info.get_default()
-                logger.warning(
+                logger.debug(
                     f"{cls.__qualname__}: Parameter {field_name} not provided. Using default value: {default_value}."
                 )
 

@@ -35,6 +35,7 @@ import spatialdata as sd
 import yaml
 
 import plex_pipe
+from plex_pipe._quiet import quiet_zarr_io
 
 REPO = Path(__file__).resolve().parents[1]
 EXAMPLE_CONFIG = REPO / "examples" / "example_pipeline_config.yaml"
@@ -183,7 +184,8 @@ def check_run(label: str, analysis: Path, roi_cleanup: bool) -> dict:
         check(store.exists(), f"{roi}: ROI store exists")
         if not store.exists():
             continue
-        sdata = sd.read_zarr(store)
+        with quiet_zarr_io():
+            sdata = sd.read_zarr(store)
         table = sdata.tables.get(TABLE)
         check(table is not None and table.n_obs > 0, f"{roi}: '{TABLE}' has cells")
         if table is not None:

@@ -19,8 +19,6 @@ def configure_logging(settings):
         / f"cores_segmentation_{datetime.now():%Y-%m-%d_%H-%M-%S}.log"
     )
 
-    logger.remove()
-    logger.add(sys.stdout, level="DEBUG")
     logger.add(log_file, level="DEBUG", enqueue=True)
 
 
@@ -44,6 +42,10 @@ def parse_args():
 def main():
 
     args = parse_args()
+
+    # Console logging from the start; the log file is added once the config is loaded.
+    logger.remove()
+    logger.add(sys.stdout, level="INFO")
 
     # read config file
     settings = load_config(args.exp_config)
